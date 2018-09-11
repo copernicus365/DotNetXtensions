@@ -1,0 +1,70 @@
+﻿/*
+ * https://web.archive.org/web/20090304194122/http://msdn.microsoft.com:80/en-us/magazine/cc163367.aspx
+ * https://web.archive.org/web/20090104020243/http://msdn.microsoft.com:80/en-us/magazine/cc164453.aspx?code=true&level=root&file=CryptoRandom.cs
+ * .NET Matters
+ * Tales from the CryptoRandom
+ * Stephen Toub and Shawn Farkas
+ * Read the article.
+ * NETMatters2007_09.exe (151 KB)
+ * Navigate: [root] / CryptoRandom.cs
+ */
+
+// Stephen Toub & Shawn Farkas
+
+using System;
+using System.Security.Cryptography;
+
+namespace MsdnMag
+{
+	public class CryptoRandom : Random
+	{
+		private RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
+		private byte[] _uint32Buffer = new byte[4];
+
+		public CryptoRandom() { }
+		public CryptoRandom(Int32 ignoredSeed) { }
+
+		public override Int32 Next()
+		{
+			_rng.GetBytes(_uint32Buffer);
+			return BitConverter.ToInt32(_uint32Buffer, 0) & 0x7FFFFFFF;
+		}
+
+		public override Int32 Next(Int32 maxValue)
+		{
+			if (maxValue < 0) throw new ArgumentOutOfRangeException("maxValue");
+			return Next(0, maxValue);
+		}
+
+		public override Int32 Next(Int32 minValue, Int32 maxValue)
+		{
+			if (minValue > maxValue) throw new ArgumentOutOfRangeException("minValue");
+			if (minValue == maxValue) return minValue;
+			Int64 diff = maxValue - minValue;
+
+			while (true) {
+				_rng.GetBytes(_uint32Buffer);
+				UInt32 rand = BitConverter.ToUInt32(_uint32Buffer, 0);
+
+				Int64 maxVal = (1 + (Int64)UInt32.MaxValue);
+				Int64 remainder = maxVal % diff;
+				if (rand < maxVal - remainder) {
+					return (Int32)(minValue + (rand % diff));
+				}
+			}
+		}
+
+		public override double NextDouble()
+		{
+			_rng.GetBytes(_uint32Buffer);
+			UInt32 rand = BitConverter.ToUInt32(_uint32Buffer, 0);
+			return rand / (1.0 + UInt32.MaxValue);
+		}
+
+		public override void NextBytes(byte[] buffer)
+		{
+			if (buffer == null) throw new ArgumentNullException("buffer");
+			_rng.GetBytes(buffer);
+		}
+	}
+}

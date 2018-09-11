@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DotNetXtensions.Common\DotNetXtensions.Common.csproj" />
+    <ProjectReference Include="..\..\DotNetXtensions.Cryptography\DotNetXtensions.Cryptography.csproj" />
+    <ProjectReference Include="..\..\DotNetXtensions.Json\DotNetXtensions.Json.csproj" />
+    <ProjectReference Include="..\..\DotNetXtensions.Net\DotNetXtensions.Net.csproj" />
+    <ProjectReference Include="..\..\DotNetXtensions.Toolbox\DotNetXtensions.Toolbox.csproj" />
+    <ProjectReference Include="..\..\DotNetXtensions.X2\DotNetXtensions.X2.csproj" />
+    <ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
+  </ItemGroup>
+
+</Project>

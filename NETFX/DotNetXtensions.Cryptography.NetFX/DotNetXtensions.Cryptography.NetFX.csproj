@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9B054EC5-3217-4F0F-A93C-56C01DB39BEE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DotNetXtensions.Cryptography.NetFX</RootNamespace>
+    <AssemblyName>DotNetXtensions.Cryptography.NetFX</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DNXPublic;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\DotNetXtensions.Cryptography.NetFX.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;DNXPublic;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\DotNetXtensions.Cryptography.NetFX.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Compression\XCompression.cs">
+      <Link>src\Compression\XCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Compression\XZip.cs">
+      <Link>src\Compression\XZip.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Compression\ZipArchiveDictionary.cs">
+      <Link>src\Compression\ZipArchiveDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\AESKeySizeEnum.cs">
+      <Link>src\Cryptography\AESKeySizeEnum.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\CryptoRandom.cs">
+      <Link>src\Cryptography\CryptoRandom.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\CryptoRandomX.cs">
+      <Link>src\Cryptography\CryptoRandomX.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\FNV1a64Hash.cs">
+      <Link>src\Cryptography\FNV1a64Hash.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\RandomNumbers.cs">
+      <Link>src\Cryptography\RandomNumbers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\RandomStringGenerator.cs">
+      <Link>src\Cryptography\RandomStringGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\SHALevelEnum.cs">
+      <Link>src\Cryptography\SHALevelEnum.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\X509CertificateExtensions.cs">
+      <Link>src\Cryptography\X509CertificateExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\XHash.cs">
+      <Link>src\Cryptography\XHash.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Cryptography\src\Cryptography\XHashCommon.cs">
+      <Link>src\Cryptography\XHashCommon.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Compression">
+      <Version>4.3.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetXtensions.NetFX\DotNetXtensions.NetFX.csproj">
+      <Project>{d90fc109-6c8b-47eb-ba29-3dffc336aeae}</Project>
+      <Name>DotNetXtensions.NetFX</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

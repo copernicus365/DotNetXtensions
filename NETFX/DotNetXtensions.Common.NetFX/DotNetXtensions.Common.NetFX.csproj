@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A461BF6F-F5E7-4836-9B5B-80A754EE4E25}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DotNetXtensions.Common.NetFX</RootNamespace>
+    <AssemblyName>DotNetXtensions.Common.NetFX</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;DNXPublic;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\DotNetXtensions.Common.NetFX.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;DNXPublic;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\DotNetXtensions.Common.NetFX.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Color\ColorRGB.cs">
+      <Link>src\Color\ColorRGB.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Color\Colour.cs">
+      <Link>src\Color\Colour.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Globalization\GeoNames.cs">
+      <Link>src\Globalization\GeoNames.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\KV.cs">
+      <Link>src\KV.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\MimeTypes\BasicMimeTypeEnum.cs">
+      <Link>src\MimeTypes\BasicMimeTypeEnum.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\MimeTypes\BasicMimeTypesX.cs">
+      <Link>src\MimeTypes\BasicMimeTypesX.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Text\CsvFuncs.cs">
+      <Link>src\Text\CsvFuncs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Text\Diacritics.cs">
+      <Link>src\Text\Diacritics.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Text\TextFuncs.cs">
+      <Link>src\Text\TextFuncs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Text\UriPathInfo.cs">
+      <Link>src\Text\UriPathInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\TimeZones\TimeZones.cs">
+      <Link>src\TimeZones\TimeZones.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\TimeZones\TimeZonesGenerator.cs">
+      <Link>src\TimeZones\TimeZonesGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\TimeZones\TimeZonesString.cs">
+      <Link>src\TimeZones\TimeZonesString.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\TimeZones\TZKeyValues.cs">
+      <Link>src\TimeZones\TZKeyValues.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetXtensions.NetFX\DotNetXtensions.NetFX.csproj">
+      <Project>{d90fc109-6c8b-47eb-ba29-3dffc336aeae}</Project>
+      <Name>DotNetXtensions.NetFX</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -3,8 +3,14 @@ using System.Collections.Generic;
 
 namespace DotNetXtensions
 {
+	/// <summary>
+	/// Serializes and deserializes a datetime + guid + long number into and back
+	/// from bytes of precisely 32 bytes long, which has many useful applications.
+	/// </summary>
 	public class GuidTimeStamp : IEqualityComparer<GuidTimeStamp>, IEquatable<GuidTimeStamp>
 	{
+		public const int Size = 32;
+
 		// FIELDS
 
 		public DateTime Date { get; set; }
@@ -16,8 +22,6 @@ namespace DotNetXtensions
 
 
 		// CONSTRUCTORS
-
-		public const int Size = 32;
 
 		public static byte[] SerializedStampToDataBytes(string stamp)
 		{

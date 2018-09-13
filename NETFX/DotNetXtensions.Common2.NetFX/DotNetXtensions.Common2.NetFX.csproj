@@ -7,8 +7,8 @@
     <ProjectGuid>{613F3898-F7C6-40C5-AC7E-8E32F16D55CF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DotNetXtensions.X2.NetFX</RootNamespace>
-    <AssemblyName>DotNetXtensions.X2.NetFX</AssemblyName>
+    <RootNamespace>DotNetXtensions.Common2.NetFX</RootNamespace>
+    <AssemblyName>DotNetXtensions.Common2.NetFX</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>TRACE;DEBUG;DNXPublic;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\DotNetXtensions.X2.NetFX.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\DotNetXtensions.Common2.NetFX.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE;DNXPublic;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\DotNetXtensions.X2.NetFX.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNetXtensions.Common2.NetFX.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
   </PropertyGroup>
   <ItemGroup>
@@ -41,97 +41,91 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Async\AsyncPump.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Async\AsyncPump.cs">
       <Link>src\Async\AsyncPump.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Async\ConcurrentTasksQueueHandler.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Async\ConcurrentTasksQueueHandler.cs">
       <Link>src\Async\ConcurrentTasksQueueHandler.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Async\ConcurrentTasksRunner.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Async\ConcurrentTasksRunner.cs">
       <Link>src\Async\ConcurrentTasksRunner.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\BiDirectionalDictionary.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\BiDirectionalDictionary.cs">
       <Link>src\Collections\BiDirectionalDictionary.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\BinarySearch\BinarySearch.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\BinarySearch\BinarySearch.cs">
       <Link>src\Collections\BinarySearch\BinarySearch.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\BinarySearch\BinarySearchFailedLowHigh.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\BinarySearch\BinarySearchFailedLowHigh.cs">
       <Link>src\Collections\BinarySearch\BinarySearchFailedLowHigh.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\BinarySearch\BinarySearchX.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\BinarySearch\BinarySearchX.cs">
       <Link>src\Collections\BinarySearch\BinarySearchX.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\BinarySearch\IndexRangeWindow.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\BinarySearch\IndexRangeWindow.cs">
       <Link>src\Collections\BinarySearch\IndexRangeWindow.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\DropOffStack.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\DropOffStack.cs">
       <Link>src\Collections\DropOffStack.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\DropOffStackConcurrent.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\DropOffStackConcurrent.cs">
       <Link>src\Collections\DropOffStackConcurrent.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\FixedList.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\FixedList.cs">
       <Link>src\Collections\FixedList.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\OrderedDictionary.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\OrderedDictionary.cs">
       <Link>src\Collections\OrderedDictionary.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Collections\Queues\PriorityQueue.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Collections\Queues\PriorityQueue.cs">
       <Link>src\Collections\Queues\PriorityQueue.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\IO\DebugWriter.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\IO\DebugWriter.cs">
       <Link>src\IO\DebugWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\PasswordStrengthEvaluator.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\PasswordStrengthEvaluator.cs">
       <Link>src\PasswordStrengthEvaluator.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Reflection\FastInvoke.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Reflection\FastInvoke.cs">
       <Link>src\Reflection\FastInvoke.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Reflection\FastPropertyInfo.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Reflection\FastPropertyInfo.cs">
       <Link>src\Reflection\FastPropertyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Reflection\FastPropertyInfoGroup.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Reflection\FastPropertyInfoGroup.cs">
       <Link>src\Reflection\FastPropertyInfoGroup.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Timers\TimerJob.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Timers\TimerJob.cs">
       <Link>src\Timers\TimerJob.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Timers\TimerJobAsync.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Timers\TimerJobAsync.cs">
       <Link>src\Timers\TimerJobAsync.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Timers\TimerJobAsync2.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Timers\TimerJobAsync2.cs">
       <Link>src\Timers\TimerJobAsync2.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Time\QuickTime.cs">
-      <Link>src\Time\QuickTime.cs</Link>
-    </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Types\GridOutputBuilder.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Types\GridOutputBuilder.cs">
       <Link>src\Types\GridOutputBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Types\GuidTimeStamp.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Types\GuidTimeStamp.cs">
       <Link>src\Types\GuidTimeStamp.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Types\ValueWrap.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Types\ValueWrap.cs">
       <Link>src\Types\ValueWrap.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\Types\XProperty.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\Types\XProperty.cs">
       <Link>src\Types\XProperty.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\XEasy.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\XEasy.cs">
       <Link>src\XEasy.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\XException.cs">
-      <Link>src\XException.cs</Link>
-    </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\XMLLinq.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\XMLLinq.cs">
       <Link>src\XMLLinq.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\XMLSchema.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\XMLSchema.cs">
       <Link>src\XMLSchema.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.X2\src\XRegex.cs">
+    <Compile Include="..\..\DotNetXtensions.Common2\src\XRegex.cs">
       <Link>src\XRegex.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Nicholas Petersen</Authors>
     <PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
     <PackageTags>dotnet dotnet-core helper-functions csv xml tz timezones mime-type color countries states geo-names</PackageTags>

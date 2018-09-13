@@ -10,6 +10,7 @@
     <PackageReleaseNotes />
     <Description>A number of helpful types and extension methods: 
 A DropOffStack, binary-search members (on virtual collections, not just on an array), a GridOutputBuilder (for simply outputting lines of output in aligned columns), a GuidTimeStamp, a PasswordStrengthEvaluator, and so forth.</Description>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

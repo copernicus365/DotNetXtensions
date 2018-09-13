@@ -9,6 +9,9 @@ namespace DotNetXtensions
 namespace DotNetXtensionsPrivate
 #endif
 {
+	/// <summary>
+	/// A type for working with mimetypes.
+	/// </summary>
 #if DNXPublic
 	public
 #endif

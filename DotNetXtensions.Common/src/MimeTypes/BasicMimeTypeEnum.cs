@@ -8,6 +8,19 @@ namespace DotNetXtensions
 namespace DotNetXtensionsPrivate
 #endif
 {
+	/// <summary>
+	/// An enum that contains many of the most common or basic mimetypes,
+	/// thus the name <see cref="BasicMimeType"/>. The purpose is certainly
+	/// not to enumerate every possible mimetype, which would be impossible
+	/// and unadvisable. But it is beneficial in many cases to have this, 
+	/// because for instance, the numeric value of these allows them to be 
+	/// categorized by their base types (all 'text/*' ones are 100s, 
+	/// 'image/*' ones are 400s, etc), and importantly, a "base" type for each
+	/// main category existed when the sub-mimetype isn't one of these, i.e. 
+	/// see <see cref="BasicMimeType.text"/> or <see cref="BasicMimeType.audio"/>.
+	/// See <see cref="BasicMimeTypesX"/> for functions for working with these and
+	/// with mimetypes in general.
+	/// </summary>
 #if DNXPublic
 	public
 #endif

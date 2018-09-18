@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 #if DNXPublic
 namespace DotNetXtensions
@@ -132,8 +133,12 @@ namespace DotNetXtensionsPrivate
 
 		#endregion
 
-
-		const long TICKS_AT_EPOCH = 621355968000000000L;
+		/// <summary>
+		/// Java / Unix time since Epoch converted to .NET ticks,
+		/// see <see cref="JavaUnixTimeToDNetTicks(long)"/> and
+		/// <see cref="SecondsSinceEpochToDNetTicks"/>.
+		/// </summary>
+		public const long TICKS_AT_EPOCH = 621355968000000000L;
 
 		/// <summary>
 		/// Converts Java Unix Time (milliseconds since Epoch) to
@@ -142,16 +147,10 @@ namespace DotNetXtensionsPrivate
 		/// </summary>
 		/// <param name="value">Java Unix time since Epoch in milliseconds.</param>
 		public static long JavaUnixTimeToDNetTicks(this long value)
-		{
-			long ticks = TICKS_AT_EPOCH + (value * 10000);
-			return ticks;
-		}
+			=> TICKS_AT_EPOCH + (value * 10000);
 
 		public static long SecondsSinceEpochToDNetTicks(this long value)
-		{
-			long ticks = TICKS_AT_EPOCH + (value * 10000000);
-			return ticks;
-		}
+			=> TICKS_AT_EPOCH + (value * 10000000);
 
 		//new DateTime(1970, 1, 1) + TimeSpan.FromSeconds(issuedAt_unixTimeInSecs) 
 
@@ -225,139 +224,7 @@ namespace DotNetXtensionsPrivate
 		#endregion
 
 
-		#region --- Parse DateTime Lenient ---
-
-		public static DateTime ParseDateTimeLenientDefault(string date)
-		{
-			bool success = TryParseDateTimeLenient(date, out DateTime result);
-			return result;
-		}
-
-		public static DateTime ParseDateTimeLenientDefault(string date, DateTime defaultTime)
-		{
-			return TryParseDateTimeLenient(date, out DateTime result)
-				? result
-				: defaultTime;
-		}
-
-		public static bool TryParseDateTimeLenient(string date, out DateTime result)
-		{
-			if (date == null) {
-				result = DateTime.MinValue;
-				return false;
-			}
-			if (DateTime.TryParse(date, out result))
-				return true;
-			return TryParseDateTimeLenient(date, out result);
-		}
-
-		public static bool TryParseDateTimeLenientAfterFail(string date, out DateTime result)
-		{
-			(string date1, double? usOffset) = TryParseDateTimeWithSpecialUSTZs(date);
-
-			if (date1.NotNulle()) {
-				if (DateTime.TryParse(date1, out result)) {
-					if (usOffset != null)
-						result = result.Add(TimeSpan.FromHours(usOffset.Value));
-					return true;
-				}
-			}
-			result = DateTime.MinValue;
-			return false;
-		}
-
-
-
-		public static DateTimeOffset ParseDateTimeOffsetLenientDefault(string date)
-		{
-			bool success = TryParseDateTimeOffsetLenient(date, out DateTimeOffset result);
-			return result;
-		}
-
-		public static DateTimeOffset ParseDateTimeOffsetLenientDefault(string date, DateTimeOffset defaultTime)
-		{
-			return TryParseDateTimeOffsetLenient(date, out DateTimeOffset result)
-				? result
-				: defaultTime;
-		}
-
-		public static bool TryParseDateTimeOffsetLenient(string date, out DateTimeOffset result)
-		{
-			if (date == null) {
-				result = DateTime.MinValue;
-				return false;
-			}
-			if (DateTimeOffset.TryParse(date, out result))
-				return true;
-			return TryParseDateTimeOffsetLenientAfterFail(date, out result);
-		}
-
-		public static bool TryParseDateTimeOffsetLenientAfterFail(string date, out DateTimeOffset result)
-		{
-			(string date1, double? usOffset) = TryParseDateTimeWithSpecialUSTZs(date);
-			return _tryParseDateTimeOffset_WithUSTZInfo(date1, usOffset, out result);
-		}
-
-		static bool _tryParseDateTimeOffset_WithUSTZInfo(string date1, double? usOffset, out DateTimeOffset result)
-		{
-			if (date1.NotNulle()) {
-				if (DateTime.TryParse(date1, out DateTime dt)) {
-					if (usOffset != null)
-						result = new DateTimeOffset(dt, TimeSpan.FromHours(usOffset.Value));
-					else {
-						// this may be bad, but this will give them at least the date, but the TZ lost
-						result = new DateTimeOffset(dt, TimeSpan.Zero);
-					}
-					return true;
-				}
-			}
-			result = DateTimeOffset.MinValue;
-			return false;
-		}
-
-
-		public static (string date, double? usOffset) TryParseDateTimeWithSpecialUSTZs(string date)
-		{
-			int len = date?.Length ?? 0;
-			if (len > 8) { // usually will be, so can do variable above
-				if (date[3] == ','
-					// note: This single first char check makes this function extremely performant on fails, 
-					// most non matches would fail at this point, making a length check and a single char check
-					// the main work done
-
-					&& date[4] == ' '
-					&& date[len - 4] == ' '
-					&& date[len - 1] == 'T') {
-					date = date.Substring(5, len - 5);
-					len -= 5;
-
-					string usTz = date.Substring(len - 3, 3);
-					date = date.Substring(0, len - 4);
-					if (usTz.Length == 3 // .InRange(2, 3) 
-						&& date.NotNulle()) {
-
-						return USTimeZoneDateTimeOffsets.TryGetValue(usTz, out double offset)
-							? (date, offset)
-							: (date, (double?)null);
-					}
-				}
-			}
-			return (null, null);
-		}
-
-		// http://www.timeanddate.com/library/abbreviations/timezones/
-		static readonly Dictionary<string, double> USTimeZoneDateTimeOffsets = new Dictionary<string, double>() {
-			{ "CDT", -5.0 },
-			{ "CST", -6.0 },
-			{ "EDT", -4.0 },
-			{ "EST", -5.0 },
-			{ "MDT", -6.0 },
-			{ "MST", -7.0 },
-			{ "PDT", -7.0 },
-			{ "PST", -8.0 },
-			{ "GMT", -0.0 },
-			//{ "UT", -0.0 } -- looks like our code was NOT accounting for length:2 usTzs, only 3
-		};
+		#region --- ParseDateTimeWithOffsetInfo / DateTimeStringHasOffset / etc  ---
 
 		/// <summary>
 		/// Determines if the input date-time string has a offset value specified,
@@ -374,112 +241,257 @@ namespace DotNetXtensionsPrivate
 		/// <returns></returns>
 		public static bool DateTimeStringHasOffset(string dtStr, out TimeSpan offset)
 		{
-			if (dtStr != null) {
-				int len = dtStr.Length;
-				if (len > 10 && len < 40) { //2018-01-01 - len: 11, min for dt, 'Decemeber 28, 2018 23:32:32-05:00' is 33 ish before 
-					if (dtStr[len - 1] == 'Z') {
-						offset = TimeSpan.Zero;
-						return true;
-					}
-					else if (dtStr[len - 3] == ':') {
-						char tsSign = dtStr[len - 6];
-						if (tsSign == '-' || tsSign == '+') {
-							string tsStr = dtStr.Substring(len - (tsSign == '-' ? 6 : 5));
-							if (TimeSpan.TryParse(tsStr, out TimeSpan ts)
-								&& ts.InRange(TimeSpan.FromHours(-14.0), TimeSpan.FromHours(14.0))) {
-								/*	Notes: https://msdn.microsoft.com/en-us/library/system.datetimeoffset.offset(v=vs.110).aspx
-									The value of the Hours property of the returned TimeSpan object can range from -14 hours to 14 hours.
-									The value of the Offset property is precise to the minute. */
-								offset = ts;
-								return true;
-							}
-						}
-					}
+			offset = TimeSpan.Zero;
+
+			if (dtStr == null)
+				return false;
+
+			int len = dtStr.Length;
+			if (len.NotInRange(14, 50)) {
+				// MIN: `2018-01-01` is ~ 10 long, but certainly has no date
+				// MAX: `Decemeber 28, 2018 23:32:32-05:00` is ~ 33 ish long 
+				return false;
+			}
+
+			if (dtStr.Last() == 'Z')
+				return true; // offset was already set to zero (0)
+
+			bool hasColon = dtStr[len - 3] == ':';
+			int tsStrLen = hasColon ? 6 : 5;
+
+			char tsNegOrPosSign = dtStr[len - tsStrLen];
+
+			if (tsNegOrPosSign != '-' && tsNegOrPosSign != '+')
+				return false;
+
+			bool signIsNeg = tsNegOrPosSign == '-';
+
+			int tsStartIndex = len - tsStrLen + 1; // -1 to skip the +/- sign char
+
+			string tsStr = dtStr.Substring(tsStartIndex);
+
+			// Quick check for zero offset, this is likely a massive speedup for the 
+			// innumerable cases (majority?!) where offset was UTC anyways
+			if (hasColon) {
+				if (tsStr == "00:00")
+					return true;
+			}
+			else {
+				if (tsStr == "0000")
+					return true;
+			}
+
+			TimeSpan parsedTS = TimeSpan.Zero;
+
+			int minutes = 0;
+			if (!tsStr.EndsWith("00")) {
+				minutes = tsStr.End(2).ToInt(-1);
+				if (minutes.NotInRange(0, 59)) {
+					// INVALID offset! see 'https://www.ietf.org/rfc/rfc2822.txt', 
+					// "... and the zone MUST be within the range -9959 through + 9959."
+					return false;
 				}
 			}
-			offset = TimeSpan.Zero;
-			return false;
+			int hours = tsStr.Substring(0, 2).ToInt(-1);
+
+			if (hours.NotInRange(-14, 14)) {
+				// rfc2822 allows up to 99 hours, but not DateTimeOffset:
+				// https://msdn.microsoft.com/en-us/library/system.datetimeoffset.offset(v=vs.110).aspx
+				// "The value of the Hours property of the returned TimeSpan object can range from 
+				// -14 hours to 14 hours. The value of the Offset property is precise to the minute."
+
+				return false;
+			}
+
+			double totalHours = minutes == 0
+				? hours
+				: hours + (((double)minutes) / 60);
+
+			if (signIsNeg)
+				totalHours = -totalHours;
+
+			parsedTS = TimeSpan.FromHours(totalHours);
+
+			if (parsedTS.TotalHours.NotInRange(-14, 14)) {
+				// redundancy check. if true would be a programmatic error though bec of checks already above
+				return false;
+			}
+
+			offset = parsedTS;
+			return true;
 		}
 
 		/// <summary>
-		/// Parses the datetime or datetimeoffset string, while indicating if the original 
-		/// string had an offset. Both a zero offset (+00:00) and a 'Z' ('zulu' time) appendix are considered
-		/// an offset, i.e. an explicit UTC offset indicator. 
+		/// Parses the datetime or datetime+offset string while indicating if the original 
+		/// string had an offset. The offset can take the standard forms, such as: "+05:00" or "+0500",
+		/// while a zero offset (`+00:00` / `+0000`) as well as a 'Z' appendix
+		/// ('zulu' time) are also considered legitimate offsets.
+		/// <para />
 		/// Why is this needed? Because when parsing with DateTimeOffset.Parse, there is no way to know 
-		/// if the string had a offset or not. The problem is, when there is no offset in the string, 
-		/// it is parsed to local (server / computer) time. 
-		/// But in many cases, particularly on the server, you virtually never
-		/// want the server's local time to count for anything, and rather would use another timezone offset
-		/// which you know from context. However, if you simply parse with DateTimeOffset, there is simply
-		/// no way of know if it didn't find an offset, it just makes assumptions! Even if you specify
-		/// the right assumption for it to make, UTC or Local, that's not good enough, you need to know
-		/// if it was neither, in which case you'll be able to, for instance,
-		/// supply your own timezone offset, etc.
-		/// Lastly, one might parse with <see cref="DateTime.Parse(string)"/>, but that makes it's own 
-		/// assumptions as well, again you won't know which was which. Even stranger is the fact, if 
-		/// an offset was indicated, that is *converted* and the time changes accordingly 
-		/// to the stinking local server time. It's understandable, but still frustrating, that
-		/// for instance, indicating UTC time in the string actually makes the final result not UTC! 
-		/// Most importantly though is that you simply have no way of knowing if that conversion was
-		/// silently made. 
+		/// if the string had an offset or not. The problem is, when there is no offset in the string, 
+		/// the standard parsers (e.g. <see cref="DateTimeOffset.Parse(string)"/>) implicitly convert
+		/// to the local computer's time. But in many (most?) cases, particularly on the server, you virtually never
+		/// want the server's local time to count for anything. Unfortunately there is simply
+		/// no way of knowing if there even was an offset or not, it just makes assumptions! 
+		/// <para />
+		/// Lastly, one might parse with <see cref="DateTime.Parse(string)"/> (as opposed to DateTimeOffset), 
+		/// but that makes it's own assumptions as well. For instance, if an offset was indicated, 
+		/// that is *converted* and the parsed time is actually changed to the local server time! 
+		/// The worse part of this is you simply have no way of knowing if it had no offset leading
+		/// to this implicity conversion. This function attempts to remedy these problems.
 		/// </summary>
-		/// <param name="dateStr">DateTime string</param>
-		/// <param name="addOffsetIfNone">TimeSpan to add, if any, if no offset was indicated.</param>
-		/// <returns>Returns if was success, if offset was indicated, and then for the parsed dtOffset,
-		/// if offsetIndicated or if addOffsetIfNone was not null, returns the expected datetimeoffset with 
-		/// expected offset. Otherwise, the returned value will be the exact time as parsed NOT converted
-		/// to local time, i.e. while we use <see cref="DateTimeOffset.Parse(string)"/>, we in that case
-		/// will return the UtcDateTime of the parsed value.</returns>
-		public static (bool success, bool offsetIndicated, DateTimeOffset dtOffset)
-			ParseDateTimeWithOffsetInfo(string dateStr, TimeSpan? addOffsetIfNone = null)
+		/// <param name="dateStr">DateTime string to parse.</param>
+		/// <param name="localOffset">Offset to use as the date-time's offset from UTC if no offset 
+		/// was indicated. Should only have this or <paramref name="localTimeZone"/> set, not both
+		/// (this takes precedence).</param>
+		/// <param name="localTimeZone">Time zone to use for the date-time's local time if 
+		/// no offset was indicated. Should only have this or <paramref name="localOffset"/> set, 
+		/// not both (<paramref name="localOffset"/> takes precedence).</param>
+		/// <param name="treatNoOffsetAsLocalTime">When no offset existed, 
+		/// set this to true to treat the input date-time string as representing 
+		/// a local time (the default), else will be treated as representing UTC time.
+		/// Note that either <paramref name="localOffset"/> or <paramref name="localTimeZone"/> 
+		/// must be set for this to matter, otherwise input date-time will be treated as 
+		/// UTC time with NO offset at all, as this function will never use the 
+		/// local computer's time-zone / offset.</param>
+		/// <param name="handleObsoleteUSTimeZones">True to handle
+		/// the obsolete US time-zones, ex. 'EST' in 'Jan 07, 2015 12:01:00 EST'
+		/// (this is done with <see cref="HasObsoleteUSTimeZone(ref string, out TimeSpan)"/>).
+		/// Such formats will throw an exception otherwise. Note that the check for this 
+		/// is extremely performant.</param>
+		public static (bool success, bool hadOffset, DateTimeOffset result)
+			ParseDateTimeWithOffsetInfo(
+			string dateStr,
+			TimeSpan? localOffset = null,
+			TimeZoneInfo localTimeZone = null,
+			bool treatNoOffsetAsLocalTime = true,
+			bool handleObsoleteUSTimeZones = false)
 		{
-			if (dateStr.NotNulle()) {
+			if (dateStr.IsNulle())
+				return (false, false, DateTimeOffset.MinValue);
 
-				// --- Try if had USTz DateTime --- 
-				//    (don't worry, is like 1 char check in most cases for no-match)
-				(string dt_hadUSTz, double? usOffset)
-					= TryParseDateTimeWithSpecialUSTZs(dateStr);
+			if (handleObsoleteUSTimeZones && HasObsoleteUSTimeZone(ref dateStr, out TimeSpan usOffset)) {
+				// 1) if HasObsoleteUSTimeZone returned true, then it DOES have an offset
+				// 2) dateStr now has had the time-zone stripped from it, so it is a normal dateTime, so
+				// 3) can and MUST be parsed as a DateTime without any offset indicator 
+				// (parsing with DateTimeOffset would do the horrible assume local time!)
 
-				if (dt_hadUSTz.NotNulle()) {
-
-					if (DateTime.TryParse(dt_hadUSTz, out DateTime dt)) {
-
-						if (usOffset != null) {
-							addOffsetIfNone = TimeSpan.FromHours(usOffset.Value);
-						}
-						else if (addOffsetIfNone == null)
-							addOffsetIfNone = TimeSpan.Zero;
-
-						var result1 = new DateTimeOffset(dt, TimeSpan.FromHours(usOffset.Value));
-
-						return (true, usOffset != null, result1);
-					}
-					else
-						return (false, false, DateTimeOffset.MinValue);
+				if (DateTime.TryParse(dateStr, out DateTime dt)) {
+					var result1 = new DateTimeOffset(dt, usOffset);
+					return (true, true, result1);
 				}
-
+				// else: invalid datetime, fall through to FALSE return
+			}
+			else {
 				bool offsetIndicated = DateTimeStringHasOffset(dateStr, out TimeSpan offset);
+				// `out TimeSpan offset` <-- we never actually use this (perhaps ironically)
+				// reason being, since there is an offset, we know DateTimeOffset.TryParse will get it
+				// the key is however that since there is an offset, we know we can TRUST DateTimeOffset's 
+				// final offset has not used local time
 
-				if (!offsetIndicated && addOffsetIfNone != null) {
-					TimeSpan tsOffset = addOffsetIfNone.Value;
-					if (!tsOffset.InRange(TimeSpan.FromHours(-14), TimeSpan.FromHours(14)))
-						throw new ArgumentOutOfRangeException(nameof(addOffsetIfNone), "Offset is out of range");
-					dateStr = dateStr + (tsOffset.Ticks < 0 ? '-' : '+') + tsOffset.ToString(@"hh\:mm"); //"+00:01";
+				if (offsetIndicated) {
+
+					// if has an offset, GREAT! move on our merry way, let DateTimeOffset parse 
+					// the set offset and return
+					bool success = DateTimeOffset.TryParse(dateStr, out DateTimeOffset dto);
+
+					// FOR INFO:
+					//if (dto1.Offset != offset) {
+					//	// ??? nothing to do here, but hitting this would be troubling
+					//}
+
+					return (success, true, dto);
+				}
+				// ELSE: NO offset (going ff) -->
+				// We HAVE a date-time with NO offset, DO parse with normal DateTime.Parse (not DateTimeOffset!)
+
+				if (!DateTime.TryParse(dateStr, out DateTime dt)) {
+					// DateTime is invalid, bye bye
+					return (false, false, DateTimeOffset.MinValue);
 				}
 
-				if (DateTimeOffset.TryParse(dateStr, out DateTimeOffset dto)) {
-					if (!offsetIndicated
-						&& addOffsetIfNone == null
-						&& dto.Offset != TimeSpan.Zero
-						&& dto != DateTimeOffset.MinValue) {
-						// if there was no offset and if none was added, and if the current offset is not already zero ...
-						dto = dto.LocalDateTime.ToDateTimeOffset(0);
-					}
-					return (true, offsetIndicated, dto);
+				if (localOffset != null) {
+
+					DateTimeOffset result = dt.ToDateTimeOffset(
+						localOffset.Value,
+						isUtc: !treatNoOffsetAsLocalTime);
+
+					return (true, false, result);
+				}
+				else if (localTimeZone != null) {
+
+					TimeSpan offset1 = localTimeZone.GetUtcOffset(dt);
+
+					DateTimeOffset result = dt.ToDateTimeOffset(
+						offset1,
+						isUtc: !treatNoOffsetAsLocalTime);
+
+					return (true, false, result);
+				}
+				else {
+					//dateStr += "+00:00";
+					DateTimeOffset dto1 = dt.ToDateTimeOffset(
+						TimeSpan.Zero,
+						isUtc: true);
+
+					return (true, false, dto1);
 				}
 			}
+
 			return (false, false, DateTimeOffset.MinValue);
 		}
+
+		/// <summary>
+		/// Performs a high-performance check to see if the input date string
+		/// has one of the obsolete US TimeZone formats (must be registered in
+		/// <see cref="ObsoleteUSTimeZoneNamesAndOffsets"/>), 
+		/// e.g. `"Fri, 01 Jan 2014 12:00:01 EST"`. If so, the obsolete 3 letter ending is cut off,
+		/// and <paramref name="offset"/> will be set accordingly. <paramref name="offset"/> 
+		/// WILL always be set if return result was true.
+		/// </summary>
+		/// <remarks>
+		/// As specified in 4.3 of https://www.ietf.org/rfc/rfc2822.txt: "Obsolete Date and Time":
+		/// "The syntax for the obsolete date format ... allows for a list of alphabetic time 
+		/// zone specifications that were used in earlier versions of this standard."
+		/// </remarks>
+		public static bool HasObsoleteUSTimeZone(ref string dateString, out TimeSpan offset)
+		{
+			offset = TimeSpan.Zero;
+			int len = dateString?.Length ?? 0;
+			if (len > 8) { // usually will be, so can do variable above
+				if (
+					//dateString[3] == ','
+					//// note: This single first char check makes this function extremely performant on fails, 
+					//// most non matches would fail at this point, making a length check and a single char check
+					//// the main work done
+					//&& dateString[4] == ' '
+					dateString[len - 4] == ' '
+					&& dateString.Last() == 'T') { // all these end with 'T' e.g. "EST", "PST", "EDT", etc
+
+					string usTz = dateString.End(3); //.Substring(len - 3, 3);
+
+					if (ObsoleteUSTimeZoneNamesAndOffsets.TryGetValue(usTz, out offset)) {
+						dateString = dateString.CutEnd(4);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		// http://www.timeanddate.com/library/abbreviations/timezones/
+		static readonly Dictionary<string, TimeSpan> ObsoleteUSTimeZoneNamesAndOffsets = new Dictionary<string, TimeSpan>() {
+			{ "CDT", TimeSpan.FromHours(-5.0) },
+			{ "CST", TimeSpan.FromHours(-6.0) },
+			{ "EDT", TimeSpan.FromHours(-4.0) },
+			{ "EST", TimeSpan.FromHours(-5.0) },
+			{ "MDT", TimeSpan.FromHours(-6.0) },
+			{ "MST", TimeSpan.FromHours(-7.0) },
+			{ "PDT", TimeSpan.FromHours(-7.0) },
+			{ "PST", TimeSpan.FromHours(-8.0) },
+			{ "GMT", TimeSpan.Zero },
+			//{ "UT", -0.0 } -- looks like our code was NOT accounting for length:2 usTzs, only 3
+		};
 
 		#endregion
 
@@ -659,36 +671,7 @@ namespace DotNetXtensionsPrivate
 			return dt;
 		}
 
-		#endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		#region -- EST --
-
-		///// <summary>
-		///// Converts the DateTimeOffset to Eastern Standard Time.
-		///// </summary>
-		//public static DateTimeOffset ToEST_OLD(this DateTimeOffset dt)
-		//{
-		//	if(dt.Ticks > TimeSpan.TicksPerDay)
-		//		return dt.Add(tzi_EST.GetUtcOffset(dt)); //estOffset);
-		//	return dt;
-		//}
 
 		/// <summary>
 		/// Converts the DateTime to Eastern Standard Time.
@@ -699,6 +682,9 @@ namespace DotNetXtensionsPrivate
 		}
 
 		#endregion
+
+
+
 
 		/// <summary>
 		/// Simply returns dt.ToString("d").

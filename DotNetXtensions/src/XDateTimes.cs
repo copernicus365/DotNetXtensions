@@ -342,10 +342,11 @@ namespace DotNetXtensionsPrivate
 		/// </summary>
 		/// <param name="dateStr">DateTime string to parse.</param>
 		/// <param name="localOffset">Offset to use as the date-time's offset from UTC if no offset 
-		/// was indicated. Should only have this or <paramref name="localTimeZone"/> set, not both
-		/// (this takes precedence).</param>
+		/// was indicated, or if there was an offset but it was UTC offset. Should only have this or 
+		/// <paramref name="localTimeZone"/> set, not both (this takes precedence).</param>
 		/// <param name="localTimeZone">Time zone to use for the date-time's local time if 
-		/// no offset was indicated. Should only have this or <paramref name="localOffset"/> set, 
+		/// no offset was indicated, or if there was an offset but it was UTC offset. 
+		/// Should only have this or <paramref name="localOffset"/> set, 
 		/// not both (<paramref name="localOffset"/> takes precedence).</param>
 		/// <param name="treatNoOffsetAsLocalTime">When no offset existed, 
 		/// set this to true to treat the input date-time string as representing 
@@ -391,15 +392,24 @@ namespace DotNetXtensionsPrivate
 
 				if (offsetIndicated) {
 
-					// if has an offset, GREAT! move on our merry way, let DateTimeOffset parse 
-					// the set offset and return
+					// if has an offset, GREAT! let DateTimeOffset parse 
+					// the set offset, but we still need to convert it if it's offset was
+					// UTC and the input localOffset or localTimeZone were set and were not UTC
 					bool success = DateTimeOffset.TryParse(dateStr, out DateTimeOffset dto);
 
-					// FOR INFO:
-					//if (dto1.Offset != offset) {
-					//	// ??? nothing to do here, but hitting this would be troubling
-					//}
+					if (success && dto.Offset == TimeSpan.Zero) {
+						
+						if (localOffset != null && localOffset.Value != TimeSpan.Zero) {
 
+							dto = dto.ToDateTimeOffset(localOffset.Value, keepUtcTime: true);
+							return (true, true, dto);
+						}
+						else if (localTimeZone != null && localTimeZone.BaseUtcOffset != TimeSpan.Zero) {
+
+							dto = dto.ToDateTimeOffset(localTimeZone, keepUtcTime: true);
+							return (true, true, dto);
+						}
+					}
 					return (success, true, dto);
 				}
 				// ELSE: NO offset (going ff) -->
@@ -784,7 +794,7 @@ namespace DotNetXtensionsPrivate
 
 
 
-		static long minTicksForDateTimeIsSet = TimeSpan.FromDays(1).Ticks;
+		static long _minTicksForDateTimeIsSet = TimeSpan.FromDays(1).Ticks;
 
 		/// <summary>
 		/// Generates a new DateTimeOffset which by default (when <paramref name="keepUtcTime" /> 
@@ -803,10 +813,9 @@ namespace DotNetXtensionsPrivate
 		/// <param name="keepUtcTime">True to keep the same UtcDateTime value 
 		/// (so the DateTime current value will change), 
 		/// false to keep the current DateTime value (the UtcDateTime value will change).</param>
-		//[Obsolete("Thinking this should be replaced with methods that only send in the desired DateTime and offset, this gets too confusing.")]
 		public static DateTimeOffset ToDateTimeOffset(this DateTimeOffset dt, TimeZoneInfo tzInfo, bool keepUtcTime = true)
 		{
-			if (tzInfo != null && dt.Ticks > minTicksForDateTimeIsSet) {
+			if (tzInfo != null && dt.Ticks > _minTicksForDateTimeIsSet) {
 				return ToDateTimeOffset(dt, tzInfo.GetUtcOffset(dt), keepUtcTime);
 			}
 			return dt;
@@ -831,8 +840,8 @@ namespace DotNetXtensionsPrivate
 		//	return dt;
 		//}
 
-		static long minDTTicks = DateTimeOffset.MinValue.Ticks;
-		static long maxDTTicks = DateTimeOffset.MaxValue.Ticks;
+		static long _minDTTicks = DateTimeOffset.MinValue.Ticks;
+		static long _maxDTTicks = DateTimeOffset.MaxValue.Ticks;
 
 		/// <summary>
 		/// Generates a new DateTimeOffset which by default (when <paramref name="keepUtcTime" /> 
@@ -853,19 +862,18 @@ namespace DotNetXtensionsPrivate
 		/// <param name="keepUtcTime">True to keep the same UtcDateTime value 
 		/// (so the DateTime current value will change), 
 		/// false to keep the current DateTime value (the UtcDateTime value will change).</param>
-		//[Obsolete("Thinking this should be replaced with methods that only send in the desired DateTime and offset, this gets too confusing.")]
 		public static DateTimeOffset ToDateTimeOffset(this DateTimeOffset dt, TimeSpan offset, bool keepUtcTime = true)
 		{
-			if (dt.Ticks <= minTicksForDateTimeIsSet)
+			if (dt.Ticks <= _minTicksForDateTimeIsSet)
 				return dt;
 
 			long ticks = keepUtcTime
 				? dt.UtcDateTime.Ticks + offset.Ticks
 				: dt.DateTime.Ticks;
 
-			if (ticks <= minDTTicks)
+			if (ticks <= _minDTTicks)
 				return DateTimeOffset.MinValue;
-			else if (ticks >= maxDTTicks)
+			else if (ticks >= _maxDTTicks)
 				return DateTimeOffset.MaxValue;
 
 			DateTimeOffset val = new DateTimeOffset(ticks, offset);
@@ -890,7 +898,7 @@ namespace DotNetXtensionsPrivate
 		/// or else a Local value (any time that is not UTC).</param>
 		public static DateTimeOffset ToDateTimeOffset(this DateTime dt, TimeSpan offset, bool isUtc = true)
 		{
-			if (dt.Ticks <= minTicksForDateTimeIsSet)
+			if (dt.Ticks <= _minTicksForDateTimeIsSet)
 				return dt;
 
 			long ticks = isUtc

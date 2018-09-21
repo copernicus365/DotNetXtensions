@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{FA2C2B52-7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Test", "Test\DotNetXtensions.Test\DotNetXtensions.Test.csproj", "{778D807F-8196-421C-BBF9-3633F16ED844}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetXtensions.Test.ConsoleApp", "Test\DotNetXtensions.Test.ConsoleApp\DotNetXtensions.Test.ConsoleApp.csproj", "{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,10 @@ Global
 		{778D807F-8196-421C-BBF9-3633F16ED844}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{778D807F-8196-421C-BBF9-3633F16ED844}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{778D807F-8196-421C-BBF9-3633F16ED844}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{3047096A-CB83-477F-822F-E627CC97B7F0} = {C177A79B-6E01-4B73-B27A-87BF7C3ECD7F}
 		{613F3898-F7C6-40C5-AC7E-8E32F16D55CF} = {C177A79B-6E01-4B73-B27A-87BF7C3ECD7F}
 		{778D807F-8196-421C-BBF9-3633F16ED844} = {FA2C2B52-7D9F-409E-9129-61C0F1120350}
+		{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0} = {FA2C2B52-7D9F-409E-9129-61C0F1120350}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A00E0ACF-0FF4-4AC1-8492-C1530D109A28}

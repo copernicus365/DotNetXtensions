@@ -9,7 +9,61 @@
     <RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
     <PackageTags>dotnet dotnet-core helper-functions helpers-library</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Breaking changes made to a few XString and XDateTimes apis (great improvements, but breaking). See commit notes on github for further details</PackageReleaseNotes>
+    <PackageReleaseNotes>DotNetXtensions version uped to 2.0.0 for breaking API changes (huge improvements) to XString and XDateTimes
+
+--- XString breaking changes (2.0.0) ---
+
+Documentation added to:
+ XString.CharFromEnd,
+ XString.CutEnd
+
+Documentation reworked:
+ - XString.End
+
+API change!:
+
+1) `CutEnd` overload that took param `string endString` renamed as follows:
+
+`string CutEnd(this string s, string endString, bool checkDoesEndWith = true, bool ignoreCase = false)`
+
+renamed to:
+
+`string CutEndIfEndsWith(this string s, string endString, bool checkDoesEndWith = true, bool ignoreCase = false)`
+
+2) `CutEnd` overload that took param `char endChar` renamed as follows:
+
+`string CutEnd(this string s, char endChar, bool ignoreCase = false)`
+
+renamed to:
+
+`string CutLastCharIfEndsWith(this string s, char endChar, bool ignoreCase = false)`
+
+--- XDateTimes breaking changes (2.0.0) ---
+
+Numerous 'ParseDateTimeWithOffsetInfo' methods REMOVED, all now consolidated to 3 public members
+
+- Removed:
+ `ParseDateTimeLenientDefault`
+ `TryParseDateTimeLenient`
+ `TryParseDateTimeLenientAfterFail`
+ `ParseDateTimeOffsetLenientDefault`
+ `TryParseDateTimeOffsetLenient`
+ `TryParseDateTimeOffsetLenientAfterFail`
+
+Many of these were not nearly well-thought out enough to enter the library, forgive me. Suffice to say, we now have 3 very clean and I think very useful functions:
+
+- Added or completely reworked and tested:
+ `bool DateTimeStringHasOffset(string dtStr, out TimeSpan offset)` (was completely reworked)
+ `bool HasObsoleteUSTimeZone(ref string dateString, out TimeSpan offset)` (largely reworked)
+ `ParseDateTimeWithOffsetInfo`: (massively reworked, very powerful)
+
+  in full:
+  `(bool success, bool hadOffset, DateTimeOffset result) ParseDateTimeWithOffsetInfo(
+    string dateStr, TimeSpan? localOffset = null, TimeZoneInfo localTimeZone = null, bool treatNoOffsetAsLocalTime = true, bool handleObsoleteUSTimeZones = false)`
+
+- TICKS_AT_EPOCH constant made public
+
+- Added XDateTimes_DateTimeParsing unit tests for 3 functions</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -5,18 +5,8 @@ using Xunit;
 
 namespace DotNetXtensions.Test
 {
-	public class XDateTimes_DateTimeParsing
+	public class XDateTimes_DateTimeParsing : BaseUnitTest
 	{
-		public XDateTimes_DateTimeParsing() => INIT();
-
-		void INIT()
-		{
-			DebugWriter.SetConsoleOut(
-				writeToOrigConsoleOutStill: true,
-				writeToLogFilePath: $@"C:\Users\coper\Desktop\vslogs\vsConsoleLog7.txt",
-				deleteLogFileContentsFirst: true);
-		}
-
 		[Fact]
 		public void Test_DateTimeStringHasOffset()
 		{
@@ -115,17 +105,19 @@ namespace DotNetXtensions.Test
 
 			public string PrintTestResult(bool success, bool hadOffsetRes, DateTimeOffset result)
 			{
-				string print = $@" --- {nameof(ParseDateTimeWithOffsetInfoArgs)} ---
-String     '{dateStr}'
+				string print = $@" --- {nameof(ParseDateTimeWithOffsetInfoArgs)} {(shouldFail ? "SHOULD FAIL!" : "")}---
+-- dateStr: `{dateStr}`, 
+-- localOffset: `{localOffset}`, 
+-- localTimeZone: `{localTimeZone}`, 
 
 Expected:   {expectedDTO}
-*ACTUAL*:   {result.ToString()}
+*ACTUAL*:   {result}  ({(expectedDTO == result ? "(same)" : "*DIFF!*")})
 
-Offset:     {offset}
+Offset:     {offset} {(hasOffset ? "" : "(ignore)")}
 *ACTUAL*:   {result.Offset}
 
 HasOffset:  {hasOffset}
-Actual:     {hadOffsetRes}
+Actual:     {hadOffsetRes}  ({(hasOffset == hadOffsetRes ? "(same)" : "*DIFF!*")})
 
 TreatNoOffsetAsLocalTime:    {treatNoOffsetAsLocalTime.ToBitString("TRUE", "FALSE")}
 HandleObsoleteUSTimeZones:   {handleObsoleteUSTimeZones.ToBitString("TRUE", "FALSE")}
@@ -162,7 +154,12 @@ HandleObsoleteUSTimeZones:   {handleObsoleteUSTimeZones.ToBitString("TRUE", "FAL
 					new ParseDateTimeWithOffsetInfoArgs($"{rootTime} +0000", TimeSpan.Zero) {
 						expectedDTO = DateTimeOffset.Parse($"{rootTime} +0000")
 					},
+
 					new ParseDateTimeWithOffsetInfoArgs($"{rootTime} +0500", TimeSpan.FromHours(5)) {
+						expectedDTO = DateTimeOffset.Parse($"{rootTime} +05:00"),
+					},
+					// same as above except input time has "+05:00" instead of "+0500"
+					new ParseDateTimeWithOffsetInfoArgs($"{rootTime} +05:00", TimeSpan.FromHours(5)) {
 						expectedDTO = DateTimeOffset.Parse($"{rootTime} +05:00"),
 					},
 

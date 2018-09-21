@@ -44,7 +44,7 @@ namespace DotNetXtensions
 					File.WriteAllText(writeToLogFilePath, ""); // clear the file contents if any
 
 				swriter = new StreamWriter(File.Open(writeToLogFilePath,
-					FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read)) { AutoFlush = true, };
+					FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite)) { AutoFlush = true, };
 			}
 
 			if (setConsoleOutToThis)

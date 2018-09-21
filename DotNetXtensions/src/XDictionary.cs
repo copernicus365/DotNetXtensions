@@ -142,36 +142,38 @@ namespace DotNetXtensionsPrivate
 			return noExist;
 		}
 
-		// --- NameValueCollection ---
+		#region --- NameValueCollection ---
 
 		/// <summary>
-		/// Converts the <see cref="NameValueCollection"/> into a <see cref="Dictionary{TKey, TValue}"/>.
-		/// Keys with more than one value in the original collection only have one value returned
-		/// (whichever is returned by `nvcoll[key]`).
+		/// Converts the <see cref="NameValueCollection"/> into a `Dictionary(string, string)`.
+		/// For keys that have more than one value, see <paramref name="forMultiValuesOnlyGetFirst"/>, 
+		/// which as it says, will retrieve only the first value of any multi-valued keys (preference is 
+		/// still given to any NotNullOrEmpty values). Otherwise, any multi-values will be returned as 
+		/// a comma-separated list. Any null values are converted into an empty string.
 		/// </summary>
 		/// <param name="nvcoll">NameValueCollection</param>
-		/// <param name="caseSensitive">By default key-names are case-SENSITIVE, set to true for case-insensitivity.
-		/// This setting is ignored if an equalityConverter is sent in.
-		/// For why false by default see 'https://stackoverflow.com/a/24700171/264031'</param>
-		/// <param name="forMultiValuesOnlyGetFirst"></param>
-		/// <param name="trimToNullEmptyOrWhitespaceValues">True to set the value as NULL
-		/// if it was whitespace or empty.</param>
-		/// <param name="equalityComparer">EqualityComparer to send in to determine equality of keys.</param>
+		/// <param name="ignoreCase">
+		/// Set to true to ignore the case of the keys / to make the dictionary case-INsensitive
+		/// (default case-sensitive: false). Note, when this is set to false it will have
+		/// no impact if the <see cref="NameValueCollection"/>'s comparer already was
+		/// case-insensitive (such as HttpUtility.ParseQueryString returns), because any 
+		/// such keys would already have been combined into one key-values pair.
+		/// (FYI:'https://stackoverflow.com/a/24700171/264031')</param>
+		/// <param name="forMultiValuesOnlyGetFirst">True to only get the first value when many
+		/// values existed per key; preference is still given to any not null or empty values.
+		/// If false, return value will be a comma-separated (no-space) string of all values,
+		/// which standard comes from <see cref="NameValueCollection"/> </param>
 		public static Dictionary<string, string> ToDictionary(
-			this NameValueCollection nvcoll, 
-			bool caseSensitive = true,
-			bool forMultiValuesOnlyGetFirst = false,
-			bool trimToNullEmptyOrWhitespaceValues = true,
-			IEqualityComparer<string> equalityComparer = null) //, bool firstInWins = false)
+			this NameValueCollection nvcoll,
+			bool ignoreCase = false,
+			bool forMultiValuesOnlyGetFirst = false)
 		{
 			if (nvcoll == null)
 				return null;
 
-			if (equalityComparer == null) {
-				equalityComparer = caseSensitive
-					? StringComparer.Ordinal
-					: StringComparer.OrdinalIgnoreCase;
-			}
+			IEqualityComparer<string> equalityComparer = ignoreCase
+				? StringComparer.OrdinalIgnoreCase
+				: StringComparer.Ordinal;
 
 			var d = new Dictionary<string, string>(nvcoll.Count, equalityComparer);
 
@@ -179,31 +181,48 @@ namespace DotNetXtensionsPrivate
 				return d;
 
 			foreach (var kv in nvcoll.ToEnumerable(forMultiValuesOnlyGetFirst)) {
-				string val = trimToNullEmptyOrWhitespaceValues
-					? kv.Value.NullIfEmptyTrimmed()
-					: kv.Value;
-				d[kv.Key] = val;
+
+				string val = kv.Value.TrimIfNeeded() ?? "";
+
+				if (d.TryGetValue(kv.Key, out string currVal)) {
+
+					if (currVal == null) currVal = "";
+
+					if (forMultiValuesOnlyGetFirst) {
+						// only add if original val was empty string and new val is notNulle
+						if (val.NotNulle() && currVal.IsNulle())
+							d[kv.Key] = val;
+					}
+					else {
+						val = currVal + "," + val;
+						d[kv.Key] = val;
+					}
+				}
+				else {
+					d[kv.Key] = val;
+				}
 			}
 
 			return d;
 		}
 
 		/// <summary>
-		/// See notes on other, this one returns with multiple values for each key.
+		/// Converts the <see cref="NameValueCollection"/> into a `Dictionary(string, string[])`,
+		/// whose values are string arrays. For some other documentation see o
 		/// </summary>
+		/// <param name="nvcoll">Name value collection</param>
+		/// <param name="ignoreCase">True to ignore the case of the keys
+		/// (false by default). See notes on related `ToDictionary` method.</param>
 		public static Dictionary<string, string[]> ToDictionaryMultiValues(
 			this NameValueCollection nvcoll,
-			bool caseSensitive = true,
-			IEqualityComparer<string> equalityComparer = null) //, bool firstInWins = false)
+			bool ignoreCase = false)
 		{
 			if (nvcoll == null)
 				return null;
 
-			if (equalityComparer == null) {
-				equalityComparer = caseSensitive
-					? StringComparer.Ordinal
-					: StringComparer.OrdinalIgnoreCase;
-			}
+			IEqualityComparer<string> equalityComparer = ignoreCase
+				? StringComparer.OrdinalIgnoreCase
+				: StringComparer.Ordinal;
 
 			var d = new Dictionary<string, string[]>(nvcoll.Count, equalityComparer);
 
@@ -211,7 +230,14 @@ namespace DotNetXtensionsPrivate
 				return d;
 
 			foreach (var kv in nvcoll.ToEnumerableMultiValues()) {
-				d[kv.Key] = kv.Value;
+
+				string[] values = kv.Value;
+
+				if (d.TryGetValue(kv.Key, out string[] currValues)) {
+					values = values.ConcatToArray(currValues);
+				}
+
+				d[kv.Key] = values;
 			}
 
 			return d;
@@ -268,8 +294,9 @@ namespace DotNetXtensionsPrivate
 			}
 		}
 
+		#endregion
 
-		// --- ToDictionaryIgnoreDuplicateKeys ---
+		#region --- ToDictionaryIgnoreDuplicateKeys ---
 
 		/// <summary>
 		/// Converts source into a Dictionary, but in the process IGNORES any duplicate key items
@@ -283,7 +310,6 @@ namespace DotNetXtensionsPrivate
 			return source.ToDictionaryIgnoreDuplicateKeys(s => s, s => s, comparer);
 		}
 
-
 		public static Dictionary<TKey, TSource> ToDictionaryIgnoreDuplicateKeys<TSource, TKey>(
 			this IEnumerable<TSource> source,
 			Func<TSource, TKey> keySelector,
@@ -291,14 +317,6 @@ namespace DotNetXtensionsPrivate
 		{
 			return source.ToDictionaryIgnoreDuplicateKeys(keySelector, s => s, comparer);
 		}
-
-		/////// <summary>
-		/////// </summary>
-		/////// <param name="handleDuplicate">
-		/////// If not null, this Func will be called when there is a duplicate,
-		/////// the return value will be set as the new value. The first TElement in the tuple is the one 
-		/////// that was already in the Dictionary.</param>
-		//////
 
 		/// <summary>
 		/// Creates a new Dictionary from source which ignores duplicate keys if they
@@ -312,15 +330,17 @@ namespace DotNetXtensionsPrivate
 		/// <param name="keySelector"></param>
 		/// <param name="elementSelector"></param>
 		/// <param name="comparer"></param>
-		/// <param name="handleDuplicate">If not null, this Func will be called when there is a duplicate,
-		/// the return value will be set as the new value. The first TElement in the tuple is the one 
-		/// that was already in the Dictionary.</param>
+		/// <param name="handleDuplicate">
+		/// If not null, this Func will be called when there is a duplicate,
+		/// the return value will be set as the new value. The 3 input parameters
+		/// align with the following example call: 
+		/// `handleDuplicate: (key, currentVal, newVal) => $"{currentVal},{newVal}"`</param>
 		public static Dictionary<TKey, TElement> ToDictionaryIgnoreDuplicateKeys<TSource, TKey, TElement>(
 			this IEnumerable<TSource> source,
 			Func<TSource, TKey> keySelector,
 			Func<TSource, TElement> elementSelector,
 			IEqualityComparer<TKey> comparer = null,
-			Func<Tuple<TKey, TElement, TElement>, TElement> handleDuplicate = null)
+			Func<TKey, TElement, TElement, TElement> handleDuplicate = null) //Func<Tuple<TKey, TElement, TElement>, TElement> handleDuplicate = null
 		{
 			if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 			if (elementSelector == null) throw new ArgumentNullException(nameof(elementSelector));
@@ -337,17 +357,19 @@ namespace DotNetXtensionsPrivate
 			foreach (TSource item in source) {
 				TKey key = keySelector(item);
 				TElement val = elementSelector(item);
-				TElement currVal;
-				if (!d.TryGetValue(key, out currVal)) {
+				if (!d.TryGetValue(key, out TElement currVal)) {
 					d.Add(key, val);
 				}
 				else if (handleDups) { // ELSE: Ignore, first value in wins ignore next
-					TElement newVal = handleDuplicate(new Tuple<TKey, TElement, TElement>(key, currVal, val));
+					//TElement newVal = handleDuplicate(new Tuple<TKey, TElement, TElement>(key, currVal, val));
+					TElement newVal = handleDuplicate(key, currVal, val);
 					d[key] = newVal;
 				}
 			}
 			return d;
 		}
+
+		#endregion
 
 		/// <summary>
 		/// Creates a new Dictionary whose values are a List of TElement, making it a 'MultiValueDictionary'.

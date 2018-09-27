@@ -368,6 +368,8 @@ namespace DotNetXtensionsPrivate
 			bool treatNoOffsetAsLocalTime = true,
 			bool handleObsoleteUSTimeZones = false)
 		{
+			dateStr = dateStr.NullIfEmptyTrimmed();
+
 			if (dateStr.IsNulle())
 				return (false, false, DateTimeOffset.MinValue);
 

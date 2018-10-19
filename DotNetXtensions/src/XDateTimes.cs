@@ -508,34 +508,6 @@ namespace DotNetXtensionsPrivate
 		#endregion
 
 
-
-		#region --- XmlTime ---
-
-		[DebuggerStepThrough]
-		public static string XmlTime(this DateTime dateTime, bool appendZ = true, bool dashesForColons = false)
-		{
-			string val = dateTime.ToString("s");
-			if (appendZ)
-				val += "Z";
-			if (dashesForColons)
-				val = val.Replace(':', '-');
-			return val;
-		}
-
-		[DebuggerStepThrough]
-		public static string XmlTime(this DateTimeOffset dateTime, bool appendZ = true, bool dashesForColons = false)
-		{
-			string val = dateTime.ToString("s");
-			if (appendZ)
-				val += "Z";
-			if (dashesForColons)
-				val = val.Replace(':', '-');
-			return val;
-		}
-
-		#endregion
-
-
 		#region --- TimeSpan.Multiply / Divide ---
 
 		/// <summary>
@@ -683,14 +655,17 @@ namespace DotNetXtensionsPrivate
 			return dt;
 		}
 
-
-
 		/// <summary>
 		/// Converts the DateTime to Eastern Standard Time.
 		/// </summary>
 		public static string ToDateTimeStringEST(this DateTime dt, bool time = true, bool secs = true, bool msecs = false)
 		{
-			return ToDateTimeString(dt, est: true, time: time, secs: secs, msecs: msecs);
+			return XDateTimes.ToDateTimeString(dt, est: true, time: time, secs: secs, msecs: msecs);
+		}
+
+		public static string ToDateTimeStringEST(this DateTimeOffset dto, bool time = true, bool secs = true, bool msecs = false)
+		{
+			return XDateTimes.ToDateTimeString(dto, est: true, time: time, secs: secs, msecs: msecs);
 		}
 
 		#endregion

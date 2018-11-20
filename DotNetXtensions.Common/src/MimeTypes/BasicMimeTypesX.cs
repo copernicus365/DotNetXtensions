@@ -280,6 +280,9 @@ namespace DotNetXtensionsPrivate
 			new MTI(BasicMimeType.application, "application/null")
 				.ExtraMimeStrings("application", "application/"),
 
+			new MTI(BasicMimeType.application_javascript, "application/javascript", "js"),
+			new MTI(BasicMimeType.application_typescript, "application/typescript", "ts"),
+
 			new MTI(BasicMimeType.application_atom_xml, "application/atom+xml", "atom")
 				.ExtraExtensions("xml"),
 
@@ -354,6 +357,12 @@ namespace DotNetXtensionsPrivate
 
 			new MTI(BasicMimeType.text, "text/null")
 				.ExtraMimeStrings("text", "text/"),
+			//
+			new MTI(BasicMimeType.text_css, "text/css", "css"),
+			new MTI(BasicMimeType.text_scss, "text/x-scss", "scss"),
+			new MTI(BasicMimeType.text_sass, "text/x-sass", "sass"),
+			new MTI(BasicMimeType.text_less, "text/less", "less"),
+			//
 			new MTI(BasicMimeType.text_html, "text/html", "html")
 				.ExtraMimeStrings("application/xhtml+xml", "html", "xhtml")
 				.ExtraExtensions("xhtml", "htm"),

@@ -42,10 +42,13 @@ namespace DotNetXtensionsPrivate
 
 		text_markdown = 170,
 
+		text_css = 175,
+		text_scss = 176,
+		text_sass = 177,
+		text_less = 178,
+
 		/// <summary>text/xml, note there is also application/xml</summary>
 		text_xml = 200,
-
-
 
 
 
@@ -150,6 +153,10 @@ namespace DotNetXtensionsPrivate
 
 		/// <summary>application/octet-stream</summary>
 		application_json = 710,
+
+		application_javascript = 720,
+
+		application_typescript = 722,
 
 		/// <summary>application/pdf</summary>
 		application_pdf = 730,

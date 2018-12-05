@@ -2,100 +2,108 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using DotNetXtensions.Geo.Google;
 
 namespace DotNetXtensions.Geo
 {
-	public static class GoogleGeoFuncs
+	public class GoogleGeoFuncs
 	{
-		public static string UrlBase_GoogleApiGeocode = "http://maps.googleapis.com/maps/api/geocode/";
+		private readonly string _apiKey;
+		private readonly bool _json = true;
+
+		public GoogleGeoFuncs(string apiKey)
+		{
+			_apiKey = apiKey ?? throw new ArgumentNullException(nameof(apiKey));
+		}
+
+		public static string UrlBase_GoogleApiGeocode = "https://maps.googleapis.com/maps/api/geocode/";
 		public static string UrlBase_GoogleApiTimeZone = "https://maps.googleapis.com/maps/api/timezone/";
 
+		// https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyBfbPC74G1iBXYzhYIMawvBq6Z-C4cjZXY
 
+		// https://maps.googleapis.com/maps/api/timezone/json?location=38.908133,-77.047119&timestamp=1458000000&key=YOUR_API_KEY
 
-		public static string Url_GoogleApiGeocode(string addressQueryUrlEncodedValue, bool getXmlNotJson = true)
+		
+		public string GoogleApiGeocodeUrl(string addressQueryUrlEncodedValue)
 		{
-			string val = $"{UrlBase_GoogleApiGeocode}{(getXmlNotJson ? "xml" : "json")}?address={addressQueryUrlEncodedValue}&sensor=true";
-
-			//string vl2 = string.Format("{0}{1}?address={2}&sensor=true",
-			//	UrlBase_GoogleApiGeocode,
-			//	(getXmlNotJson ? "xml" : "json"),
-			//	addressQueryUrlEncodedValue);
-
+			string val = $"{UrlBase_GoogleApiGeocode}{_apiGetTyp}?address={addressQueryUrlEncodedValue}&sensor=true&key={_apiKey}";
 			return val;
 		}
 
-		public static string Url_GoogleApiTimeZone(decimal lat, decimal lng, bool getXmlNotJson = true)
+		string _apiGetTyp => _json ? "json" : "xml";
+
+		public string GoogleApiTimeZoneUrl(decimal lat, decimal lng, bool getXmlNotJson = true)
 		{
 			// ?? what was 'timestamp=1331161200' ??
-			string val = $"{UrlBase_GoogleApiTimeZone}{(getXmlNotJson ? "xml" : "json")}?location={lat},{lng}&timestamp=1331161200&sensor=true";
+			string val = $"{UrlBase_GoogleApiTimeZone}{_apiGetTyp}?location={lat},{lng}&timestamp=1331161200&sensor=true&key={_apiKey}";
 			return val;
 		}
 
+		public bool TryParseGoogleGeocodeResponseJson(
+			string jsonStr,
+			out decimal lat,
+			out decimal lng)
+			=> TryParseGoogleGeocodeResponseJson(jsonStr, out lat, out lng, out GoogleGeocodeInfoResponse resp);
 
-
-		/// <summary>
-		/// This parses the xml string response from Url_GoogleApiGeocode
-		/// and gets the lat/long from it into the out parameters
-		/// (and returns the XML document if needed for further values).
-		/// </summary>
-		public static bool TryParseGoogleGeocodeResponseXML(string xmlString, out decimal lat, out decimal lng, out XElement xml)
+		public bool TryParseGoogleGeocodeResponseJson(
+			string jsonStr, 
+			out decimal lat, 
+			out decimal lng,
+			out GoogleGeocodeInfoResponse resp)
 		{
-			lat = 0;
-			lng = 0;
-			xml = null;
+			lat = lng = 0;
+			resp = null;
+
 			try {
-				xml = XElement.Parse(xmlString);
-				if (xml.Name != "GeocodeResponse")
+				resp = jsonStr.DeserializeJson<GoogleGeocodeInfoResponse>();
+
+				var r = resp?.results?.FirstOrDefault();
+
+				var latLong = r?.geometry?.location;
+
+				if (r == null || latLong == null)
 					return false;
 
-				XElement location = xml.Element("result")
-					.Element("geometry")
-					.Element("location");
-
-				lat = (decimal)location.Element("lat");
-				lng = (decimal)location.Element("lng");
+				lat = latLong.lat;
+				lng = latLong.lng;
 
 				if (lat == 0 && lng == 0)
 					return false;
+
+				return true;
 			}
 			catch {
-				return false;
 			}
-			return true;
+			return false;
 		}
 
-		public static bool TryParseGoogleTimeZoneResponseXML(string xmlStringFromGoogle, out string tzid, out XElement xml)
+		public bool TryParseGoogleTimeZoneResponseJson(
+			string jsonStr, 
+			out string tzid)
+			=> TryParseGoogleTimeZoneResponseJson(jsonStr, out tzid, out GoogleTimeZoneInfo resp);
+
+		public bool TryParseGoogleTimeZoneResponseJson(
+			string jsonStr, 
+			out string tzid, 
+			out GoogleTimeZoneInfo resp)
 		{
-			// xmlStringFromGoogle should look like this:
-			/*
-				<TimeZoneResponse>
-				<status>OK</status>
-				<raw_offset>-28800.0000000</raw_offset>
-				<dst_offset>0.0000000</dst_offset>
-				<time_zone_id>America/Los_Angeles</time_zone_id>
-				<time_zone_name>Pacific Standard Time</time_zone_name>
-				</TimeZoneResponse>
-			*/
-
 			tzid = null;
-			xml = null;
+			resp = null;
+
 			try {
-				xml = XElement.Parse(xmlStringFromGoogle, LoadOptions.None);
+				resp = jsonStr.DeserializeJson<GoogleTimeZoneInfo>();
+
+				tzid = resp?.timeZoneId?.NullIfEmptyTrimmed();
+
+				if (tzid == null)
+					return false;
+
+				return true;
 			}
-			catch (Exception ex) {
-				return false;
+			catch {
 			}
-
-			if (xml.Name != "TimeZoneResponse")
-				return false;
-
-			tzid = (string)xml.Element("time_zone_id");
-			if (tzid.IsNulle())
-				return false;
-
-			return true;
+			return false;
 		}
-
 
 
 		/// <summary>
@@ -106,7 +114,7 @@ namespace DotNetXtensions.Geo
 		/// http://maps.googleapis.com/maps/api/geocode/xml?address=2931+Ravogli+Ave+Cincinnati+Ohio+45211&amp;sensor=true
 		/// </summary>
 		public static string CombineAddressPartsToUrlEncodedString(
-			Func<string, string> urlEncode, 
+			Func<string, string> urlEncode,
 			params string[] addressValues)
 		{
 			if (addressValues.IsNulle())
@@ -119,7 +127,7 @@ namespace DotNetXtensions.Geo
 			// to url encode, we could do for each address element,
 			// but more performant to just do as one already combined sting
 			// and then just unencoded the encoded commas
-			string finalValue = 
+			string finalValue =
 				urlEncode(value) // System.Web.HttpUtility.UrlEncode(value)
 				.Replace("%2c", ",");
 

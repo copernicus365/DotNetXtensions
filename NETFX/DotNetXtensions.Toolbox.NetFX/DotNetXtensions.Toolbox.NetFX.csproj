@@ -47,13 +47,24 @@
     <Compile Include="..\..\DotNetXtensions.Toolbox\src\Geo\GoogleGeoFuncs.cs">
       <Link>src\Geo\GoogleGeoFuncs.cs</Link>
     </Compile>
+    <Compile Include="..\..\DotNetXtensions.Toolbox\src\Geo\GoogleGeoFuncsTypes.cs">
+      <Link>src\Geo\GoogleGeoFuncsTypes.cs</Link>
+    </Compile>
     <Compile Include="..\..\DotNetXtensions.Toolbox\src\Utilities\FixedColumnFormatter.cs">
       <Link>src\Utilities\FixedColumnFormatter.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetXtensions.Json.NetFX\DotNetXtensions.Json.NetFX.csproj">
+      <Project>{b1f5f296-46fb-49a4-99cb-f1a79471b778}</Project>
+      <Name>DotNetXtensions.Json.NetFX</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DotNetXtensions.NetFX\DotNetXtensions.NetFX.csproj">
       <Project>{d90fc109-6c8b-47eb-ba29-3dffc336aeae}</Project>
       <Name>DotNetXtensions.NetFX</Name>

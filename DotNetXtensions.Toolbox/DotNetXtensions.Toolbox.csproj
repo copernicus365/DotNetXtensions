@@ -17,6 +17,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetXtensions.Json\DotNetXtensions.Json.csproj" />
     <ProjectReference Include="..\DotNetXtensions\DotNetXtensions.csproj" />
   </ItemGroup>
 

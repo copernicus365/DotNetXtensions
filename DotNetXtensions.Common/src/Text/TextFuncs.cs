@@ -224,17 +224,20 @@ namespace DotNetXtensionsPrivate
 			//			end = i + 1;
 			//			currLook = '<';
 			//		}
-
 			//	}
 			//}
 			#endregion
 
-			if (sb == null)
-				return value;
+			//if (sb == null) // CHANGED 2019/02/20, this was not allowing cases where only text occurred at end, after all tags
+			//	return value;
 
 			prevSegLen = len - end;
-			if (prevSegLen > 0)
+			if (prevSegLen > 0) {
+				if (sb == null)
+					sb = new StringBuilder(prevSegLen);
+
 				sb.Append(value, end, prevSegLen);
+			}
 
 			string result = trim ? sb.TrimToString() : sb.ToString();
 			return result;

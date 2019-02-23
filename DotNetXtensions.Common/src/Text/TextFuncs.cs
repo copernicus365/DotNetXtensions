@@ -104,66 +104,6 @@ namespace DotNetXtensionsPrivate
 			{ "span", "" },
 		};
 
-		///// <summary>
-		///// A high performance function which, at its most basic, simply
-		///// deletes all spans within the input string that begin and end with
-		///// pointy brackets. If no pointy brackets exist within the string,
-		///// then the only cost of this function was a single iteration through
-		///// the string (with each character tested if it matches the left pointy bracket
-		///// (&lt;), upon which the same string is returned. Otherwise, when left and
-		///// right pointy bracket pairs are found, those sections are removed, while the rest
-		///// of the inner text is simply copied into a StringBuilder. Note that there is
-		///// no checking if start and end tags match (see following). This is due to the intended
-		///// use case of this function: that is to be a very high
-		///// performance, extremely low overhead way of (in the original use case)
-		///// escaping any simple html tags that exist within RSS or ATOM feed tags such as
-		///// the 'title' element. Both RSS and ATOM feeds allow simple
-		///// (but escaped) html tags within their title element (and some other such elements), even though
-		///// more often, the title tag will have no html content. Consider the following example:
-		/////
-		///// <example><code><![CDATA[
-		///// XElement e = XElement.Parse("<title>Hello &lt;i&gt;world&lt;/i&gt;!</title>");
-		///// XElement e2 = XElement.Parse("<title><![CDATA[Hello <i>world</i>!]]X</title>"); // note: we end the end CDATA gt bracket here with an 'X'
-		/////
-		///// string value = e.Value;   // Result: 'Hello <i>world</i>!'
-		///// string value2 = e2.Value; // Result: 'Hello <i>world</i>!'
-		/////
-		///// bool eq = value == value2; // true
-		/////
-		///// // We showed this to help users recognize the use scenarios for this function,
-		///// // that is, in the CDATA case as well, XElement ends up giving you the unescaped XML value,
-		///// // which is then what this function works upon.
-		///// // I.e. XElement's Value automatically unescapes the pointy brackets
-		/////
-		///// string plainTitleText = ClearAnyXmlTags(value); // result: "Hello world!"
-		///// ]]></code></example>
-		/////
-		///// The point of ClearAnyXmlTags is *not* to validate or pick up invalid XML. Consider these examples:
-		///// <example><code><![CDATA[
-		///// string value1 = "Hello <world>!"		// "Hello !"
-		///// string value2 = "He>llo <world>!"		// "He>llo !"
-		///// string value3 = "Hello <em><strong>world</em><strong>!"		// "Hello world!"
-		/////
-		///// // value1:   does not have an end tag ('world' is seen as a tag), but it doesn't matter,
-		///// // that is just removed since it is treated as a tag.
-		/////
-		///// // value2:   checking looks always first for a left pointy bracket and then a right, thus that first
-		///// // (and invalid) left pointy is included. As we said, this function is not about validating anything...
-		/////
-		///// // value3:   notice how the em and strong tags are nested wrongly, but since every 'tag'
-		///// // (actually just every left then right pointy pair) is removed, it doesn't matter
-		///// ]]></code></example>
-		/////
-		///// A terrific use case scenario, and indeed what this was made for, is if one was consuming RSS or ATOM
-		///// feeds from many, uncontrolled sources, and then resyndicating that content in a cleaner, new feed format,
-		///// where one of the requirements was to get rid of html elements in title and tags and so forth.
-		///// Another use case is for one of those readers themselves, where the title element, let's say, needs
-		///// to be displayed as plain text. The goal in all of these scenarios is to catch all valid html type
-		///// tags and simply dispense of them.
-		///// </summary>
-		///// <param name="value">Tag that may or may not have (typically simple) html or xml tags.</param>
-		///// <param name="trim">True to trim.</param>
-
 		public static string ClearHtmlTags(string value, bool convertWithMinimalMarkdown = true, bool trim = false)
 		{
 			if (value.IsNulle())

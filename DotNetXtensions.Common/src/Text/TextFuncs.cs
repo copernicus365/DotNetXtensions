@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 #if DNXPublic
 namespace DotNetXtensions
@@ -29,9 +30,33 @@ namespace DotNetXtensionsPrivate
 			const bool htmlDecode = true;
 
 			value = trimHtmlEscape(value, trim, htmlDecode); // decodes first, then any 
+
 			if (value.IsNulle())
 				return value;
+
 			string result = ClearXmlTags(value, trim: false); // already trimmed
+
+			if (htmlDecode) {
+				result = System.Net.WebUtility.HtmlDecode(result);
+				if (trim)
+					result = result.TrimIfNeeded();
+			}
+			return result;
+		}
+
+		public static string ClearHtmlTagsAndHtmlDecode(string value, bool convertWithMinimalMarkdown = true, bool trim = false)
+		{
+			const bool htmlDecode = true;
+
+			value = trimHtmlEscape(value, trim, htmlDecode); // decodes first, then any 
+
+			if (value.IsNulle())
+				return value;
+
+			string result = ClearHtmlTags(value, 
+				convertWithMinimalMarkdown: convertWithMinimalMarkdown, 
+				trim: false); // already trimmed
+
 			if (htmlDecode) {
 				result = System.Net.WebUtility.HtmlDecode(result);
 				if (trim)
@@ -70,67 +95,226 @@ namespace DotNetXtensionsPrivate
 
 		//#endif
 
+		static Dictionary<string, string> TagNamesToNotAddWhitespaceBetweenTags = new Dictionary<string, string>() {
+			{ "b", "**" },
+			{ "strong", "**" },
+			{ "em", "*" },
+			{ "i", "*" },
+			{ "u", "_" },
+			{ "span", "" },
+		};
 
+		///// <summary>
+		///// A high performance function which, at its most basic, simply
+		///// deletes all spans within the input string that begin and end with
+		///// pointy brackets. If no pointy brackets exist within the string,
+		///// then the only cost of this function was a single iteration through
+		///// the string (with each character tested if it matches the left pointy bracket
+		///// (&lt;), upon which the same string is returned. Otherwise, when left and
+		///// right pointy bracket pairs are found, those sections are removed, while the rest
+		///// of the inner text is simply copied into a StringBuilder. Note that there is
+		///// no checking if start and end tags match (see following). This is due to the intended
+		///// use case of this function: that is to be a very high
+		///// performance, extremely low overhead way of (in the original use case)
+		///// escaping any simple html tags that exist within RSS or ATOM feed tags such as
+		///// the 'title' element. Both RSS and ATOM feeds allow simple
+		///// (but escaped) html tags within their title element (and some other such elements), even though
+		///// more often, the title tag will have no html content. Consider the following example:
+		/////
+		///// <example><code><![CDATA[
+		///// XElement e = XElement.Parse("<title>Hello &lt;i&gt;world&lt;/i&gt;!</title>");
+		///// XElement e2 = XElement.Parse("<title><![CDATA[Hello <i>world</i>!]]X</title>"); // note: we end the end CDATA gt bracket here with an 'X'
+		/////
+		///// string value = e.Value;   // Result: 'Hello <i>world</i>!'
+		///// string value2 = e2.Value; // Result: 'Hello <i>world</i>!'
+		/////
+		///// bool eq = value == value2; // true
+		/////
+		///// // We showed this to help users recognize the use scenarios for this function,
+		///// // that is, in the CDATA case as well, XElement ends up giving you the unescaped XML value,
+		///// // which is then what this function works upon.
+		///// // I.e. XElement's Value automatically unescapes the pointy brackets
+		/////
+		///// string plainTitleText = ClearAnyXmlTags(value); // result: "Hello world!"
+		///// ]]></code></example>
+		/////
+		///// The point of ClearAnyXmlTags is *not* to validate or pick up invalid XML. Consider these examples:
+		///// <example><code><![CDATA[
+		///// string value1 = "Hello <world>!"		// "Hello !"
+		///// string value2 = "He>llo <world>!"		// "He>llo !"
+		///// string value3 = "Hello <em><strong>world</em><strong>!"		// "Hello world!"
+		/////
+		///// // value1:   does not have an end tag ('world' is seen as a tag), but it doesn't matter,
+		///// // that is just removed since it is treated as a tag.
+		/////
+		///// // value2:   checking looks always first for a left pointy bracket and then a right, thus that first
+		///// // (and invalid) left pointy is included. As we said, this function is not about validating anything...
+		/////
+		///// // value3:   notice how the em and strong tags are nested wrongly, but since every 'tag'
+		///// // (actually just every left then right pointy pair) is removed, it doesn't matter
+		///// ]]></code></example>
+		/////
+		///// A terrific use case scenario, and indeed what this was made for, is if one was consuming RSS or ATOM
+		///// feeds from many, uncontrolled sources, and then resyndicating that content in a cleaner, new feed format,
+		///// where one of the requirements was to get rid of html elements in title and tags and so forth.
+		///// Another use case is for one of those readers themselves, where the title element, let's say, needs
+		///// to be displayed as plain text. The goal in all of these scenarios is to catch all valid html type
+		///// tags and simply dispense of them.
+		///// </summary>
+		///// <param name="value">Tag that may or may not have (typically simple) html or xml tags.</param>
+		///// <param name="trim">True to trim.</param>
 
-		/// <summary>
-		/// A high performance function which, at its most basic, simply
-		/// deletes all spans within the input string that begin and end with
-		/// pointy brackets. If no pointy brackets exist within the string,
-		/// then the only cost of this function was a single iteration through
-		/// the string (with each character tested if it matches the left pointy bracket
-		/// (&lt;), upon which the same string is returned. Otherwise, when left and
-		/// right pointy bracket pairs are found, those sections are removed, while the rest
-		/// of the inner text is simply copied into a StringBuilder. Note that there is
-		/// no checking if start and end tags match (see following). This is due to the intended
-		/// use case of this function: that is to be a very high
-		/// performance, extremely low overhead way of (in the original use case)
-		/// escaping any simple html tags that exist within RSS or ATOM feed tags such as
-		/// the 'title' element. Both RSS and ATOM feeds allow simple
-		/// (but escaped) html tags within their title element (and some other such elements), even though
-		/// more often, the title tag will have no html content. Consider the following example:
-		///
-		/// <example><code><![CDATA[
-		/// XElement e = XElement.Parse("<title>Hello &lt;i&gt;world&lt;/i&gt;!</title>");
-		/// XElement e2 = XElement.Parse("<title><![CDATA[Hello <i>world</i>!]]X</title>"); // note: we end the end CDATA gt bracket here with an 'X'
-		///
-		/// string value = e.Value;   // Result: 'Hello <i>world</i>!'
-		/// string value2 = e2.Value; // Result: 'Hello <i>world</i>!'
-		///
-		/// bool eq = value == value2; // true
-		///
-		/// // We showed this to help users recognize the use scenarios for this function,
-		/// // that is, in the CDATA case as well, XElement ends up giving you the unescaped XML value,
-		/// // which is then what this function works upon.
-		/// // I.e. XElement's Value automatically unescapes the pointy brackets
-		///
-		/// string plainTitleText = ClearAnyXmlTags(value); // result: "Hello world!"
-		/// ]]></code></example>
-		///
-		/// The point of ClearAnyXmlTags is *not* to validate or pick up invalid XML. Consider these examples:
-		/// <example><code><![CDATA[
-		/// string value1 = "Hello <world>!"		// "Hello !"
-		/// string value2 = "He>llo <world>!"		// "He>llo !"
-		/// string value3 = "Hello <em><strong>world</em><strong>!"		// "Hello world!"
-		///
-		/// // value1:   does not have an end tag ('world' is seen as a tag), but it doesn't matter,
-		/// // that is just removed since it is treated as a tag.
-		///
-		/// // value2:   checking looks always first for a left pointy bracket and then a right, thus that first
-		/// // (and invalid) left pointy is included. As we said, this function is not about validating anything...
-		///
-		/// // value3:   notice how the em and strong tags are nested wrongly, but since every 'tag'
-		/// // (actually just every left then right pointy pair) is removed, it doesn't matter
-		/// ]]></code></example>
-		///
-		/// A terrific use case scenario, and indeed what this was made for, is if one was consuming RSS or ATOM
-		/// feeds from many, uncontrolled sources, and then resyndicating that content in a cleaner, new feed format,
-		/// where one of the requirements was to get rid of html elements in title and tags and so forth.
-		/// Another use case is for one of those readers themselves, where the title element, let's say, needs
-		/// to be displayed as plain text. The goal in all of these scenarios is to catch all valid html type
-		/// tags and simply dispense of them.
-		/// </summary>
-		/// <param name="value">Tag that may or may not have (typically simple) html or xml tags.</param>
-		/// <param name="trim">True to trim.</param>
+		public static string ClearHtmlTags(string value, bool convertWithMinimalMarkdown = true, bool trim = false)
+		{
+			if (value.IsNulle())
+				return value;
+
+			if (value.IndexOf('<') < 0) {
+
+				if (trim)
+					value = value.TrimIfNeeded();
+
+				return value;
+			}
+
+			int len = value.Length;
+			var sb = new StringBuilder(len);
+
+			for (int i = 0; i < len; i++) {
+
+				if (value[i] != '<') {
+					sb.Append(value[i]);
+					continue;
+				}
+
+				if (i + 2 >= len)
+					break;
+
+				int tagPointyStartIdx = i;
+				i++;
+				char nChar = value[i];
+
+				// --- LOCAL-FUNCTIONS ---
+
+				char sbLast() => sb.Length == 0 ? default(char) : sb[sb.Length - 1];
+
+				bool sbEmpty() => sb.Length == 0;
+
+				bool whiteSpaceSandwish() => 
+					!sbEmpty() 
+					&& (i + 1 < len) 
+					&& sbLast().IsWhitespace() 
+					&& sbLast() == value[i + 1];
+
+				void SkipPastTagEnd()
+				{
+					while (value[i] != '>' && i < len)
+						i++;
+				}
+
+				// --- END ---
+
+				bool isEndTag = nChar == '/'; // save that this IS an end tag, to be used in a bit 
+
+				if (isEndTag) {
+					++i; // <-- let's get i past so we can get tag name with same logic below
+					nChar = value[i]; // get nxChar also on next, past close slash
+				}
+
+				bool isStartTagName = XmlConvert.IsStartNCNameChar(nChar);
+				bool isDoctypeOrComment = nChar == '!'; //<!--howdy comment--> or <!DOCTYPE html>
+
+				if (isDoctypeOrComment || !isStartTagName) {
+					SkipPastTagEnd();
+
+					if (whiteSpaceSandwish())
+						i++;
+					continue;
+				}
+
+				// ok, we're at least a good start-tag char, now let's get the rest of the following name...
+
+				int startTagIdx = i;
+				int endTagIdx = i;
+
+				for (; i < len; i++) {
+					nChar = value[i];
+
+					if (nChar == '>')
+						break;
+					else if (XmlConvert.IsNCNameChar(nChar) || nChar == ':') {
+
+						// NOTE! Is only if that does not skip past tag end (
+						// `== ':'` -- IsNCNameChar leaves off namespace `:` colon, let's allow it
+						endTagIdx++;
+					}
+					else if (
+						nChar == '/' // only if no space after the tag name, e.g. "<br/>" vs "<br />"
+						||
+						XmlConvert.IsWhitespaceChar(nChar)) {
+						SkipPastTagEnd();
+						break;
+					}
+					else {
+						// hmmm, did we hit an invalid name char???
+						SkipPastTagEnd();
+						goto CONTINUE_MAIN_LOOP;
+					}
+				}
+
+				if (endTagIdx <= startTagIdx) {
+					continue;
+				}
+
+				string tagNm = value
+					.Substring(startTagIdx, endTagIdx - startTagIdx)
+					.ToLower();
+
+				string noW = TagNamesToNotAddWhitespaceBetweenTags.V(tagNm);
+
+				if (noW != null) {
+					if (noW != "" && convertWithMinimalMarkdown) {
+						sb.Append(noW);
+					}
+					continue;
+				}
+
+				if (!isEndTag) {
+					if (tagNm == "p" || tagNm == "br") {
+						if (!sbEmpty() && sbLast() != '\n') {
+							sb.Append("\r\n");
+							continue;
+						}
+					}
+					if (tagNm == "li") {
+						if (!sbEmpty() && sbLast() != '\n')
+							sb.Append("\r\n");
+
+						if(convertWithMinimalMarkdown)
+							sb.Append("* ");
+						continue;
+					}
+				}
+
+				if (!isEndTag) {
+					if (!sbEmpty() && !sbLast().IsWhitespace())
+						sb.Append(" ");
+				}
+				else {
+					if (i + 1 < len && !value[i + 1].IsWhitespace())
+						sb.Append(" ");
+				}
+
+				if (whiteSpaceSandwish())
+					i++;
+
+				CONTINUE_MAIN_LOOP:;
+			}
+
+			string result = trim ? sb.TrimToString() : sb.ToString();
+			return result;
+		}
+
 		public static string ClearXmlTags(string value, bool trim = false)
 		{
 			if (trim)
@@ -538,3 +722,193 @@ namespace DotNetXtensionsPrivate
 
 	}
 }
+
+//public static string ClearXmlTags11(string value, bool trim = false)
+//{
+//	if (trim)
+//		value = value.TrimIfNeeded();
+
+//	if (value.IsNulle())
+//		return value;
+
+//	if (value.IndexOf('<') < 0)
+//		return value;
+
+//	int start = 0;
+//	int end = 0;
+//	int len = value.Length;
+//	var sb = new StringBuilder(len);
+//	char currLook = '<';
+
+//	string tagName = null;
+//	bool isCloseTag = false;
+//	bool priorToTagIsWhitesp = false;
+//	int prevSegLen;
+//	int lenMinus2 = len - 2;
+
+//	for (int i = 0; i < lenMinus2; i++) {
+//		if (value[i] != '<') {
+//			sb.Append(value[i]);
+//			continue;
+//		}
+
+//		if (value[i] == '<') {
+
+//			i++;
+
+//			void SkipPastTagEnd()
+//			{
+//				while (value[i] != '>' && i < len) {
+//					i++;
+//				}
+//			}
+
+//			char nChar = value[i];
+
+//			bool isEndTag = nChar == '/';
+//			if (isEndTag) {
+//				// 1) save that this IS isEndTag to be used in a bit 
+
+//				++i; // <-- let's get i past so we can get tag name with same logic below
+//				nChar = value[i]; // get nxChar also on next, past close slash
+//			}
+
+//			bool isStartTagName = XmlConvert.IsStartNCNameChar(nChar);
+//			bool isDoctypeOrComment = nChar == '!'; //<!--howdy comment--> or <!DOCTYPE html>
+
+//			if (isDoctypeOrComment || !isStartTagName) {
+//				SkipPastTagEnd();
+//				continue;
+//			}
+
+//			// if here, means we had first letter of a tag name already, skip i to there;
+
+//			////////if (i + 1 < len) {
+//			////////	// to allow < and > symbols, ignore if next char is not a valid start tag char (simply formulated) 
+//			////////	char n = value[i + 1];
+//			////////	if (!(n.IsAsciiLetter() || n == '/') && n != '!') // '!' because of: "<!DOCTYPE..."
+//			////////		continue;
+//			////////}
+
+//			//char n = value[i + 1];
+//			//// to allow < and > symbols, ignore if next char is not a valid start tag char (simply formulated) 
+//			//if (i + 1 < len && !(n.IsAsciiLetter() || n == '/') && n != '!') // '!' because of: "<!DOCTYPE..."
+//			//	continue;
+
+//			priorToTagIsWhitesp = i < 1 || value[i - 1].IsWhitespace();
+
+//			int maxISrchForTag = i + 8;
+//			int tagStartIdx = i + 1;
+//			int j = tagStartIdx;
+//			isCloseTag = false;
+
+//			for (; j < maxISrchForTag && j < len; j++) {
+//				char nxtChar = value[j];
+//				if (!nxtChar.IsAsciiLetter()) {
+
+//					if (nxtChar == '>')
+//						break;
+
+//					if (nxtChar == '/' && j == tagStartIdx) {
+//						isCloseTag = true;
+//						tagStartIdx++;
+//					}
+//				}
+//			}
+
+//			tagName = j > tagStartIdx
+//				? value.Substring(tagStartIdx, j - tagStartIdx)
+//				: null;
+
+//			start = i;
+//			currLook = '>';
+//		}
+//		else if (currLook == '>') {
+//			//value[i + 1].IsAsciiLetter() || value[i + 1] == '/'
+
+//			if (i > 0) {
+//				char c = value[i - 1];
+
+//				if (c == '/') { // this could be a self-closing open tag ('<br />')
+//				}
+
+//				// I'm confused what this was about, but I *think* these following conditions 
+//				// represent things that COULDN'T be in a CLOSING tag, which we're expecting this is ... ??
+//				else if (c != '"' && c != '\'' && !c.IsAsciiLetter())
+//					continue;
+
+//				// -- old, replaced with above
+//				//if (value.PreviousIndexIsMatch(i - 1, c => c != '"' && c != '\'' && !c.IsAsciiLetter() 
+//				//	? true 
+//				//	: (char.IsWhiteSpace(c) ? (bool?)null : false))) // what in the WORLD was this whitespace check? which still returned null/false?!
+//				//	continue;
+//			}
+
+//			prevSegLen = start - end;
+//			if (prevSegLen > 0) {
+//				//if (sb == null)
+//				//	sb = new StringBuilder(value.Length);
+
+//				int _start = end;
+//				int _len = prevSegLen;
+//				if (sb.NotNulle() && sb[sb.Length - 1].IsWhitespace() && value[_start].IsWhitespace()) {
+//					_start++;
+//					_len--;
+//				}
+
+//				bool padValueWithWhitespace = false;
+
+//				if (tagName.NotNulle()) {
+//					bool? noWhitespace = TagNamesToNotAddWhitespaceBetweenTags.ValueN(tagName);
+//					padValueWithWhitespace = noWhitespace != true;
+//				}
+
+//				if (!isCloseTag && padValueWithWhitespace && _len > 0) { // && sb.Length > 0) {
+//					if (tagName.EqualsIgnoreCase("p") || tagName.EqualsIgnoreCase("div")) {
+//						sb.Append("\r\n");
+//					}
+//					else {
+//						if (!priorToTagIsWhitesp)
+//							sb.Append(' ');
+//					}
+//				}
+
+//				sb.Append(value, _start, _len);
+
+//				if (isCloseTag && padValueWithWhitespace) {
+//					int nextCharIdx = i + 1;
+
+//					if (nextCharIdx < len) {
+//						char nxtChar = value[nextCharIdx];
+//						if (!nxtChar.IsWhitespace() &&
+//							nxtChar != '<') // IF it is an open bracket, then that will be handled later as the next tag
+//							{
+//							sb.Append(' ');
+//						}
+//					}
+//				}
+
+//				isCloseTag = false;
+//			}
+//			end = i + 1;
+//			currLook = '<';
+//		}
+//	}
+
+//	//if (sb == null) // CHANGED 2019/02/20, this was not allowing cases where only text occurred at end, after all tags
+//	//	return value;
+
+//	//if (sb == null) {
+//	//	if (end == 0 && prevSegLen == value.Length)
+//	//		return value;
+//	//	else
+//	//		sb = new StringBuilder(len);
+//	//}
+
+//	prevSegLen = len - end;
+
+//	sb.Append(value, end, prevSegLen);
+
+//	string result = trim ? sb.TrimToString() : sb.ToString();
+//	return result;
+//}

@@ -71,6 +71,9 @@
     <Compile Include="..\..\DotNetXtensions.Common\src\Text\UriPathInfo.cs">
       <Link>src\Text\UriPathInfo.cs</Link>
     </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Text\XmlTextFuncs.cs">
+      <Link>src\Text\XmlTextFuncs.cs</Link>
+    </Compile>
     <Compile Include="..\..\DotNetXtensions.Common\src\TimeZones\TimeZones.cs">
       <Link>src\TimeZones\TimeZones.cs</Link>
     </Compile>

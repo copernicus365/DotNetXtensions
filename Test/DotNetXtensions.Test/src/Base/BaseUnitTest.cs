@@ -23,6 +23,12 @@ namespace DotNetXtensions.Test
 				writeToOrigConsoleOutStill: true,
 				writeToLogFilePath: logPath,
 				deleteLogFileContentsFirst: true);
+
+			$@"{nameof(BaseUnitTest)}.{nameof(INIT)} called: {DateTime.Now}
+
+Log path: ""{logPath}""
+
+".Print();
 		}
 
 		static string _getBinLogPath(string fileName)

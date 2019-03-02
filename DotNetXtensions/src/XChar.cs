@@ -99,7 +99,7 @@ namespace DotNetXtensionsPrivate
 		}
 
 		/// <summary>
-		/// Indicates whether the char is a lowercase ascii letter (a-z only).
+		/// Indicates whether the char is a lowercase or uppercase ascii letter (a-z | A-Z).
 		/// </summary>
 		public static bool IsAsciiLetter(this char c)
 		{
@@ -231,6 +231,11 @@ namespace DotNetXtensionsPrivate
 		public static bool IsNumber(this char c)
 		{
 			return char.IsNumber(c);
+		}
+
+		public static int ToInt(this char c)
+		{
+			return c - '0';
 		}
 
 	}

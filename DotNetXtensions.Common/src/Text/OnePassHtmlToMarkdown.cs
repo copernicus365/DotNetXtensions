@@ -22,9 +22,10 @@ namespace DotNetXtensionsPrivate
 		string html;
 		StringBuilder sb;
 		int tagPointyStartIdx;
-		int openedBlockQuoteSbIdx;
-		bool inBlockquote = false;
 		string tagNm;
+		SmallElem currSmlElm;
+		BigBlockElem currBigBlk;
+		bool currBlkIsBQ => currBigBlk == BigBlockElem.BLOCKQUOTE;
 
 		public static string HtmlToMD(string value, bool justCleanHtmlTags = false, bool htmlDecode = false)
 		{
@@ -60,17 +61,45 @@ namespace DotNetXtensionsPrivate
 			i = 0;
 			len = html.Length;
 			char nChar;
-			sb = new StringBuilder(len);
-			openedBlockQuoteSbIdx = -1;
+
+			currBigBlk = BigBlockElem.NONE;
+
+			//openedBlockQuoteSbIdx = -1;
+
+			// if we init with a space, we won't have to always check if sb is empty!!!!!!!
+			// !!!DANGER!!!: we can't EVER allow cutting sb.Length when it's immedly adding to it
+			sb = new StringBuilder(" ", len);
+
 			//const char nbsp = (char)160; // '\x00a0'
 
 			for (; i < len; i++) {
 
 				nChar = html[i];
 
+				// WHITESPACE handling complexities (culling most), and looking for an open '<'
+
 				if (nChar > ' ') {
 					if (nChar != '<') {
 						// so is NOT ws unless is nbsp (160), which always gets written anyways
+
+						//if (lastWasCloseBlockTag) {
+						//	lastWasCloseBlockTag = false;
+						//}
+
+						if (nChar < 97) { 
+							// 'a' = 97, so at least it removes the most prevalent: lower case chars
+
+							// at this time, no use making a Dictionary, surely at least while limited to only 3 chars, 
+							// a Dict lookup couldn't possibly be more performant
+							switch (nChar) {
+								case '*': //42
+								case '_': //95
+								case '`': //96
+									sb.Append('\\');
+									break;
+							}
+						}
+
 						sb.Append(nChar);
 						continue;
 					}
@@ -129,32 +158,9 @@ namespace DotNetXtensionsPrivate
 					if (handleOpenTag())
 						continue;
 				}
-				else { // IS END-tag
-					if (tagNm == "blockquote" && sb.Length > openedBlockQuoteSbIdx) {
-
-						string cut = sb.ToString(openedBlockQuoteSbIdx);
-						sb.Length = openedBlockQuoteSbIdx;
-						int _len1 = cut.Length;
-
-						if (cut[0] == '\r')
-							sb.Append("> ");
-
-						for (int k = 2; k < _len1; k++) {
-							if (cut[k] == '\r') {
-								if (cut[k - 2] != '>') {
-									sb.Append("> ");
-								}
-								k += 4; // "\r\n> "
-								continue;
-							}
-							sb.Append(cut[k]);
-						}
-
-						openedBlockQuoteSbIdx = -1;
-					}
-
-					if (i + 1 < len && !html[i + 1].IsWhitespace())
-						sb.Append(" ");
+				else {
+					if (handleCloseTag())
+						continue;
 				}
 
 				if (whiteSpaceSandwish())
@@ -171,79 +177,83 @@ namespace DotNetXtensionsPrivate
 
 		bool handleOpenTag()
 		{
-			// headers h1, h2, etc
-			if (tagNm[0] == 'h' && tagNm.Length == 2 && tagNm[1].IsAsciiDigit()) {
-				int hCnt = tagNm[1].ToInt(); //tagNm[1].ToString().ToInt(-1);
-				if (hCnt < 1 || hCnt > 6)
+			switch (tagNm) {
+				case "div":
+					currSmlElm = SmallElem.NONE;
+					insertNewLinesIfNeededFacingBack(2, true);
 					return true;
 
-				sb.Append("\r\n\r\n");
-
-				//insertNewLinesIfNeededFacingBack(hCnt < 3 ? 2 : 1);
-
-				for (int k = 0; k < hCnt; k++)
-					sb.Append('#');
-
-				return true;
-			}
-
-			switch (tagNm) {
 				case "p": {
-					sb.Append("\r\n\r\n");
-
-					if (inBlockquote)
-						sb.Append("> ");
-
-					//insertNewLinesIfNeededFacingBack(2);
+					currSmlElm = SmallElem.P;
+					insertNewLinesIfNeededFacingBack(2, true);
 					return true;
 				}
 				case "br": {
-				
-					sb.Append("\r\n");
+					// shouldn't need more than 1 remove. remember, only 1 ws would have been added anyway
+					removePrevSpaceIfExists();
+					sb.Append("  \r\n");
 
-					if (inBlockquote)
-						sb.Append("> ");
+					AfterNewLineHandleInBigBlockTagNLStuff();
 
-					//insertNewLinesIfNeededFacingBack(1);
+					return true;
+				}
+
+				case "hr": {
+					currSmlElm = SmallElem.NONE;
+					insertNewLinesIfNeededFacingBack(1, true);
+
+					if (doMD) {
+						sb.Append(currBlkIsBQ ? "\r\n> " : "\r\n");
+
+						sb.Append("* * *"); // "- - - - - - - - - - - -");
+
+						sb.Append(currBlkIsBQ ? "\r\n> " : "\r\n");
+					}
+
+					return true;
+				}
+
+				case "ul": {
+					setCurrBigBlk(BigBlockElem.UL);
+					insertNewLinesIfNeededFacingBack(2, false);
+					return true;
+				}
+				case "ol": {
+					setCurrBigBlk(BigBlockElem.OL);
+					insertNewLinesIfNeededFacingBack(2, false);
 					return true;
 				}
 				case "li":
+
+					currSmlElm = SmallElem.LI;				
+					insertNewLinesIfNeededFacingBack(1, chkBlkQuote: false);
+
 					if (doMD)
-						sb.Append("\r\n");
-					else
-						sb.Append("\r\n* ");
+						sb.Append("*   ");
 
 					return true;
-					//moveForwardTillNotWS();
-
-					//if (!previousIsNewLine())
-					//	sb.Append("\r\n");
-
-					//if (doMD)
-					//	sb.Append("* ");
-
-					//moveForwardTillNotWS();
-
-					//return true;
 
 				case "blockquote":
 
-					inBlockquote = true;
+					setCurrBigBlk(BigBlockElem.BLOCKQUOTE);
 
-					// HMMMMMMMMM! Going to have to look ahead here.
-					if (!previousIsNewLine())
-						sb.Append("\r\n");
+					string nextElemAsOpenTagNm = peekNextNonWSIsOpenTag();
 
-					if (doMD)
-						sb.Append("> ");
+					if (nextElemAsOpenTagNm.NotNulle()) {
+						var d = _closeTagsDict1.V(nextElemAsOpenTagNm);
+						if (d != null && d.BQ) {
+							insertNewLinesIfNeededFacingBack(1, false);
+							return true;
+						}
+					}
 
-					moveForwardTillNotWS();
-					openedBlockQuoteSbIdx = sb.Length;
+					insertNewLinesIfNeededFacingBack(2, false);
+					sb.Append("> ");
 
 					return true;
 
 				case "a":
-					// Should NOT have reached here if `convertWithMinimalMarkdown` wasn't already true
+
 					if (doMD) {
 						if (__getAnchor(html, tagPointyStartIdx, out string anchorText, out string aHref, out int afterAIdx)) {
 							i = afterAIdx - 1; // afterAIdx is 1 char AFTER the closing '>' (of "</a>"), go one back bec next for loop will iterate i
@@ -251,8 +261,28 @@ namespace DotNetXtensionsPrivate
 							return true;
 						}
 					}
-					// Now THIS would be a lot of work, but it wld pay big dividend!
-					return false; //break;
+					return false;
+
+				default: {
+					// headers h1, h2, etc
+					if (tagNm[0] == 'h') {
+						int hCnt = tagNmIsHeader();
+
+						if (hCnt > 0) {
+							currSmlElm = SmallElem.H;
+							insertNewLinesIfNeededFacingBack(2, true);
+
+							if (doMD) {
+								for (int k = 0; k < hCnt; k++)
+									sb.Append('#');
+								sb.Append(' ');
+							}
+
+							return true;
+						}
+					}
+					break;
+				}
 			}
 
 			if (!sbEmpty() && !sbLast().IsWhitespace())
@@ -261,7 +291,35 @@ namespace DotNetXtensionsPrivate
 			return false;
 		}
 
-		string getTagName(ref char nChar)
+		bool handleCloseTag()
+		{
+			if (_closeTagsDict1.TryGetValue(tagNm, out tagInfo1 obj)) {
+
+				currSmlElm = SmallElem.NONE;
+
+				if (obj.IsBigBlockElem)
+					currBigBlk = BigBlockElem.NONE;
+
+				int numLines = obj.NumberLines;
+
+				if (obj.BQ && tagNm == "blockquote") {
+					if (previousIsNewLineIgnoreWS(1) < 1)
+						sb.Append("\r\n");
+				}
+				else {
+					insertNewLinesIfNeededFacingBack(numLines, obj.BQ, isClose: true);
+				}
+
+				return true;
+			}
+
+			if (i + 1 < len && !html[i + 1].IsWhitespace())
+				sb.Append(" ");
+
+			return false;
+		}
+
+		string getTagName(ref char currChar)
 		{
 			// ok, we're at least a good start-tag char, now let's get the rest of the following name...
 
@@ -269,20 +327,20 @@ namespace DotNetXtensionsPrivate
 			int endTagIdx = i;
 
 			for (; i < len; i++) {
-				nChar = html[i];
+				currChar = html[i];
 
-				if (nChar == '>')
+				if (currChar == '>')
 					break;
-				else if (XmlConvert.IsNCNameChar(nChar) || nChar == ':') {
+				else if (XmlConvert.IsNCNameChar(currChar) || currChar == ':') {
 
 					// NOTE! Is only if that does not skip past tag end (
 					// `== ':'` -- IsNCNameChar leaves off namespace `:` colon, let's allow it
 					endTagIdx++;
 				}
 				else if (
-					nChar == '/' // only if no space after the tag name, e.g. "<br/>" vs "<br />"
+					currChar == '/' // only if no space after the tag name, e.g. "<br/>" vs "<br />"
 					||
-					XmlConvert.IsWhitespaceChar(nChar)) {
+					XmlConvert.IsWhitespaceChar(currChar)) {
 					skipPastTagEnd();
 					break;
 				}
@@ -302,6 +360,25 @@ namespace DotNetXtensionsPrivate
 				.ToLower();
 
 			return tagNm;
+		}
+
+		int tagNmIsHeader()
+		{
+			if (tagNm[0] == 'h' && tagNm.Length == 2 && tagNm[1].IsAsciiDigit()) {
+
+				int hCnt = tagNm[1].ToInt(); //tagNm[1].ToString().ToInt(-1);
+
+				if (hCnt >= 1 && hCnt <= 6)
+					return hCnt;
+			}
+			return 0;
+		}
+
+		/// <summary>Setting this way clears <see cref="currSmlElm"/> at the same time.</summary>
+		void setCurrBigBlk(BigBlockElem val)
+		{
+			currSmlElm = SmallElem.NONE;
+			currBigBlk = val;
 		}
 
 		/// <summary>
@@ -330,39 +407,70 @@ namespace DotNetXtensionsPrivate
 			return false;
 		}
 
-		char sbLast() => sb.Length == 0 ? default(char) : sb[sb.Length - 1];
-		char sbLastX() => sb[sb.Length - 1];
+		/// <summary>
+		/// We can check without .Length check bec sb was inited with one space char!
+		/// </summary>
+		char sbLast() => sb[sb.Length - 1];
+
+		bool removePrevSpaceIfExists()
+		{
+			// IMPORTANT! Do NOT remove the very first space! so have to check 
+			// `Length > 1` instead of `Length > 0`
+			if (sb.Length > 1 && sbLast() == ' ') {
+				sb.Length--;
+				return true;
+			}
+			return false;
+		}
+
+		bool prevIsBlockQuoteNewLine()
+		{
+			// Note: we're not worred about the first line, is never when this is used, 
+			// so only testing minimum of: "\r\n> "
+			if (sb.Length >= 4) {
+				int sbLen = sb.Length;
+				bool isMatch = sb[sbLen - 1] == ' ' && sb[sbLen - 2] == '>' && sb[sbLen - 3] == '\n' && sb[sbLen - 4] == '\r';
+
+				return isMatch;
+			}
+			return false;
+		}
+
+		void newSingleLine_RemovePrevSpace()
+		{
+			removePrevSpaceIfExists();
+			sb.Append("\r\n");
+		}
+
+		void newDoubleLine_RemovePrevSpace()
+		{
+			removePrevSpaceIfExists();
+			sb.Append("\r\n\r\n");
+		}
+
+		void AfterNewLineHandleInBigBlockTagNLStuff()
+		{
+			if (doMD) {
+				switch (currBigBlk) {
+					case BigBlockElem.BLOCKQUOTE:
+						sb.Append("> ");
+						break;
+						// ... may have others here in the future as well
+				}
+			}
+		}
 
 		bool sbEmpty() => sb.Length == 0;
 
-		bool readyForExtraWS() => sb.Length > 0 && !sbLastX().IsWhitespace();
+		bool readyForExtraWS() => sb.Length > 0 && !sbLast().IsWhitespace();
 
 		bool previousIsNewLine() => sbLast() == '\n';
 
-		int previousIsNewLineIgnoreWS(int countNewLinesUpTo, int reportStartOfContentCountAs = 2)
-		{
-			if (sb.Length < 1)
-				return reportStartOfContentCountAs;
-
-			int newLines = 0;
-
-			for (int j = sb.Length - 1; j >= 0; j--) {
-				if (!sb[j].IsWhitespace())
-					return newLines;
-
-				char c = sb[j];
-				if (c == '\n') {
-					if (++newLines >= countNewLinesUpTo)
-						return newLines;
-				}
-			}
-			return newLines;
-		}
 
 		int moveForwardTillNotWS()
 		{
 			int countMoved = 0;
-			for (int j = i; j < len; j++) {
+			for (int j = i + 1; j < len; j++) {
 				if (!html[j].IsWhitespace())
 					break;
 				countMoved++;
@@ -370,6 +478,30 @@ namespace DotNetXtensionsPrivate
 			if (countMoved > 0)
 				i += countMoved;
 			return countMoved;
+		}
+
+		string peekNextNonWSIsOpenTag()
+		{
+			int origI = i;
+
+			int cntMvd = moveForwardTillNotWS();
+
+			if (i + 3 >= len // '3' - smallest full tag (<p>), this allows us to remove a bunch of annoying checks below
+				|| html[i + 1] != '<'
+				|| html[i + 2] == '/') { // exclude closing tags, we're only looking for opening
+				return null;
+			}
+
+			i += 2;
+			char currChar = html[i]; // i+1 == '<'
+
+			// SO: above validated that 
+			// 1) there's enough space ahead to check a few
+			// 2) then it starts with < , which itself is not followed with / (close tag)
+			string nxtTag = getTagName(ref currChar);
+
+			i = origI;
+			return nxtTag;
 		}
 
 		bool whiteSpaceSandwish() =>
@@ -384,28 +516,88 @@ namespace DotNetXtensionsPrivate
 				i++;
 		}
 
-		void insertNewLinesIfNeededFacingBack(int count)
+		void insertNewLinesIfNeededFacingBack(int count, bool chkBlkQuote, bool isClose = false)
 		{
 			if (count < 1)
 				return;
+			if (count > 2) throw new ArgumentOutOfRangeException();
 
 			int prevNLinesCnt = previousIsNewLineIgnoreWS(count);
-			int add = count - prevNLinesCnt;
 
-			if (add > 0) {
-				if (add == 1)
-					sb.Append("\r\n");
-				else if (add == 2)
-					sb.Append("\r\n\r\n");
+			if (chkBlkQuote && currBlkIsBQ) {
+
+				bool prevIsBQNewLine = prevIsBlockQuoteNewLine();
+
+				if (prevNLinesCnt > 1) {
+					sb.Append("> ");
+					return;
+				}
+
+				if (prevIsBQNewLine || prevNLinesCnt > 0)
+					count--;
+				else
+					removePrevSpaceIfExists();
+
+				if (isClose) {
+					if (!prevIsBQNewLine)
+						sb.Append("\r\n> ");
+				}
 				else {
-					for (int k = 0; k < add; k++)
+					if (count == 1)
+						sb.Append("\r\n> ");
+					else if (count == 2)
+						sb.Append("\r\n> \r\n> ");
+					else {
+						for (int k = 0; k < count; k++)
+							sb.Append("\r\n> ");
+					}
+				}
+			}
+			else {
+				if(!(isClose && currBlkIsBQ))
+					removePrevSpaceIfExists();
+
+				int add = count - prevNLinesCnt;
+
+				if (add > 0) {
+
+					if (add == 1)
 						sb.Append("\r\n");
+					else if (add == 2)
+						sb.Append("\r\n\r\n");
+					else {
+						for (int k = 0; k < add; k++)
+							sb.Append("\r\n");
+					}
 				}
 			}
 			moveForwardTillNotWS();
 		}
 
+		int previousIsNewLineIgnoreWS(int countNewLinesUpTo, int reportStartOfContentCountAs = 2)
+		{
+			if (sb.Length < 2) // was: `if(sb.Length < 1)`, but now first char is added ' ' space
+				return reportStartOfContentCountAs;
 
+			int newLines = 0;
+
+			for (int j = sb.Length - 1; j >= 0; j--) {
+				if (!IsWhitespaceMinusNBSP(sb[j]))
+					return newLines;
+
+				char c = sb[j];
+				if (c == '\n') {
+					if (++newLines >= countNewLinesUpTo)
+						return newLines;
+				}
+			}
+			return newLines;
+		}
+
+		public static bool IsWhitespaceMinusNBSP(char c)
+			=> char.IsWhiteSpace(c) && c != NBSPChar;
+		
+		const char NBSPChar = (char)160; // '\x00a0'
 
 		static bool __getAnchor(string value, int aIdx, out string anchorText, out string href, out int afterAnchorIdx)
 		{
@@ -447,8 +639,6 @@ namespace DotNetXtensionsPrivate
 			return true;
 		}
 
-
-
 		static Dictionary<string, string> TagNamesToNotAddWhitespaceBetweenTags = new Dictionary<string, string>() {
 			{ "b", "**" },
 			{ "strong", "**" },
@@ -459,13 +649,60 @@ namespace DotNetXtensionsPrivate
 			{ "a", "" },
 		};
 
-		//public static string HtmlToMD(string value, bool justCleanHtmlTags = false)
-		//{
-		//	var htmlMd = new OnePassHtmlToMarkdown();
-		//	return htmlMd.ConvertHtmlToMD(
-		//		value,
-		//		justCleanHtmlTags);
-		//}
+		/// <summary>
+		/// By "Big" we mean NOT to include paragraph (`p`) and headers (`h1` etc),
+		/// but only container block elements that typically *contain* among other things
+		/// paragraphs, headers, and so forth. The reason we need to use this would be
+		/// ruined if we allowed P, H, etc.
+		/// </summary>
+		enum BigBlockElem
+		{
+			NONE = 0,
+			UL,
+			OL,
+			BLOCKQUOTE,
+			PRE,
+		}
+
+		enum SmallElem
+		{
+			NONE = 0,
+			P,
+			H,
+			LI,
+		}
+
+		class tagInfo1
+		{
+			public tagInfo1(bool isBig, int numLines)
+			{
+				IsBigBlockElem = isBig;
+				NumberLines = numLines;
+			}
+
+			public bool IsBigBlockElem { get; set; }
+			public int NumberLines { get; set; }
+			public bool BQ { get; set; }
+		}
+
+		static tagInfo1 getti(bool isBig, int numLines, bool bq)
+			=> new tagInfo1(isBig, numLines) { BQ = bq };
+
+		static Dictionary<string, tagInfo1> _closeTagsDict1 = new Dictionary<string, tagInfo1>() {
+			{ "p", getti(false, 2, true) },
+			{ "h1", getti(false, 2, true) },
+			{ "h2", getti(false, 2, true) },
+			{ "h3", getti(false, 2, true) },
+			{ "h4", getti(false, 2, true) },
+			{ "h5", getti(false, 2, true) },
+			{ "h6", getti(false, 2, true) },
+			{ "div", getti(false, 2, true) },
+			{ "li", getti(false, 1, false) },
+			{ "ul", getti(true, 2, false) },
+			{ "ol", getti(true, 2, false) },
+			{ "blockquote", getti(true, 2, true) },
+			{ "pre", getti(true, 2, false) },
+		};
 
 	}
 }

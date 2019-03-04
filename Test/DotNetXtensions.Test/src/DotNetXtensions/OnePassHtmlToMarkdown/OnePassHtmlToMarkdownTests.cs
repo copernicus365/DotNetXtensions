@@ -15,7 +15,6 @@ namespace DotNetXtensions.Test
 	public class OnePassHtmlToMarkdownTests : BaseUnitTest
 	{
 
-
 		public void RUN_HtmlToMDTest(HtmlToMDTestArgs testArgs)
 		{
 			var test = testArgs;
@@ -56,8 +55,6 @@ namespace DotNetXtensions.Test
  - CONVERTED: 
 `{result}`
 ".Print();
-				// - OLDRESULT: 
-				//`{oldResult}`
 
 				if (!pass) {
 					$@" - EXPECTED (md):
@@ -76,8 +73,9 @@ namespace DotNetXtensions.Test
 @"<p>Hi, Mr. Dude says:</p><blockquote cite=""http://www.howdy.com/"">Do da day <b>awesome</b> possom.</blockquote><p>Th' th' th' that's all folks!</p>";
 
 			string exResult =
-@"Hi, Mr. Dude says: 
-> Do da day **awesome** possom. 
+@"Hi, Mr. Dude says:
+
+> Do da day **awesome** possom.
 
 Th' th' th' that's all folks!";
 
@@ -91,19 +89,77 @@ Th' th' th' that's all folks!";
 			string htmlText =
 @"<p>Hi</p>
 <blockquote cite=""http://www.howdy.com/""> 
-Cool P0. 
+<p>Cool P0.</p>
 <p>Cool P1.</p>
 <p>Cool P2.</p>
 <h3>Heading dude</h3>
 
 </blockquote>
+<p>That's all folks</p>
 ";
 
 			string exResult =
 @"Hi
+
 > Cool P0.
-Cool P2.
+> 
+> Cool P1.
+> 
+> Cool P2.
+> 
+> ### Heading dude
+> 
+
+That's all folks";
+
+			RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+				nameof(BlockQuotes2), htmlText, exResult));
+		}
+
+		[Fact]
+		public void Sample1()
+		{
+			string htmlText =
+@"<h1>Test</h1>
+
+<p>Sample <a href=""https://test.com/test123"">link!</a> – test.</p>
+
+<h2>Lorem Ipsum</h2>
+
+cool
+<hr />
+
+<p>Lorem ipsum dolor sit amet, vim quis stet detraxit ne, posse eleifend periculis cu nam. 
+Dico oporteat salutatus ei per, te quo platonem voluptatum: <a href=""http://howdy.org/"">Howdy</a>. 
+Test some escapes:</p>
+
+<p>This gibberish is (this or that), and this `code` is so relative ~ it's not *neither*, **naither** nor __that__?</p>
+
+<ul>
+  <li>Apples</li>
+  <li>Oranges</li>
+  <li>Peaches</li>
+</ul>
 ";
+
+			string exResult =
+@"# Test
+
+Sample [link!](https://test.com/test123) – test.
+
+## Lorem Ipsum
+
+cool
+
+* * *
+
+Lorem ipsum dolor sit amet, vim quis stet detraxit ne, posse eleifend periculis cu nam. Dico oporteat salutatus ei per, te quo platonem voluptatum: [Howdy](http://howdy.org/). Test some escapes:
+
+This gibberish is (this or that), and this \`code\` is so relative ~ it's not \*neither\*, \*\*naither\*\* nor \_\_that\_\_?
+
+*   Apples
+*   Oranges
+*   Peaches";
 
 			RUN_HtmlToMDTest(new HtmlToMDTestArgs(
 				nameof(BlockQuotes2), htmlText, exResult));
@@ -119,9 +175,9 @@ Cool P2.
 	<p>Check out <a class=""some-img"" href=""{sampleImgUrl1}"" style=""color: red;"">this lion</a>! 
 </p>",
 
-					$"**Hello** there.\r\n\t\r\nCheck out [this lion]({sampleImgUrl1})!",
+					$"**Hello** there.\r\n\r\nCheck out [this lion]({sampleImgUrl1})!",
 
-					"Hello there.\r\n\t\r\nCheck out this lion!")
+					"Hello there.\r\n\r\nCheck out this lion!")
 				);
 		}
 
@@ -137,11 +193,13 @@ Cool P2.
 			"he>llo >world>",
 			"he>llo >world>"));
 
+		const string dbln = "\r\n\r\n";
+
 		[Fact]
 		public void LotOfWSLineBreaksInAttributes1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
 			nameof(LotOfWSLineBreaksInAttributes1),
 				"ok <p \r\nclass=\"cool-red\">hi</p><p>world</p><div>do da</div><font /> hi",
-				"ok \r\n\r\nhi \r\n\r\nworld do da hi"));
+				$"ok{dbln}hi{dbln}world{dbln}do da{dbln}hi"));
 
 		const string wsMess = "    \t\t \r\n\r\n\t\t\t ";
 
@@ -149,31 +207,25 @@ Cool P2.
 		public void WSFun1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
 			nameof(WSFun1),
 				$"ok {wsMess}<p>hi{wsMess}</p>{wsMess}<p {wsMess}class=\"cool-red \"{wsMess}>{wsMess}every<b>one</b> in{wsMess}the <i>world</i><strong>!</strong></p>test!", //<div  >test</div> ",
-@"ok 
-
-hi 
-
- every**one** in the *world***!** test!"));
+				$"ok{dbln}hi{dbln}every**one** in the *world***!**{dbln}test!"));
 
 		[Fact]
 		public void WSFun2() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
 			nameof(WSFun2),
-$"ok {wsMess}<p>hi{wsMess}</p>G", //<div  >test</div> ",
-@"ok 
-
-hi G"));
+			$"ok {wsMess}<p>hi{wsMess}</p>G", //<div  >test</div> ",
+			$"ok{dbln}hi{dbln}G"));
 
 		[Fact]
 		public void Attributes2() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
 			nameof(Attributes2),
 				"ok <p \r\nclass=\"cool-red\">hi</p><p>world</p>",
-				"ok \r\n\r\nhi \r\n\r\nworld"));
+				$"ok{dbln}hi{dbln}world"));
 
 		[Fact]
 		public void WSBetweenTags1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
 			nameof(WSBetweenTags1),
-				"ok <p>hi</p>there <p>world</p>",
-				"ok \r\n\r\nhi there \r\n\r\nworld"));
+				$"ok <p>hi</p>there <p>world</p>",
+				$"ok{dbln}hi{dbln}there{dbln}world"));
 
 		[Fact]
 		public void Doctype() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
@@ -190,14 +242,25 @@ hi G"));
 		[Fact]
 		public void LIList1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
 			nameof(LIList1),
-				"Ok <ul><li  >apples</li>\r\n<li>Oranges</li> <li>Peaches</li></ul>",
-				"Ok \r\n* apples\r\n* Oranges \r\n* Peaches"));
+				"Ok <ul><li  >apples</li><li>Oranges</li> <li>Peaches</li></ul>",
+				"Ok\r\n\r\n*   apples\r\n*   Oranges\r\n*   Peaches"));
+		[Fact]
+		public void LIList2() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+			nameof(LIList1),
+				"Ok <ul><li class=\"howdy!\" >apples</li><li class=\"howdy2!\" > Oranges</li> <li>Peaches</li>\t\r\n</ul> d",
+				"Ok\r\n\r\n*   apples\r\n*   Oranges\r\n*   Peaches\r\n\r\nd"));
 
 		[Fact]
 		public void LineBreaks1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
 			nameof(LineBreaks1),
-				"Hi<br />Friends<br/>Hello and hi",
-				"Hi\r\nFriends\r\nHello and hi"));
+				$"Hi \t\r\n {strX("<br />", 7)}Friends<br/>Hello and hi", //
+				$"Hi{strX("  \r\n", 7)}Friends  \r\nHello and hi"));
+
+		static string dblnX(int times)
+			=> string.Concat(Enumerable.Repeat(dbln, times));
+
+		static string strX(string val, int times)
+			=> string.Concat(Enumerable.Repeat(val, times));
 
 		[Fact]
 		public void BoldItalics() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
@@ -210,8 +273,8 @@ hi G"));
 		public void Misc1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
 			nameof(Misc1),
 				"<p><i>He<strong class=\"some-strong\">llo</b></i> there.</p><p>Co<em class=\"y23\">ol beans</em>.</p>",
-				"*He**llo*** there. \r\n\r\nCo*ol beans*.",
-				"Hello there. \r\n\r\nCool beans."));
+				$"*He**llo*** there.{dbln}Co*ol beans*.",
+				$"Hello there.{dbln}Cool beans."));
 
 
 

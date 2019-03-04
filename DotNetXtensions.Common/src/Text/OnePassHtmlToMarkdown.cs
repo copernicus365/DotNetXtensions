@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 
 #if DNXPublic
@@ -19,32 +18,54 @@ namespace DotNetXtensionsPrivate
 		bool doMD;
 		int i;
 		int len;
-		string html;
-		StringBuilder sb;
 		int tagPointyStartIdx;
+		string html;
 		string tagNm;
+		StringBuilder sb;
 		SmallElem currSmlElm;
 		BigBlockElem currBigBlk;
+
 		bool currBlkIsBQ => currBigBlk == BigBlockElem.BLOCKQUOTE;
 
-		public static string HtmlToMD(string value, bool justCleanHtmlTags = false, bool htmlDecode = false)
+
+		public void Reset(string newHtml = null, bool doMarkdown = true)
 		{
-			if (value.IsNulle())
+			html = newHtml;
+			tagNm = null;
+			len = html?.Length ?? 0;
+			doMD = doMarkdown;
+			i = tagPointyStartIdx = 0;
+			currSmlElm = SmallElem.NONE;
+			currBigBlk = BigBlockElem.NONE;
+			if (sb != null) {
+				sb.Clear();
+				//sb = null; // do NOT set this yet!! allow Reset to be called without this
+			}
+		}
+
+		public static string HtmlToMD(
+			string htmlText,
+			bool onlyCleanHtmlTags = false,
+			bool htmlDecode = false,
+			bool checkAndReturnIfNoXmlTags = false)
+		{
+			if (htmlText.IsNulle())
 				return null;
 
 			var htmlMd = new OnePassHtmlToMarkdown();
 			return htmlMd.ConvertHtmlToMD(
-				value,
-				justCleanHtmlTags,
-				htmlDecode);
+				htmlText,
+				onlyCleanHtmlTags,
+				htmlDecode,
+				checkAndReturnIfNoXmlTags);
 		}
 
 		public string ConvertHtmlToMD(
 			string htmlText,
 			bool onlyCleanHtmlTags = false,
-			bool htmlDecode = false)
+			bool htmlDecode = false,
+			bool checkAndReturnIfNoXmlTags = false)
 		{
-			doMD = !onlyCleanHtmlTags;
 			html = htmlText;
 
 			if (html.IsNulle())
@@ -53,24 +74,22 @@ namespace DotNetXtensionsPrivate
 			if (htmlDecode)
 				html = System.Net.WebUtility.HtmlDecode(html);
 
-			if (!XmlTextFuncs.StringContainsAnyXmlTagsQuick(html)) {
+			if (checkAndReturnIfNoXmlTags && !XmlTextFuncs.StringContainsAnyXmlTagsQuick(html)) {
 				html = html.TrimIfNeeded(); // have to trim now as we're immed returning
 				return html;
 			}
 
-			i = 0;
-			len = html.Length;
-			char nChar;
+			// be careful! don't set len field etc in Reset till AFTER htmlDecode above which changes the string potentially 
+			Reset(htmlText, !onlyCleanHtmlTags);
 
-			currBigBlk = BigBlockElem.NONE;
+			if (sb == null) // otherwise was already `Clear`ed above
+				sb = new StringBuilder(len);
 
-			//openedBlockQuoteSbIdx = -1;
-
-			// if we init with a space, we won't have to always check if sb is empty!!!!!!!
+			// if we init with a space so we won't have to always check if sb is empty!!!!!!!
 			// !!!DANGER!!!: we can't EVER allow cutting sb.Length when it's immedly adding to it
-			sb = new StringBuilder(" ", len);
+			sb.Append(" ");
 
-			//const char nbsp = (char)160; // '\x00a0'
+			char nChar;
 
 			for (; i < len; i++) {
 
@@ -82,10 +101,6 @@ namespace DotNetXtensionsPrivate
 					if (nChar != '<') {
 						// so is NOT ws unless is nbsp (160), which always gets written anyways
 
-						//if (lastWasCloseBlockTag) {
-						//	lastWasCloseBlockTag = false;
-						//}
-
 						if (nChar < 97) { 
 							// 'a' = 97, so at least it removes the most prevalent: lower case chars
 
@@ -94,8 +109,9 @@ namespace DotNetXtensionsPrivate
 							switch (nChar) {
 								case '*': //42
 								case '_': //95
-								case '`': //96
-									sb.Append('\\');
+								case '`': //96 
+									if(doMD) // prioritizing doMD==true perf wise, othewise wld do this check earlier every time
+										sb.Append('\\');
 									break;
 							}
 						}
@@ -172,6 +188,7 @@ namespace DotNetXtensionsPrivate
 			if (htmlDecode)
 				result = System.Net.WebUtility.HtmlDecode(result);
 
+			Reset();
 			return result;
 		}
 

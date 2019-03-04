@@ -21,12 +21,13 @@ namespace DotNetXtensions.Test
 			bool pass = false;
 			string oldResult;
 			string result;
+			bool decode = testArgs.HtmlDecode;
 
 			oldResult = XmlTextFuncs.ClearXmlTags(test.Text, trim: true);
 
 			if (test.ExpectedResult != null) {
 
-				result = OnePassHtmlToMarkdown.HtmlToMD(test.Text);
+				result = OnePassHtmlToMarkdown.HtmlToMD(test.Text, htmlDecode: decode);
 
 				pass = result == test.ExpectedResult;
 
@@ -34,7 +35,8 @@ namespace DotNetXtensions.Test
 			}
 
 			if (test.ExpectedResultNoMD != null) {
-				result = OnePassHtmlToMarkdown.HtmlToMD(test.Text, justCleanHtmlTags: true);
+				result = OnePassHtmlToMarkdown.HtmlToMD(
+					test.Text, onlyCleanHtmlTags: true, htmlDecode: decode);
 
 				pass = result == test.ExpectedResultNoMD;
 
@@ -131,10 +133,7 @@ cool
 
 <p>Lorem ipsum dolor sit amet, vim quis stet detraxit ne, posse eleifend periculis cu nam. 
 Dico oporteat salutatus ei per, te quo platonem voluptatum: <a href=""http://howdy.org/"">Howdy</a>. 
-Test some escapes:</p>
-
-<p>This gibberish is (this or that), and this `code` is so relative ~ it's not *neither*, **naither** nor __that__?</p>
-
+Test some escapes:</p>			        This gibberish is (this or that), and this `code` is so relative ~ it's not *neither*, **naither** nor __that__?
 <ul>
   <li>Apples</li>
   <li>Oranges</li>
@@ -161,8 +160,25 @@ This gibberish is (this or that), and this \`code\` is so relative ~ it's not \*
 *   Oranges
 *   Peaches";
 
+			string exResultNoMd =
+@"Test
+
+Sample link! – test.
+
+Lorem Ipsum
+
+cool
+
+Lorem ipsum dolor sit amet, vim quis stet detraxit ne, posse eleifend periculis cu nam. Dico oporteat salutatus ei per, te quo platonem voluptatum: Howdy. Test some escapes:
+
+This gibberish is (this or that), and this `code` is so relative ~ it's not *neither*, **naither** nor __that__?
+
+Apples
+Oranges
+Peaches";
+
 			RUN_HtmlToMDTest(new HtmlToMDTestArgs(
-				nameof(BlockQuotes2), htmlText, exResult));
+				nameof(BlockQuotes2), htmlText, exResult, exResultNoMd));
 		}
 
 		[Fact]
@@ -220,6 +236,12 @@ This gibberish is (this or that), and this \`code\` is so relative ~ it's not \*
 			nameof(Attributes2),
 				"ok <p \r\nclass=\"cool-red\">hi</p><p>world</p>",
 				$"ok{dbln}hi{dbln}world"));
+
+		[Fact]
+		public void DecodingHtml1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+			nameof(Attributes2),
+				"ok <p \r\nclass=\"cool-red\">hi &nbsp; there &mdash; world!</p>",
+				$"ok{dbln}hi   there — world!") { HtmlDecode = true });
 
 		[Fact]
 		public void WSBetweenTags1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
@@ -293,6 +315,7 @@ This gibberish is (this or that), and this \`code\` is so relative ~ it's not \*
 			public string ExpectedResult { get; set; }
 			public string ExpectedResultNoMD { get; set; }
 			public bool EnableMarkdown { get; set; } = true;
+			public bool HtmlDecode { get; set; }
 		}
 
 

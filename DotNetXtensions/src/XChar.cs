@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 #if DNXPublic
@@ -93,6 +94,7 @@ namespace DotNetXtensionsPrivate
 		/// <summary>
 		/// Indicates whether the char is an ascii digit (0-9 only).
 		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsAsciiDigit(this char c)
 		{
 			return c < 58 && c > 47;
@@ -101,14 +103,17 @@ namespace DotNetXtensionsPrivate
 		/// <summary>
 		/// Indicates whether the char is a lowercase ascii letter (a-z only).
 		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsAsciiLetter(this char c)
 		{
+			// note: this tests LOWERCASE first, because the overwhelming greater instances of lowercase almsot everywhere, and since one has to be tested first anyways...
 			return (c > 96 && c < 123) || (c > 64 && c < 91);
 		}
 
 		/// <summary>
 		/// Indicates whether the char is a lowercase ascii letter (a-z only).
 		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsAsciiLower(this char c)
 		{
 			return c > 96 && c < 123;
@@ -117,6 +122,7 @@ namespace DotNetXtensionsPrivate
 		/// <summary>
 		/// Indicates whether the char is an uppercase ascii letter (A-Z only).
 		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsAsciiUpper(this char c)
 		{
 			return c > 64 && c < 91;
@@ -125,6 +131,7 @@ namespace DotNetXtensionsPrivate
 		/// <summary>
 		/// Indicates whether the char is a lowercase ascii letter or ascii digit (a-z || 0-9 only).
 		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsAsciiLowerOrDigit(this char c)
 		{
 			return (c > 96 && c < 123) || (c < 58 && c > 47);
@@ -133,6 +140,7 @@ namespace DotNetXtensionsPrivate
 		/// <summary>
 		/// Indicates whether the char is an uppercase ascii letter or ascii digit (A-Z || 0-9 only).
 		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsAsciiUpperOrDigit(this char c)
 		{
 			return (c > 64 && c < 91) || (c < 58 && c > 47);
@@ -141,6 +149,7 @@ namespace DotNetXtensionsPrivate
 		/// <summary>
 		/// Indicates whether the char is an ascii letter or ascii digit (a-z || A-Z || 0-9 only).
 		/// </summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsAsciiLetterOrDigit(this char c)
 		{
 			return (c > 96 && c < 123) || (c > 64 && c < 91) || (c < 58 && c > 47);
@@ -213,24 +222,34 @@ namespace DotNetXtensionsPrivate
 			return c == comparisonChar;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsWhitespace(this char c)
 		{
 			return char.IsWhiteSpace(c);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsUpper(this char c)
 		{
 			return char.IsUpper(c);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsLower(this char c)
 		{
 			return char.IsLower(c);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static bool IsNumber(this char c)
 		{
 			return char.IsNumber(c);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static int ToInt(this char c)
+		{
+			return c - '0';
 		}
 
 	}

@@ -14,8 +14,7 @@ namespace DotNetXtensions.Test
 	/// </summary>
 	public class OnePassHtmlToMarkdownTests : BaseUnitTest
 	{
-
-		public void RUN_HtmlToMDTest(HtmlToMDTestArgs testArgs)
+		void RUN_HtmlToMDTest(HtmlToMDTestArgs testArgs)
 		{
 			var test = testArgs;
 			bool pass = false;
@@ -66,6 +65,8 @@ namespace DotNetXtensions.Test
 			}
 		}
 
+		void RUN_HtmlToMDTest(string testName, string text, string expectedResult, string expectedResultNoMD = null)
+			=> RUN_HtmlToMDTest(new HtmlToMDTestArgs(testName, text, expectedResult, expectedResultNoMD));
 
 
 		[Fact]
@@ -81,8 +82,8 @@ namespace DotNetXtensions.Test
 
 Th' th' th' that's all folks!";
 
-			RUN_HtmlToMDTest(new HtmlToMDTestArgs(
-				nameof(BlockQuotes1), htmlText, exResult));
+			RUN_HtmlToMDTest(
+				nameof(BlockQuotes1), htmlText, exResult);
 		}
 
 		[Fact]
@@ -114,8 +115,8 @@ Th' th' th' that's all folks!";
 
 That's all folks";
 
-			RUN_HtmlToMDTest(new HtmlToMDTestArgs(
-				nameof(BlockQuotes2), htmlText, exResult));
+			RUN_HtmlToMDTest(
+				nameof(BlockQuotes2), htmlText, exResult);
 		}
 
 		[Fact]
@@ -177,14 +178,14 @@ Apples
 Oranges
 Peaches";
 
-			RUN_HtmlToMDTest(new HtmlToMDTestArgs(
-				nameof(BlockQuotes2), htmlText, exResult, exResultNoMd));
+			RUN_HtmlToMDTest(
+				nameof(BlockQuotes2), htmlText, exResult, exResultNoMd);
 		}
 
 		[Fact]
 		public void Links1()
 		{
-			RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+			RUN_HtmlToMDTest(
 				nameof(Links1),
 
 				$@"<p><strong class=""some-strong"">Hello</strong> there.</p>
@@ -193,49 +194,48 @@ Peaches";
 
 					$"**Hello** there.\r\n\r\nCheck out [this lion]({sampleImgUrl1})!",
 
-					"Hello there.\r\n\r\nCheck out this lion!")
-				);
+					"Hello there.\r\n\r\nCheck out this lion!");
 		}
 
 		[Fact]
-		public void NoXmlToClear() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void NoXmlToClear() => RUN_HtmlToMDTest(
 			nameof(NoXmlToClear),
 			"hello world",
-			"hello world"));
+			"hello world");
 
 		[Fact]
-		public void NoXmlToClear2_RtBracketsOnly() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void NoXmlToClear2_RtBracketsOnly() => RUN_HtmlToMDTest(
 			nameof(NoXmlToClear2_RtBracketsOnly),
 			"he>llo >world>",
-			"he>llo >world>"));
+			"he>llo >world>");
 
 		const string dbln = "\r\n\r\n";
 
 		[Fact]
-		public void LotOfWSLineBreaksInAttributes1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void LotOfWSLineBreaksInAttributes1() => RUN_HtmlToMDTest(
 			nameof(LotOfWSLineBreaksInAttributes1),
 				"ok <p \r\nclass=\"cool-red\">hi</p><p>world</p><div>do da</div><font /> hi",
-				$"ok{dbln}hi{dbln}world{dbln}do da{dbln}hi"));
+				$"ok{dbln}hi{dbln}world{dbln}do da{dbln}hi");
 
 		const string wsMess = "    \t\t \r\n\r\n\t\t\t ";
 
 		[Fact]
-		public void WSFun1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void WSFun1() => RUN_HtmlToMDTest(
 			nameof(WSFun1),
 				$"ok {wsMess}<p>hi{wsMess}</p>{wsMess}<p {wsMess}class=\"cool-red \"{wsMess}>{wsMess}every<b>one</b> in{wsMess}the <i>world</i><strong>!</strong></p>test!", //<div  >test</div> ",
-				$"ok{dbln}hi{dbln}every**one** in the *world***!**{dbln}test!"));
+				$"ok{dbln}hi{dbln}every**one** in the *world***!**{dbln}test!");
 
 		[Fact]
-		public void WSFun2() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void WSFun2() => RUN_HtmlToMDTest(
 			nameof(WSFun2),
 			$"ok {wsMess}<p>hi{wsMess}</p>G", //<div  >test</div> ",
-			$"ok{dbln}hi{dbln}G"));
+			$"ok{dbln}hi{dbln}G");
 
 		[Fact]
-		public void Attributes2() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void Attributes2() => RUN_HtmlToMDTest(
 			nameof(Attributes2),
 				"ok <p \r\nclass=\"cool-red\">hi</p><p>world</p>",
-				$"ok{dbln}hi{dbln}world"));
+				$"ok{dbln}hi{dbln}world");
 
 		[Fact]
 		public void DecodingHtml1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
@@ -244,39 +244,39 @@ Peaches";
 				$"ok{dbln}hi   there — world!") { HtmlDecode = true });
 
 		[Fact]
-		public void WSBetweenTags1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void WSBetweenTags1() => RUN_HtmlToMDTest(
 			nameof(WSBetweenTags1),
 				$"ok <p>hi</p>there <p>world</p>",
-				$"ok{dbln}hi{dbln}there{dbln}world"));
+				$"ok{dbln}hi{dbln}there{dbln}world");
 
 		[Fact]
-		public void Doctype() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void Doctype() => RUN_HtmlToMDTest(
 			nameof(Doctype),
 				"<!DOCTYPE html>\r\n<p>hi</p>",
-				"hi"));
+				"hi");
 
 		[Fact]
-		public void OpensWComment() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void OpensWComment() => RUN_HtmlToMDTest(
 			nameof(OpensWComment),
 				"<!--yo--><p>hi <!--howdy comment--> there</p>",
-				"hi there"));
+				"hi there");
 
 		[Fact]
-		public void LIList1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void LIList1() => RUN_HtmlToMDTest(
 			nameof(LIList1),
 				"Ok <ul><li  >apples</li><li>Oranges</li> <li>Peaches</li></ul>",
-				"Ok\r\n\r\n*   apples\r\n*   Oranges\r\n*   Peaches"));
+				"Ok\r\n\r\n*   apples\r\n*   Oranges\r\n*   Peaches");
 		[Fact]
-		public void LIList2() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void LIList2() => RUN_HtmlToMDTest(
 			nameof(LIList1),
 				"Ok <ul><li class=\"howdy!\" >apples</li><li class=\"howdy2!\" > Oranges</li> <li>Peaches</li>\t\r\n</ul> d",
-				"Ok\r\n\r\n*   apples\r\n*   Oranges\r\n*   Peaches\r\n\r\nd"));
+				"Ok\r\n\r\n*   apples\r\n*   Oranges\r\n*   Peaches\r\n\r\nd");
 
 		[Fact]
-		public void LineBreaks1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void LineBreaks1() => RUN_HtmlToMDTest(
 			nameof(LineBreaks1),
 				$"Hi \t\r\n {strX("<br />", 7)}Friends<br/>Hello and hi", //
-				$"Hi{strX("  \r\n", 7)}Friends  \r\nHello and hi"));
+				$"Hi{strX("  \r\n", 7)}Friends  \r\nHello and hi");
 
 		static string dblnX(int times)
 			=> string.Concat(Enumerable.Repeat(dbln, times));
@@ -285,18 +285,18 @@ Peaches";
 			=> string.Concat(Enumerable.Repeat(val, times));
 
 		[Fact]
-		public void BoldItalics() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void BoldItalics() => RUN_HtmlToMDTest(
 			nameof(BoldItalics),
 				"Ex<b>press</b>ing one<em>se</em>lf!",
 				"Ex**press**ing one*se*lf!",
-				"Expressing oneself!"));
+				"Expressing oneself!");
 
 		[Fact]
-		public void Misc1() => RUN_HtmlToMDTest(new HtmlToMDTestArgs(
+		public void Misc1() => RUN_HtmlToMDTest(
 			nameof(Misc1),
 				"<p><i>He<strong class=\"some-strong\">llo</b></i> there.</p><p>Co<em class=\"y23\">ol beans</em>.</p>",
 				$"*He**llo*** there.{dbln}Co*ol beans*.",
-				$"Hello there.{dbln}Cool beans."));
+				$"Hello there.{dbln}Cool beans.");
 
 
 

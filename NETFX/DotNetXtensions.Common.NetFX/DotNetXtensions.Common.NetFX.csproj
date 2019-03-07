@@ -65,6 +65,9 @@
     <Compile Include="..\..\DotNetXtensions.Common\src\Text\Diacritics.cs">
       <Link>src\Text\Diacritics.cs</Link>
     </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Text\HtmlTag.cs">
+      <Link>src\Text\HtmlTag.cs</Link>
+    </Compile>
     <Compile Include="..\..\DotNetXtensions.Common\src\Text\OnePassHtmlToMarkdown.cs">
       <Link>src\Text\OnePassHtmlToMarkdown.cs</Link>
     </Compile>

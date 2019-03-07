@@ -13,40 +13,69 @@ namespace DotNetXtensionsPrivate
 #endif
 	class HtmlTag
 	{
+		int pos;
+		int endPos;
+
+		/// <summary>
+		/// I would like to probably refactor this later, right now, len 
+		/// after init is the length of the tag from starter pointy to 1 BEFORE
+		/// the end pointy, e.g. input <c><![CDATA[<p>]]></c> will have len of 
+		/// 2, because final one is dropped from len: <c><![CDATA[<p]]></c>.
+		/// It is a *non-negotiable* that final pointy is dropped, this greatly 
+		/// helps our operations. But won't be too much work to refactor, for 
+		/// consistency sake, having starter pointy dropped from that as well.
+		/// Note also: This value is for internal operations purpose only,
+		/// so no need for purity but rather for speed and easier code.
+		/// </summary>
+		private int len;
+		string html;
+
 		public string TagName { get; set; }
 
 		public Dictionary<string, string> Attributes { get; set; }
 
-		int pos;
-		int endPos;
-		int len;
-		string tag;
+		public int TagStartIndex { get; private set; }
 
+		public int TagLength { get; private set; }
 
 		public bool IsSelfClosed { get; private set; }
+
+		public int InnerTagStartIndex => TagStartIndex + 1;
+
+		public int InnerTagLength { get; private set; }
+
+
+		// COMPUTED:
 
 		public bool NoAtts => Attributes.IsNulle();
 
 		bool endReached => pos > endPos;
 
+		//bool countFromPosWouldPassEnd(int countFromPos) => pos + countFromPos > endPos;
+
 
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="xmlTag"></param>
+		/// <param name="inputHtml">Input html</param>
+		/// <param name="startPos">Start position</param>
 		/// <param name="inputTagIsVerifiedFullOpenTag">True if caller verifies
 		/// this is a full open tag (not more or less), which CAN also be a self-closing tag.
 		/// When true, it avoids a scan to find the first end pointy, which should be the last
 		/// char. When FALSE, allows caller to only know the start</param>
 		/// <returns></returns>
-		public bool Parse(string xmlTag, bool inputTagIsVerifiedFullOpenTag = false)
+		public bool Parse(
+			string inputHtml,
+			int startPos = 0,
+			bool inputTagIsVerifiedFullOpenTag = false)
 		{
-			try {
-				pos = 0;
-				tag = xmlTag;
-				len = tag?.Length ?? 0;
+			if (inputHtml == null) throw new ArgumentNullException();
+			if (startPos < 0) throw new ArgumentOutOfRangeException();
 
-				if (!initBeginningEnd(inputTagIsVerifiedFullOpenTag))
+			try {
+				html = inputHtml;
+
+				if (!init(startPos, inputTagIsVerifiedFullOpenTag))
 					return false;
 
 				if (!setTagName())
@@ -55,7 +84,7 @@ namespace DotNetXtensionsPrivate
 				if (endReached)
 					return true;
 
-				if (!XmlConvert.IsWhitespaceChar(tag[pos++]))
+				if (!XmlConvert.IsWhitespaceChar(html[pos++]))
 					return false;
 
 				while (!endReached) {
@@ -66,13 +95,108 @@ namespace DotNetXtensionsPrivate
 				return true;
 			}
 			finally {
-				tag = null;
+				html = null;
+			}
+		}
+
+
+		bool init(int startPos, bool inputTagIsVerifiedFullOpenTag)
+		{
+			if (startPos < 0) throw new ArgumentOutOfRangeException();
+
+			len = html.Length;
+			TagStartIndex = pos = startPos;
+
+			if ((len - pos) < 3)
+				return false;
+
+			if (pos >= len)
+				throw new ArgumentOutOfRangeException(nameof(startPos));
+
+			if (html[pos] != '<')
+				return false;
+
+			int endIdx = inputTagIsVerifiedFullOpenTag
+				? len - 1 // remember, we already validated above `len` is AT LEAST 3, so IS OK to step back 1
+				: html.IndexOf('>', TagStartIndex);
+
+			// Why +1? Because subtracting two 0-based indexes requires +1 
+			// (pos:0, endPos:2, endPos-pos == 2, but there are 3 == 0,1,2)
+			TagLength = endIdx - TagStartIndex + 1;
+
+			// Lots of redundancies in the following checks, just chill, it's fine, boosts at a glance confidence
+			if (endIdx < 2
+				|| endIdx <= TagStartIndex
+				|| TagLength < 2
+				|| html[endIdx] != '>')
+				return false;
+
+			endIdx--; // move back one to disclude in our search closing '>'
+
+			IsSelfClosed = html[endIdx] == '/';
+			if (IsSelfClosed)
+				endIdx--; // disclude self-close slash as well
+
+			endPos = endIdx; // we've done all this work on a local variable, now we'll final set it to the field
+			len = endPos + 1;
+
+			pos++; // Let's move past opening '<', don't require caller to do this, this is perfect for INIT: The start after open '<'
+
+			// See note above when setting `TagLength`
+			InnerTagLength = (endPos - pos) + 1;
+			if (InnerTagLength < 1)
+				return false;
+
+			return true;
+		}
+
+		bool setTagName()
+		{
+			if (len < 2) // == minimum: "<p" (end pointy already removed
+				return false;
+
+			int countFromPosToNxtWS = countToNextWSOrEnd();
+
+			int tagLen = (pos + countFromPosToNxtWS) - pos;
+			if (tagLen < 1)
+				return false;
+
+			string tagNm = html.Substring(pos, tagLen);
+
+			if (!verifyName(tagNm))
+				return false;
+
+			TagName = tagNm;
+
+			pos += tagLen;
+
+			return true;
+		}
+
+		bool verifyName(string name)
+		{
+			if (name.IsNulle())
+				return false;
+
+			// NOICE! superior validation by winnowing out probably 99% 
+			// of actual html tags we'll hit
+			if (name.IsAsciiAlphaNumeric(allowDash: true, allowUnderscore: true) 
+				&& name[0].IsAsciiLetter()) {
+				return true;
+			}
+
+			try {
+				string nm = XmlConvert.VerifyName(name);
+				return true;
+			}
+			catch {
+				return false;
 			}
 		}
 
 		bool addAttr()
 		{
-			skipWSpaces();
+			skipWSpacesOrEnd();
 			if (endReached)
 				return true;
 
@@ -80,7 +204,7 @@ namespace DotNetXtensionsPrivate
 
 			for (; pos < len; pos++) {
 
-				char c = tag[pos];
+				char c = html[pos];
 
 				// is true a LOT more than "IsWhitespaceChar", so since I think IsAsciiLetterOrDigit
 				// is a quicker check probably than "IsWhitespaceChar", let's do it first
@@ -92,8 +216,8 @@ namespace DotNetXtensionsPrivate
 					}
 
 					if (XmlConvert.IsWhitespaceChar(c)) {
-						int skippedWSs = skipWSpaces();
-						bool isBoolTag = endReached || tag[pos] != '=';
+						int skippedWSs = skipWSpacesOrEnd();
+						bool isBoolTag = endReached || html[pos] != '=';
 
 						if (skippedWSs > 0 && isBoolTag)
 							pos--;
@@ -136,14 +260,14 @@ namespace DotNetXtensionsPrivate
 			if (attLen < 1)
 				return false;
 
-			string key = tag.Substring(start, len).NullIfEmptyTrimmed();
+			string key = html.Substring(start, len).NullIfEmptyTrimmed();
 
 			if (key.IsNulle())
 				return false;
 
 			// === VALIDATE FIRST CHAR OF KEY ===
 			// INPUT validated all chars EXCEPT that the first char was restricted
-			// to smaller subset of allowed start chars (e.g. can't start with number of dash)
+			// to smaller subset of allowed start chars (e.g. can't start with number or dash)
 
 			if (!key[0].IsAsciiLetter() // much faster check, 99.999% of time
 				&& !XmlConvert.IsStartNCNameChar(key[0]))
@@ -188,12 +312,12 @@ namespace DotNetXtensionsPrivate
 			if (qChar != '"' && qChar != '\'')
 				throw new ArgumentException();
 
-			int countToEndC = countToNextChar(qChar);
+			int countToEndC = countToCharFromCurrPos(qChar);
 			if (countToEndC < 0)
 				return false; // NO end-quote found, ERROR
 
 			int vLen = countToEndC;
-			val = vLen == 0 ? "" : tag.Substring(pos, vLen);
+			val = vLen == 0 ? "" : html.Substring(pos, vLen);
 
 			pos += vLen + 1; // +1 to get ONE PAST the close quote. Is OK if gets past end, fine
 
@@ -205,7 +329,7 @@ namespace DotNetXtensionsPrivate
 			if (qChar != ' ')
 				throw new ArgumentException();
 
-			int countToEndC = countToNextWS();
+			int countToEndC = countToNextWSOrEnd();
 			if (countToEndC < 1) {
 				// 1) `< 0` (-1) means we found no space, OK, matches: `<div attr=>`
 				// 2) `== 0` matches: `<div attr= >`
@@ -215,7 +339,7 @@ namespace DotNetXtensionsPrivate
 			}
 
 			int vLen = countToEndC;
-			val = tag.Substring(pos, vLen);
+			val = html.Substring(pos, vLen);
 
 			pos += vLen; // +1 to get ONE PAST the close quote. Is OK if gets past end, fine
 
@@ -233,23 +357,23 @@ namespace DotNetXtensionsPrivate
 		{
 			// OK, we have now finished with any not followed by '=', but
 			// still have to validate quotes actually follow the =
-			if (tag[pos] != '=')
+			if (html[pos] != '=')
 				throw new Exception("Invalid code, current pos must be '=' sign");
 
 			pos++;
 			if (endReached)
 				return true;
 
-			startQChar = tag[pos];
+			startQChar = html[pos];
 
 			if (startQChar == '"' || startQChar == '\'')
 				return false;
 
-			int spacesSkippedAfterEQ = skipWSpaces();
+			int spacesSkippedAfterEQ = skipWSpacesOrEnd();
 			if (endReached)
 				return true;
 
-			startQChar = tag[pos];
+			startQChar = html[pos];
 
 			if (startQChar == '"' || startQChar == '\'')
 				return false;
@@ -275,90 +399,9 @@ namespace DotNetXtensionsPrivate
 			return true;
 		}
 
-		bool initBeginningEnd(bool inputTagIsVerifiedFullOpenTag)
-		{
-			if (len < 3)
-				return false;
 
-			if (tag[0] != '<')
-				return false;
-
-			// ok COOL, this takes a perf hit of maybe somewhat needlessly establishing
-			// the end of the tag up front, when perf could have just done a 1 forward
-			// search that also was always seeing if the end was hit. HOWEVER,
-			// that itself has it's own perf hit, of ALWAYS having to test if we 
-			// are out of the open tag yet. Especially hard is it had to be aware not
-			// just of '>' but also of '/' for "/>". Now we can be unembumbered, we're safely in bounds
-			int endIdx = inputTagIsVerifiedFullOpenTag
-				? tag.Length - 1
-				: tag.IndexOf('>');
-
-			if (endIdx < 2 || tag[endIdx] != '>')
-				return false;
-
-			if (tag[endIdx - 1] == '/')
-				IsSelfClosed = true;
-
-			len = IsSelfClosed
-				? endIdx - 1
-				: endIdx;
-
-			// we've now cut off the end ">" or "/>", so if 1 char tag name 
-			// (e.g. "<p>"), the MINIMUM length now is 2: "<p"
-			if (len < 2)
-				return false;
-
-			endPos = len - 1;
-
-			return true;
-		}
-
-		bool setTagName()
-		{
-			pos = 1;
-
-			if (len < 2) // redundant but just check again
-				return false;
-
-			int countFromPosToNxtWS = countToNextWS();
-
-			int tagLen = (pos + countFromPosToNxtWS) - pos;
-
-			if (tagLen < 1)
-				return false;
-
-			string tagNm = tag.Substring(1, tagLen);
-
-			if (!verifyName(tagNm))
-				return false;
-
-			TagName = tagNm;
-
-			pos += tagLen;
-
-			return true;
-		}
-
-		bool verifyName(string name)
-		{
-
-			if (name.IsNulle())
-				return false;
-
-			// NOICE! vastly superior validation by winnowing out probably 99.9999% 
-			// of actual html tags we'll hit
-			if (name.IsAsciiAlphaNumeric() && name[0].IsAsciiLetter()) {
-				return true;
-			}
-
-			try {
-				string nm = XmlConvert.VerifyName(name);
-				return true;
-			}
-			catch {
-				return false;
-			}
-		}
+		// +++ NOTE: "The "Count" methods below do NOT alter 'pos', while the "Skip" methods actually
+		// alter pos till given condition is found (or end)
 
 		/// <summary>
 		/// Returns count from current <see cref="pos"/> till we encounter
@@ -366,41 +409,41 @@ namespace DotNetXtensionsPrivate
 		/// from current pos to end never encounters another ws.
 		/// </summary>
 		/// <returns></returns>
-		int countToNextWS()
+		int countToNextWSOrEnd()
 		{
 			int i = pos;
 			for (; i < len; i++) {
-				if (XmlConvert.IsWhitespaceChar(tag[i]))
+				if (XmlConvert.IsWhitespaceChar(html[i]))
 					break;
 			}
 			return i - pos;
 		}
 
-		int countToNextChar(char c)
+		int countToCharFromCurrPos(char c)
 		{
 			int i = pos;
 			for (; i < len; i++) {
-				if (tag[i] == c)
-					break;
+				if (html[i] == c)
+					return i - pos;
 			}
-			return i - pos;
+			return -1;
 		}
 
-		int skipWSpaces()
+		int skipWSpacesOrEnd()
 		{
 			int wsCount = 0;
 			for (; pos < len; pos++, wsCount++) {
-				if (!XmlConvert.IsWhitespaceChar(tag[pos]))
+				if (!XmlConvert.IsWhitespaceChar(html[pos]))
 					break;
 			}
 			return wsCount;
 		}
 
-		int skipTillIsWSpace()
+		int skipTillIsWSpaceOrEnd()
 		{
 			int wsCount = 0;
 			for (; pos < len; pos++, wsCount++) {
-				if (XmlConvert.IsWhitespaceChar(tag[pos]))
+				if (XmlConvert.IsWhitespaceChar(html[pos]))
 					break;
 			}
 			return wsCount;
@@ -408,76 +451,3 @@ namespace DotNetXtensionsPrivate
 
 	}
 }
-
-/*
-		bool setAttributes()
-		{
-			for (; pos < len; pos++) {
-
-				// MUST be a ws to start even for first loop; cleaner expectations this way. Otherwise, 
-				// previous char could be not ws, making this an illegitmate start...
-				if (!XmlConvert.IsWhitespaceChar(tag[pos])) {
-					// `endReached` can't be true yet, we just checked it in loop condition
-					return false;
-				}
-
-				pos++;
-
-
-			}
-
-			return true;
-		}
-
-		bool setNextAttr()
-		{
-			// FIRST: Let's be super performant, very simply:
-			// VAST majority of times: Is simple space, followed by simple ascii-letter
-			// If we match that, we're at the attr, ELSE, do slower way with lots of loops and so forth
-			if (pos + 2 < len && tag[pos] == ' ' && tag[pos + 1].IsAsciiLetter()) {
-				pos += 2;
-			}
-			else {
-				int wsCnt = this.countToNextWS();
-				if (wsCnt < 1)
-					return false;
-
-				pos += wsCnt;
-				if (endReached || !XmlConvert.IsStartNCNameChar(tag[pos]))
-					return false;
-				pos++;
-			}
-
-			int startAttr = pos - 1;
-
-			pos++;
-
-			return false;
-		}
-
-			string getNext()
-		{
-			if (pos >= len)
-				return null;
-
-			int start = pos;
-
-			if (XmlConvert.IsStartNCNameChar(tag[pos]))
-				;
-
-			while (pos < len) {
-				char c = tag[pos];
-
-				if (c.IsAsciiLetter()) // this happens SO often, we want to 
-					continue;
-
-				if (c == ' ' // likewise, this happens SO often after above failed
-					|| XmlConvert.IsWhitespaceChar(c))
-					break;
-
-				//if (XmlConvert
-			}
-			return null;
-		}
-
-*/

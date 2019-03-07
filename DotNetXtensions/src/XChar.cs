@@ -160,21 +160,52 @@ namespace DotNetXtensionsPrivate
 		/// <summary>
 		/// Indicates whether all the characters in this string are ascii letters or numbers (a-z || A-Z || 0-9 only).
 		/// </summary>
-		public static bool IsAsciiAlphaNumeric(this string s, int start = 0)
+		public static bool IsAsciiAlphaNumeric(
+			this string s, 
+			int start = 0,
+			bool allowUnderscore = false,
+			bool allowDash = false)
 		{
-			if (s == null)
-				throw new ArgumentNullException();
-			int len = s.Length;
-			if (start >= len && len > 0)
-				throw new ArgumentOutOfRangeException();
+			int len = _stringLoopBoundsCheck(s, start);
 
 			for (int i = start; i < len; i++)
-				if (!IsAsciiLetterOrDigit(s[i]))
-					return false;
+				if (!IsAsciiLetterOrDigit(s[i])) {
+					if (s[i] == '_') {
+						if (!allowUnderscore)
+							return false; // else falls thru and continues
+					} else if (s[i] == '-') {
+						if (!allowDash)
+							return false; // dido
+					}
+					else
+						return false;
+				}
 
 			return true;
 		}
 
+		static int _stringLoopBoundsCheck(string s, int start)
+		{
+			if (s == null)
+				throw new ArgumentNullException();
+
+			int len = s.Length;
+			if (start >= len && len > 0)
+				throw new ArgumentOutOfRangeException();
+
+			return len;
+		}
+
+		//public static bool IsAsciiAlphaNumericDashOrUnderscore(string s, int start = 0)
+		//{
+		//	int len = _stringLoopBoundsCheck(s, start);
+
+		//	for (int i = start; i < len; i++)
+		//		if (!s[i].IsAsciiLetterOrDigit() && s[i] != '-' && s[i] != '_')
+		//			return false;
+
+		//	return true;
+		//}
 
 		// FUTURE: IsOkayPunctuation / IndexOfNonAsciiAlphaNumeric
 

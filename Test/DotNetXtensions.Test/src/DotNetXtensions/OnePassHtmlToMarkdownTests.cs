@@ -1,8 +1,7 @@
 using System;
-using System.Text;
 using System.Linq;
-using DotNetXtensions.Globalization;
 using Xunit;
+using DotNetXtensions.Text;
 
 namespace DotNetXtensions.Test
 {

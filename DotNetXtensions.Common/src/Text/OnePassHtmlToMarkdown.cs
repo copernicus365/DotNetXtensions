@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 
 #if DNXPublic
-namespace DotNetXtensions
+namespace DotNetXtensions.Text
 #else
 namespace DotNetXtensionsPrivate
 #endif

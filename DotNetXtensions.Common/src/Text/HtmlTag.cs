@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 
 #if DNXPublic
-namespace DotNetXtensions
+namespace DotNetXtensions.Text
 #else
 namespace DotNetXtensionsPrivate
 #endif
@@ -62,12 +59,8 @@ namespace DotNetXtensionsPrivate
 					return false;
 
 				while (!endReached) {
-					(bool error, bool attrAdded) = addAttr();
-					if(error)
+					if (!addAttr())
 						return false;
-					if (!attrAdded) {
-						// ?
-					}
 				}
 
 				return true;
@@ -77,14 +70,17 @@ namespace DotNetXtensionsPrivate
 			}
 		}
 
-		(bool error, bool attrAdded) addAttr()
+		bool addAttr()
 		{
+			skipWSpaces();
+			if (endReached)
+				return true;
+
 			int start = pos;
-			char c;
 
 			for (; pos < len; pos++) {
 
-				c = tag[pos];
+				char c = tag[pos];
 
 				// is true a LOT more than "IsWhitespaceChar", so since I think IsAsciiLetterOrDigit
 				// is a quicker check probably than "IsWhitespaceChar", let's do it first
@@ -92,40 +88,58 @@ namespace DotNetXtensionsPrivate
 
 					// Check for 2 possible attr-name endings:
 					if (c == '=') {
-						return handleAttrNmThenValue(pos, pos - start, false);
+						return handleAttrNmThenValue(start, pos - start, false);
 					}
 
 					if (XmlConvert.IsWhitespaceChar(c)) {
 						int skippedWSs = skipWSpaces();
-						bool isOrphanTag = endReached || tag[pos] != '=';
-						return handleAttrNmThenValue(pos, pos - start, isOrphanTag);
+						bool isBoolTag = endReached || tag[pos] != '=';
+
+						if (skippedWSs > 0 && isBoolTag)
+							pos--;
+
+						return handleAttrNmThenValue(start, pos - start, isBoolTag);
 					}
 
 					// We did simpler ascii/number/dash check, now do full allowed name char check
 					if (!XmlConvert.IsNCNameChar(c) && c != ':') {
-						return (true, false); // ERROR, invalid
+						return false; // ERROR, invalid
 					}
 				}
 			}
 
 			// only get here if did NOT hit '=' NOR a whitespace,
 			// so MUST be an empty attribute that ended tag, e.g. "<i is-cool/>"
-			return handleAttrNmThenValue(pos, pos - start, true); // IS AN ORPHAN TAG
+			return handleAttrNmThenValue(start, pos - start, true); // IS A BOOLEAN TAG
 		}
 
-		(bool error, bool attrAdded) handleAttrNmThenValue(
-			int start, 
-			int len, 
-			bool isAnOrphanTag)
+		/// <summary>
+		/// Call this when you DO have an attribute name as specified in the 
+		/// input <paramref name="start"/> and <paramref name="len"/> parameters.
+		/// Also input if you already know this IS a boolean attribute (namely if
+		/// you reached the end of the tag before hitting an '=', or if you hit whitespace
+		/// and then not a '=' next). This still might be a boolean tag, we will figure that
+		/// out from here.
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="len"></param>
+		/// <param name="isBoolTag">TRUE if this attribute is not followed up by 
+		/// an equal '=' sign. It might still be a boolean tag if no quotes follow the
+		/// equal sign, but that will be figured out herein.</param>
+		/// <returns></returns>
+		bool handleAttrNmThenValue(
+			int start,
+			int len,
+			bool isBoolTag)
 		{
-			int attLen = start - pos;
+			int attLen = pos - start;
 			if (attLen < 1)
-				return (true, false);
+				return false;
 
 			string key = tag.Substring(start, len).NullIfEmptyTrimmed();
 
 			if (key.IsNulle())
-				return (true, false);
+				return false;
 
 			// === VALIDATE FIRST CHAR OF KEY ===
 			// INPUT validated all chars EXCEPT that the first char was restricted
@@ -133,45 +147,123 @@ namespace DotNetXtensionsPrivate
 
 			if (!key[0].IsAsciiLetter() // much faster check, 99.999% of time
 				&& !XmlConvert.IsStartNCNameChar(key[0]))
-				return (true, false);
+				return false;
 
-			if (isAnOrphanTag) {
-				if (!__addAttr(key, null))
-					return (true, false);
+			char startQChar = default;
+
+			if (!isBoolTag)
+				isBoolTag = onEqualSign_SkipToAttrValue_IsBoolTag(ref startQChar);
+
+			if (isBoolTag) {
+				if (!__addAttr(key, ""))
+					return false;
 
 				pos++;
-				return (false, true);
+				return true;
 			}
 
+			// canNOT be a boolean attribute if reach here
+			bool isNoQuotesAttr = startQChar == ' ';
+			if(!isNoQuotesAttr)
+				pos++;
+
+			bool success = isNoQuotesAttr
+				? getAttrValWNoQ(startQChar, out string val)
+				: getAttrValWQuote(startQChar, out val);
+
+			if(!success)
+				return false;
+
+			if (!__addAttr(key, val))
+				return false;
+
+			return true;
+		}
+
+
+		bool getAttrValWQuote(char qChar, out string val)
+		{
+			val = null;
+
+			if (qChar != '"' && qChar != '\'')
+				throw new ArgumentException();
+
+			int countToEndC = countToNextChar(qChar);
+			if (countToEndC < 0)
+				return false; // NO end-quote found, ERROR
+
+			int vLen = countToEndC;
+			val = vLen == 0 ? "" : tag.Substring(pos, vLen);
+
+			pos += vLen + 1; // +1 to get ONE PAST the close quote. Is OK if gets past end, fine
+
+			return true;
+		}
+
+		bool getAttrValWNoQ(char qChar, out string val)
+		{
+			if (qChar != ' ')
+				throw new ArgumentException();
+
+			int countToEndC = countToNextWS();
+			if (countToEndC < 1) {
+				// 1) `< 0` (-1) means we found no space, OK, matches: `<div attr=>`
+				// 2) `== 0` matches: `<div attr= >`
+				// --> they both result in the same: An empty string result
+				val = "";
+				return true;
+			}
+
+			int vLen = countToEndC;
+			val = tag.Substring(pos, vLen);
+
+			pos += vLen; // +1 to get ONE PAST the close quote. Is OK if gets past end, fine
+
+			return true;
+		}
+
+		/// <summary>
+		/// Call this ONLY when you HAVE already hit an equals sign
+		/// (exception will be thrown if curr pos is not '='). This
+		/// will decide if it is still a boolean tag.
+		/// </summary>
+		/// <param name="startQChar"></param>
+		/// <returns></returns>
+		bool onEqualSign_SkipToAttrValue_IsBoolTag(ref char startQChar)
+		{
+			// OK, we have now finished with any not followed by '=', but
+			// still have to validate quotes actually follow the =
 			if (tag[pos] != '=')
 				throw new Exception("Invalid code, current pos must be '=' sign");
 
-			bool gotPassedEQSign = false;
+			pos++;
+			if (endReached)
+				return true;
 
-			if (!endReached) {
+			startQChar = tag[pos];
 
-				gotPassedEQSign = tag[pos] == '=';
-				if (gotPassedEQSign)
-					pos++;
-				else {
-					int skippedWSs = skipWSpaces();
-					if (!endReached)
-						gotPassedEQSign = tag[pos] == '=';
-				}
+			if (startQChar == '"' || startQChar == '\'')
+				return false;
 
-				if (endReached) {
-					// does html allow hanging eq with no quotes?: `<tag some-attr= />`?
-					// we could return error if it doesn't, OR, we could ignore the error, probably yes
+			int spacesSkippedAfterEQ = skipWSpaces();
+			if (endReached)
+				return true;
 
-					if (tag[pos] != '"') {
-						skipWSpaces();
-					}
-				}
+			startQChar = tag[pos];
+
+			if (startQChar == '"' || startQChar == '\'')
+				return false;
+
+			if (spacesSkippedAfterEQ > 0) {
+				// so there was an "=" sign, then WAS space, followed by not a quote,
+				// meaning we have a bool-attribute
+				return true; // do we need to fix 'pos'?????????????????
 			}
 
-
-
-			return (true, false);
+			// WAS an '=', followed by NOT a quote NOR a space! --->
+			// This looks like a QUOTELESS attribute
+			startQChar = ' '; // convention: caller must know this simple space indicates ANY WS terminates
+			return false;
 		}
 
 		bool __addAttr(string name, string value)
@@ -182,52 +274,6 @@ namespace DotNetXtensionsPrivate
 			Attributes[name] = value; // OVERWRITE any earlier one
 			return true;
 		}
-
-		bool setAttributes()
-		{
-			for (; pos < len; pos++) {
-
-				// MUST be a ws to start even for first loop; cleaner expectations this way. Otherwise, 
-				// previous char could be not ws, making this an illegitmate start...
-				if (!XmlConvert.IsWhitespaceChar(tag[pos])) {
-					// `endReached` can't be true yet, we just checked it in loop condition
-					return false;
-				}
-
-				pos++;
-
-
-			}
-
-			return true;
-		}
-
-		bool setNextAttr()
-		{
-			// FIRST: Let's be super performant, very simply:
-			// VAST majority of times: Is simple space, followed by simple ascii-letter
-			// If we match that, we're at the attr, ELSE, do slower way with lots of loops and so forth
-			if (pos + 2 < len && tag[pos] == ' ' && tag[pos + 1].IsAsciiLetter()) {
-				pos += 2;
-			}
-			else {
-				int wsCnt = this.countToNextWS();
-				if (wsCnt < 1)
-					return false;
-
-				pos += wsCnt;
-				if (endReached || !XmlConvert.IsStartNCNameChar(tag[pos]))
-					return false;
-				pos++;
-			}
-
-			int startAttr = pos - 1;
-
-			pos++;
-
-			return false;
-		}
-
 
 		bool initBeginningEnd(bool inputTagIsVerifiedFullOpenTag)
 		{
@@ -327,13 +373,30 @@ namespace DotNetXtensionsPrivate
 				if (XmlConvert.IsWhitespaceChar(tag[i]))
 					break;
 			}
-			//if (i <= pos)
-			//	return -1;
+			return i - pos;
+		}
 
+		int countToNextChar(char c)
+		{
+			int i = pos;
+			for (; i < len; i++) {
+				if (tag[i] == c)
+					break;
+			}
 			return i - pos;
 		}
 
 		int skipWSpaces()
+		{
+			int wsCount = 0;
+			for (; pos < len; pos++, wsCount++) {
+				if (!XmlConvert.IsWhitespaceChar(tag[pos]))
+					break;
+			}
+			return wsCount;
+		}
+
+		int skipTillIsWSpace()
 		{
 			int wsCount = 0;
 			for (; pos < len; pos++, wsCount++) {
@@ -343,7 +406,56 @@ namespace DotNetXtensionsPrivate
 			return wsCount;
 		}
 
-		string getNext()
+	}
+}
+
+/*
+		bool setAttributes()
+		{
+			for (; pos < len; pos++) {
+
+				// MUST be a ws to start even for first loop; cleaner expectations this way. Otherwise, 
+				// previous char could be not ws, making this an illegitmate start...
+				if (!XmlConvert.IsWhitespaceChar(tag[pos])) {
+					// `endReached` can't be true yet, we just checked it in loop condition
+					return false;
+				}
+
+				pos++;
+
+
+			}
+
+			return true;
+		}
+
+		bool setNextAttr()
+		{
+			// FIRST: Let's be super performant, very simply:
+			// VAST majority of times: Is simple space, followed by simple ascii-letter
+			// If we match that, we're at the attr, ELSE, do slower way with lots of loops and so forth
+			if (pos + 2 < len && tag[pos] == ' ' && tag[pos + 1].IsAsciiLetter()) {
+				pos += 2;
+			}
+			else {
+				int wsCnt = this.countToNextWS();
+				if (wsCnt < 1)
+					return false;
+
+				pos += wsCnt;
+				if (endReached || !XmlConvert.IsStartNCNameChar(tag[pos]))
+					return false;
+				pos++;
+			}
+
+			int startAttr = pos - 1;
+
+			pos++;
+
+			return false;
+		}
+
+			string getNext()
 		{
 			if (pos >= len)
 				return null;
@@ -367,5 +479,5 @@ namespace DotNetXtensionsPrivate
 			}
 			return null;
 		}
-	}
-}
+
+*/

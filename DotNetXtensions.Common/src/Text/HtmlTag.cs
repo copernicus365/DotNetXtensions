@@ -58,24 +58,25 @@ namespace DotNetXtensionsPrivate
 		/// 
 		/// </summary>
 		/// <param name="inputHtml">Input html</param>
-		/// <param name="startPos">Start position</param>
-		/// <param name="inputTagIsVerifiedFullOpenTag">True if caller verifies
-		/// this is a full open tag (not more or less), which CAN also be a self-closing tag.
-		/// When true, it avoids a scan to find the first end pointy, which should be the last
-		/// char. When FALSE, allows caller to only know the start</param>
-		/// <returns></returns>
+		/// <param name="startIndex">Start position</param>
+		/// <param name="findTagEnd">True (default) to
+		/// have this search for the close of the (opening) tag,
+		/// searching of course from <paramref name="startIndex"/>.
+		/// False when the caller verifies the end of <paramref name="inputHtml"/> 
+		/// is the end of the (open) tag, thereby avoiding that extra search.
+		/// </param>
 		public bool Parse(
 			string inputHtml,
-			int startPos = 0,
-			bool inputTagIsVerifiedFullOpenTag = false)
+			int startIndex = 0,
+			bool findTagEnd = true)
 		{
 			if (inputHtml == null) throw new ArgumentNullException();
-			if (startPos < 0) throw new ArgumentOutOfRangeException();
+			if (startIndex < 0) throw new ArgumentOutOfRangeException();
 
 			try {
 				html = inputHtml;
 
-				if (!init(startPos, inputTagIsVerifiedFullOpenTag))
+				if (!init(startIndex, findTagEnd))
 					return false;
 
 				if (!setTagName())
@@ -100,25 +101,25 @@ namespace DotNetXtensionsPrivate
 		}
 
 
-		bool init(int startPos, bool inputTagIsVerifiedFullOpenTag)
+		bool init(int startIndex, bool findTagEnd)
 		{
-			if (startPos < 0) throw new ArgumentOutOfRangeException();
+			if (startIndex < 0) throw new ArgumentOutOfRangeException();
 
 			len = html.Length;
-			TagStartIndex = pos = startPos;
+			TagStartIndex = pos = startIndex;
 
 			if ((len - pos) < 3)
 				return false;
 
 			if (pos >= len)
-				throw new ArgumentOutOfRangeException(nameof(startPos));
+				throw new ArgumentOutOfRangeException(nameof(startIndex));
 
 			if (html[pos] != '<')
 				return false;
 
-			int endIdx = inputTagIsVerifiedFullOpenTag
-				? len - 1 // remember, we already validated above `len` is AT LEAST 3, so IS OK to step back 1
-				: html.IndexOf('>', TagStartIndex);
+			int endIdx = findTagEnd
+				? html.IndexOf('>', TagStartIndex)
+				: len - 1; // remember, we already validated above `len` is AT LEAST 3, so IS OK to step back 1
 
 			// Why +1? Because subtracting two 0-based indexes requires +1 
 			// (pos:0, endPos:2, endPos-pos == 2, but there are 3 == 0,1,2)

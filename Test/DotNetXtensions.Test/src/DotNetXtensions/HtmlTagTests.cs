@@ -182,10 +182,9 @@ namespace DotNetXtensions.Test
 		{
 			HtmlTag hTag = new HtmlTag();
 
-			bool inputTagIsVerifiedFullOpenTag = !tag.IsTrimmable();
-
-
-			bool passedParse = hTag.Parse(tag, startPos, inputTagIsVerifiedFullOpenTag);
+			bool findTagEnd = tag.IsTrimmable() || tag.Last() != '>';
+			
+			bool passedParse = hTag.Parse(tag, startPos, findTagEnd);
 			bool testPass1 = passedParse == success;
 
 			Assert.True(testPass1);

@@ -13,11 +13,12 @@ namespace DotNetXtensions.Test
 	/// </summary>
 	public class OnePassHtmlToMarkdownTests : BaseUnitTest
 	{
-		void RUN_HtmlToMDTest(HtmlToMDTestArgs testArgs)
+		string RUN_HtmlToMDTest(HtmlToMDTestArgs testArgs)
 		{
 			var test = testArgs;
 			bool pass = false;
 			string oldResult;
+			string mdResult = null;
 			string result;
 			bool decode = testArgs.HtmlDecode;
 
@@ -25,7 +26,15 @@ namespace DotNetXtensions.Test
 
 			if (test.ExpectedResult != null) {
 
-				result = OnePassHtmlToMarkdown.HtmlToMD(test.Text, htmlDecode: decode);
+				var onePassHtmlMd = new OnePassHtmlToMarkdown();
+				if (testArgs.IgnoreTagsCS.NotNulle()) {
+					onePassHtmlMd.TagsToIgnore = testArgs
+						.IgnoreTagsCS
+						.SplitAndRemoveWhiteSpaceEntries(',').
+						ToDictionary(v => v, v => false);
+				}
+
+				mdResult = result = onePassHtmlMd.ConvertHtmlToMD(test.Text, htmlDecode: decode);
 
 				pass = result == test.ExpectedResult;
 
@@ -43,6 +52,8 @@ namespace DotNetXtensions.Test
 
 			if (!pass)
 				Assert.True(pass, $"Failed: {test.TestName}");
+
+			return mdResult;
 
 			void printResult(bool md)
 			{
@@ -64,8 +75,8 @@ namespace DotNetXtensions.Test
 			}
 		}
 
-		void RUN_HtmlToMDTest(string testName, string text, string expectedResult, string expectedResultNoMD = null)
-			=> RUN_HtmlToMDTest(new HtmlToMDTestArgs(testName, text, expectedResult, expectedResultNoMD));
+		string RUN_HtmlToMDTest(string testName, string text, string expectedResult, string expectedResultNoMD = null, string ignoreTagsCS = null)
+			=> RUN_HtmlToMDTest(new HtmlToMDTestArgs(testName, text, expectedResult, expectedResultNoMD) { IgnoreTagsCS = ignoreTagsCS });
 
 
 		[Fact]
@@ -297,6 +308,73 @@ Peaches";
 				$"*He**llo*** there.{dbln}Co*ol beans*.",
 				$"Hello there.{dbln}Cool beans.");
 
+		[Fact]
+		public void ClearCommentsAndMSJunk()
+		{
+			string mdResult = RUN_HtmlToMDTest(
+				nameof(ClearCommentsAndMSJunk),
+				MS_Html_Ex1,
+				@"Lorem ipsum dolor sit amet
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.  
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&nbsp; Lorem ipsum dolor sit.  
+
+Lorem ipsum dolor sit.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+Lorem ipsum dolor sit amet
+
+&nbsp;");
+		}
+
+		[Fact]
+		public void IgnoreTags1()
+		{
+			string mdResult = RUN_HtmlToMDTest(
+				nameof(IgnoreTags1),
+				ExStr_TagsToClear_1,
+@"# Howdy, I'm h1 text within a header tag
+
+Howdy I'm just in a normal p
+
+Howdy I'm plain-text in a footer
+
+I'm plain-text in a p in a footer");
+		}
+
+		[Fact]
+		public void IgnoreTags_KeepHeadAndTitle_RemoveFooter()
+		{
+			string mdResult = RUN_HtmlToMDTest(
+				nameof(IgnoreTags1),
+				ExStr_TagsToClear_1,
+@"Title Test!
+
+# Howdy, I'm h1 text within a header tag
+
+Howdy I'm just in a normal p",
+				ignoreTagsCS: "script,style,form,nav,footer");
+		}
+
+		[Fact]
+		public void IgnoreTags_KeepScriptTag()
+		{
+			// This illustrates how ugly it is if such tags are NOT escaped
+
+			string mdResult = RUN_HtmlToMDTest(
+				nameof(IgnoreTags1),
+				ExStr_TagsToClear_1,
+@"# Howdy, I'm h1 text within a header tag
+
+Howdy I'm just in a normal p
+
+;(function () { var input = document.getElementById('form') // blah blah function doDa () { output.something = 13; } })()",
+				ignoreTagsCS: "head,style,form,nav,footer"); // 
+		}
 
 
 		public class HtmlToMDTestArgs
@@ -315,10 +393,158 @@ Peaches";
 			public string ExpectedResultNoMD { get; set; }
 			public bool EnableMarkdown { get; set; } = true;
 			public bool HtmlDecode { get; set; }
+			public string IgnoreTagsCS { get; set; }
 		}
 
 
 		static string sampleImgUrl1 = "https://www.gannett-cdn.com/presto/2018/08/23/PPHX/c6bf90a6-362d-4e61-ac2e-a21bbc4318ab-Lion2.jpg?crop=959,540,x0,y295&width=3200&height=1680&fit=bounds";
 
+		static string ExStr_TagsToClear_1 =
+@"<!DOCTYPE html>
+<html lang=[Q]en[Q]>
+<head>
+<meta charset=[Q]utf-8[Q]>
+<title>Title Test!</title>
+<meta name=[Q]viewport[Q] content=[Q]width=device-width[Q]>
+<style>
+  * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+	html {
+	  font-size: 100%;
+	  -webkit-text-size-adjust: 100%;
+	  -ms-text-size-adjust: 100%;
+	}
+
+	a:focus {
+	  outline: thin dotted #333;
+	  outline: 5px auto -webkit-focus-ring-color;
+	  outline-offset: -2px;
+	}
+
+  @media (min-width: 20em) {
+    .col {
+      float: left;
+      width: 50%;
+    }
+  }
+</style>
+<script src=[Q]https://cool.com/example.js[Q]></script>
+</head>
+<body>
+<header>
+  <h1>Howdy, I'm h1 text within a header tag</h1>
+</header>
+
+<nav>I'm plain text within a nav bar</nav>
+
+<p>Howdy I'm just in a normal p</p>
+
+<div class=[Q]row[Q]>
+  <form method=[Q]GET[Q] action=[Q]/example[Q] id=[Q]options[Q]>
+
+	<p>I'm text within a p within a form</p>  
+  </form>
+</div>
+
+<footer>Howdy I'm plain-text in a footer
+<p>I'm plain-text in a p in a footer</p></footer>
+<script>
+  ;(function () {
+    var input = document.getElementById('form')
+	
+   // blah blah
+
+    function doDa () {
+      output.something = 13;
+    }
+
+  })()
+</script>
+</body>
+</html>
+".Replace("[Q]", "\"");
+
+		static string MS_Html_Ex1 =
+@"<p>Lorem ipsum dolor sit amet</p><p><!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:AllowPNG></o:AllowPNG>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:View>Normal</w:View>
+  <w:Zoom>0</w:Zoom>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:LidThemeOther>EN-US</w:LidThemeOther>
+  <w:LidThemeAsian>X-NONE</w:LidThemeAsian>
+  <w:Compatibility>
+   <w:BreakWrappedTables></w:BreakWrappedTables>
+   <w:SnapToGridInCell></w:SnapToGridInCell>
+  </w:Compatibility>
+  <m:mathPr>
+   <m:mathFont m:val=[Q]Cambria Math[Q]></m:mathFont>
+   <m:brkBin m:val=[Q]before[Q]></m:brkBin>
+  </m:mathPr></w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState=[Q]false[Q] DefUnhideWhenUsed=[Q]false[Q]
+  DefSemiHidden=[Q]false[Q] DefQFormat=[Q]false[Q] DefPriority=[Q]99[Q]
+  LatentStyleCount=[Q]371[Q]>
+  <w:LsdException Locked=[Q]false[Q] Priority=[Q]0[Q] QFormat=[Q]true[Q] Name=[Q]Normal[Q]></w:LsdException>
+  <w:LsdException Locked=[Q]false[Q] Priority=[Q]9[Q] QFormat=[Q]true[Q] Name=[Q]heading 1[Q]></w:LsdException>
+  <w:LsdException Locked=[Q]false[Q] Priority=[Q]9[Q] SemiHidden=[Q]true[Q] UnhideWhenUsed=[Q]true[Q] QFormat=[Q]true[Q] Name=[Q]heading 2[Q]></w:LsdException>
+  <w:LsdException Locked=[Q]false[Q] SemiHidden=[Q]true[Q] UnhideWhenUsed=[Q]true[Q] Name=[Q]header[Q]></w:LsdException>
+  <w:LsdException Locked=[Q]false[Q] Priority=[Q]73[Q] Name=[Q]Colorful Grid Accent 6[Q]></w:LsdException>
+  <w:LsdException Locked=[Q]false[Q] Priority=[Q]19[Q] QFormat=[Q]true[Q] 
+  Name=[Q]Subtle Emphasis[Q]></w:LsdException>
+  <w:LsdException Locked=[Q]false[Q] Priority=[Q]21[Q] QFormat=[Q]true[Q] 
+  Name=[Q]Intense Emphasis[Q]></w:LsdException>
+  <w:LsdException Locked=[Q]false[Q] Priority=[Q]31[Q] QFormat=[Q]true[Q] Name=[Q]Subtle Reference[Q]></w:LsdException>
+  <w:LsdException Locked=[Q]false[Q] Priority=[Q]52[Q] Name=[Q]List Table 7 Colorful Accent 6[Q]></w:LsdException>
+ </w:LatentStyles>
+</xml><![endif]--><!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:[Q]Table Normal[Q];
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-parent:[Q][Q];
+	font-size:11.0pt;
+	font-family:[Q]Calibri[Q],sans-serif;
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:[Q]Times New Roman[Q];
+	mso-bidi-theme-font:minor-bidi;}
+</style>
+<![endif]-->
+
+</p><p class=[Q]MsoNormal[Q]><span style=[Q]font-size:12.0pt[Q]>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <br></span></p><p class=[Q]MsoNormal[Q]><span style=[Q]font-size:12.0pt[Q]>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span style=[Q]mso-spacerun:yes[Q]>&nbsp; </span>Lorem ipsum dolor sit. <br></span></p><p class=[Q]MsoNormal[Q]><span style=[Q]font-size:12.0pt[Q]>Lorem 
+
+ipsum dolor 
+
+sit.</span></p>
+
+<p class=[Q]MsoNormal[Q]><span style=[Q]font-size:12.0pt[Q]>Lorem ipsum dolor sit amet, 
+consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore 
+magna aliqua.</span></p>
+
+<p class=[Q]MsoNormal[Q]><span style=[Q]font-size:12.0pt[Q]><span style=[Q]mso-spacerun:yes[Q]></span>Lorem 
+ipsum dolor sit amet, consectetur 
+adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna 
+aliqua. </span></p>
+
+<p class=[Q]MsoNormal[Q]><span style=[Q]font-size:12.0pt[Q]>Lorem 
+ipsum dolor sit amet</span></p>
+
+<p class=[Q]MsoNormal[Q]><span style=[Q]font-size:12.0pt[Q]>&nbsp;</span></p>
+".Replace("[Q]", "\"");
 	}
 }

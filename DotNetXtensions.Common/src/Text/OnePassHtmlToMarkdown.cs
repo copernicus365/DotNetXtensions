@@ -27,6 +27,16 @@ namespace DotNetXtensionsPrivate
 
 		bool currBlkIsBQ => currBigBlk == BigBlockElem.BLOCKQUOTE;
 
+		/// <summary>
+		/// ONLY set this for tags that MUST have a close tag
+		/// (so avoid tags such as "meta" and so forth).
+		/// </summary>
+		public Dictionary<string, bool> TagsToIgnore { get; set; }
+
+		static Dictionary<string, bool> _TagsToIgnoreDefault =
+			"head,script,style,form,nav"
+			.SplitAndRemoveWhiteSpaceEntries(',')
+			.ToDictionary(val => val, val => false);
 
 		public void Reset(string newHtml = null, bool doMarkdown = true)
 		{
@@ -154,6 +164,14 @@ namespace DotNetXtensionsPrivate
 				bool isStartTagName = XmlConvert.IsStartNCNameChar(nChar);
 				bool isDoctypeOrComment = nChar == '!'; //<!--howdy comment--> or <!DOCTYPE html>
 
+				if (isDoctypeOrComment) {
+					// usually a comment, only once will be a doctype
+					if (isOnComment()) {
+						int countSkipped = skipToCommentEnd();
+						continue;
+					}
+				}
+
 				if (isDoctypeOrComment || !isStartTagName) {
 					skipPastTagEnd();
 
@@ -279,27 +297,33 @@ namespace DotNetXtensionsPrivate
 						}
 					}
 					return false;
+				//default:
+				//	break;
+			}
 
-				default: {
-					// headers h1, h2, etc
-					if (tagNm[0] == 'h') {
-						int hCnt = tagNmIsHeader();
+			// headers h1, h2, etc
+			if (tagNm[0] == 'h') {
+				int hCnt = tagNmIsHeader();
 
-						if (hCnt > 0) {
-							currSmlElm = SmallElem.H;
-							insertNewLinesIfNeededFacingBack(2, true);
+				if (hCnt > 0) {
+					currSmlElm = SmallElem.H;
+					insertNewLinesIfNeededFacingBack(2, true);
 
-							if (doMD) {
-								for (int k = 0; k < hCnt; k++)
-									sb.Append('#');
-								sb.Append(' ');
-							}
-
-							return true;
-						}
+					if (doMD) {
+						for (int k = 0; k < hCnt; k++)
+							sb.Append('#');
+						sb.Append(' ');
 					}
-					break;
+
+					return true;
 				}
+			}
+
+			var skipTagsDict = TagsToIgnore ?? _TagsToIgnoreDefault;
+
+			if (skipTagsDict.ContainsKey(tagNm)) {
+				int skipped = skipToEndTag();
+				return true;
 			}
 
 			if (!sbEmpty() && !sbLast().IsWhitespace())
@@ -533,6 +557,56 @@ namespace DotNetXtensionsPrivate
 				i++;
 		}
 
+		bool isOnComment()
+		{
+			if (i + 2 < len && html[i] == '!') {
+				if (html[i + 1] == '-' && html[i + 2] == '-')
+					return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Skips present position to the final char of the present comment.
+		/// Caller is responsible to validate current pos is actually on a 
+		/// comment. We don't go *pass* the last char, because internal use
+		/// is better this way, allows next loop iteration to handle getting
+		/// 1 past.
+		/// Is guaranteed to increment `i` past it's current position
+		/// at the least. If not found, will set `i` to len (i.e. move forward to 
+		/// end of input).
+		/// </summary>
+		int skipToCommentEnd()
+		{
+			if (i + 3 < len) {
+				int closeCommentIdx = html.IndexOf("-->", i + 3);
+				if (closeCommentIdx > 0) {
+					int countSkipped = closeCommentIdx - i;
+					i = closeCommentIdx + 2; // we DO let 
+					return countSkipped;
+				}
+			}
+			i = len;
+			return -1;
+		}
+
+		int skipToEndTag()
+		{
+			int startIdx = i; //jumpPastStart ? tagNm.Length + 2 : i;
+			if (startIdx < len) {
+			
+				int endTagIdx = html.IndexOf($"</{tagNm}>", startIdx, StringComparison.InvariantCultureIgnoreCase);
+
+				if (endTagIdx > 0) {
+					int countSkipped = endTagIdx - i;
+					i = endTagIdx + tagNm.Length + 2; // we DO let 
+					return countSkipped;
+				}
+			}
+			i = len;
+			return -1;
+		}
+
 		void insertNewLinesIfNeededFacingBack(int count, bool chkBlkQuote, bool isClose = false)
 		{
 			if (count < 1)
@@ -713,6 +787,7 @@ namespace DotNetXtensionsPrivate
 			{ "h4", getti(false, 2, true) },
 			{ "h5", getti(false, 2, true) },
 			{ "h6", getti(false, 2, true) },
+			{ "title", getti(false, 2, true) },
 			{ "div", getti(false, 2, true) },
 			{ "li", getti(false, 1, false) },
 			{ "ul", getti(true, 2, false) },

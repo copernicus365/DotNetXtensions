@@ -12,12 +12,14 @@ namespace DotNetXtensions.Test
 	{
 		static BaseUnitTest() => INIT();
 
+		public static string VsOutLogPath { get; private set; }
+
 		static void INIT()
 		{
 			string logPath = null; // to set on manually here, will override if NotNulle
 
 			if(logPath.IsNulle())
-				logPath = _getBinLogPath("vsOutLog.txt");
+				logPath = _getBinLogPath("VsOutLog");
 
 			DebugWriter.SetConsoleOut(
 				writeToOrigConsoleOutStill: true,
@@ -31,10 +33,14 @@ Log path: ""{logPath}""
 ".Print();
 		}
 
-		static string _getBinLogPath(string fileName)
+		static string _getBinLogPath(string fileNamePrefix = null)
 		{
+			var assm = System.Reflection.Assembly.GetExecutingAssembly();
+			var exAssNm = assm.GetName();
+			string fullNm = exAssNm.Name;
+
 			string path = System.IO.Path.GetDirectoryName(
-				System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase)?
+				exAssNm.CodeBase)?
 				.Replace('\\', '/')
 				.SubstringAfterStartsWith("file:/")
 				.NullIfEmptyTrimmed();
@@ -48,7 +54,10 @@ Log path: ""{logPath}""
 				if (lastIdxBin > 0)
 					path = path.Substring(0, lastIdxBin + 5);
 
-				path = path + fileName;
+				if (fileNamePrefix.IsNulle())
+					fileNamePrefix = "VsTestOutLog";
+
+				VsOutLogPath = path = $"{path}{fileNamePrefix}.{fullNm}.txt";
 			}
 
 			return path;
@@ -68,53 +77,6 @@ Log path: ""{logPath}""
 				})
 				.ToArray();
 			return kvs;
-		}
-
-		public static bool DictionariesAreEqual(Dictionary<string, string> dict, Dictionary<string, string> expectedMatchDict)
-		{
-			var d1 = dict;
-			var d2 = expectedMatchDict;
-			if (d1 == null || d2 == null)
-				return d1 == null && d2 == null;
-
-			if (d1.Count != d2.Count)
-				return false;
-
-			foreach (string key in d1.Keys) {
-				string val = d1[key];
-
-				if (!d2.TryGetValue(key, out string val2))
-					return false;
-
-				if (val != val2)
-					return false;
-			}
-			return true;
-		}
-
-		public static bool DictionariesAreEqual(Dictionary<string, string[]> dict, Dictionary<string, string[]> expectedMatchDict)
-		{
-			var d1 = dict;
-			var d2 = expectedMatchDict;
-			if (d1 == null || d2 == null)
-				return d1 == null && d2 == null;
-
-			if (d1.Count != d2.Count)
-				return false;
-
-			foreach (string key in d1.Keys) {
-				string[] vals = d1[key];
-
-				if (!d2.TryGetValue(key, out string[] vals2))
-					return false;
-
-				if (vals == null || vals2 == null)
-					return vals == vals2;
-
-				return vals.SequenceEqual(vals2);
-			}
-
-			return true;
 		}
 
 	}

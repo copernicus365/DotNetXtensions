@@ -5,7 +5,7 @@ using DotNetXtensions.Text;
 
 namespace DotNetXtensions.Test
 {
-	public class HtmlTagTests
+	public class HtmlTagTests : BaseUnitTest
 	{
 		[Fact]
 		public void BadTag_SpaceBeforeTagName_FAIL()

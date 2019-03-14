@@ -40,6 +40,17 @@ namespace DotNetXtensions.Test
 			MultiValues_CaseSens();
 		}
 
+
+		static void AssertDsEqual(Dictionary<string, string[]> result, Dictionary<string, string[]> expected)
+		{
+			Assert.True(result.DictionariesAreEqual(expected)); // ictionariesAreEqual(result, expected));
+		}
+		static void AssertDsEqual(Dictionary<string, string> result, Dictionary<string, string> expected)
+		{
+			Assert.True(result.DictionariesAreEqual(expected)); // ictionariesAreEqual(result, expected));
+		}
+
+
 		[Fact]
 		public void FirstValue_IgnoreCase()
 		{
@@ -52,7 +63,7 @@ namespace DotNetXtensions.Test
 
 			printDict(result);
 
-			Assert.True(DictionariesAreEqual(result, expected));
+			AssertDsEqual(result, expected);
 		}
 
 		[Fact]
@@ -67,7 +78,7 @@ namespace DotNetXtensions.Test
 
 			printDict(result);
 
-			Assert.True(DictionariesAreEqual(result, expected));
+			AssertDsEqual(result, expected);
 		}
 
 		[Fact]
@@ -82,7 +93,7 @@ namespace DotNetXtensions.Test
 
 			printDict(result);
 
-			Assert.True(DictionariesAreEqual(result, expected));
+			AssertDsEqual(result, expected);
 		}
 
 		[Fact]
@@ -97,7 +108,7 @@ namespace DotNetXtensions.Test
 
 			printDict(result);
 
-			Assert.True(DictionariesAreEqual(result, expected));
+			AssertDsEqual(result, expected);
 		}
 
 
@@ -112,7 +123,7 @@ namespace DotNetXtensions.Test
 
 			printDict2(result);
 
-			Assert.True(DictionariesAreEqual(result, expected));
+			AssertDsEqual(result, expected);
 		}
 
 		[Fact]
@@ -126,7 +137,7 @@ namespace DotNetXtensions.Test
 
 			printDict2(result);
 
-			Assert.True(DictionariesAreEqual(result, expected));
+			AssertDsEqual(result, expected);
 		}
 
 

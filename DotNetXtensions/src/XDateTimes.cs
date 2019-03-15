@@ -895,6 +895,13 @@ namespace DotNetXtensionsPrivate
 		public static DateTimeOffset ConvertUtcTimeToDateTimeOffset(this DateTime dt, TimeZoneInfo tzInfo)
 			=> ToDateTimeOffset(dt, tzInfo.GetUtcOffset(dt), isUtc: true);
 
+		/// <summary>
+		/// Returns the UtcNow time converted to an offset matching 
+		/// input tz. Same can be performed by calling, as this does,
+		/// <see cref="ToDateTimeOffset(DateTimeOffset, TimeZoneInfo, bool)"/>,
+		/// with `keepUtcTime: true`.
+		/// </summary>
+		/// <param name="tzi"></param>
 		public static DateTimeOffset ToDateTimeOffsetNow(this TimeZoneInfo tzi)
 		{
 			if (tzi != null)

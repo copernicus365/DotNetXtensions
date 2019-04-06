@@ -1,10 +1,10 @@
 using System;
-using Xunit;
 using DotNetXtensions;
 using System.Web;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace DotNetXtensions.Test
 {
@@ -78,6 +78,22 @@ Log path: ""{logPath}""
 				.ToArray();
 			return kvs;
 		}
+
+
+
+		public static T[] tarray<T>(params T[] arr) => arr;
+
+
+
+		public static DateTime[] AddMinutesArr(DateTime dt, params double[] minsFromBase)
+		{
+			return minsFromBase.E()
+				.Select(diff => dt.AddMinutes(diff))
+				.ToArray();
+		}
+
+		public void Fail() => Assert.True(false);
+
 
 	}
 }

@@ -15,7 +15,7 @@ namespace DotNetXtensions.Globalization
 	/// </summary>
 	public class TZKeyValues
 	{
-		string[] m_values;
+		string[] m_ExtraValues;
 
 		public TZKeyValues() { }
 
@@ -29,19 +29,44 @@ namespace DotNetXtensions.Globalization
 
 		public string Value { get; set; }
 
-		public string[] Values
+		/// <summary>
+		/// This is the old logic: It basically is doing this:
+		/// IF Value hasn't been set yet, AND if input array is not Nulle,
+		/// then set Value to the first item in this array, and then set ExtraValues to
+		/// any subsequent (greater than Length 1) values in input array if there are any
+		/// (else ExtraValues will remain null). 
+		/// OTHERWISE, i.e. if Value is already non-null, OR if input array is null or empty, 
+		/// then just sets ExtraValues directly to this input array.
+		/// </summary>
+		/// <param name="value"></param>
+		public void SetValues(string[] value)
 		{
-			get { return m_values; }
-			set
-			{
-				if (Value == null && value != null && value.Length > 0) {
-					Value = value[0];
-					if (value.Length > 1)
-						m_values = value.Skip(1).ToArray();
-				}
-				else
-					m_values = value;
+			// note (2019/04): This was the orig logic for the setter (from like 2012), 
+			// I *don't* like some of this, but need to carefully go thru all calls before 
+			// changing any of this logic. Pry will make this "SetValuesOrig" and Obsolete,
+			// etc, but a lot of things hang on this, so not willing to change it all yet, 
+			if (Value == null && value.NotNulle()) { // I particularly don't like 
+				Value = value[0];
+				if (value.Length > 1)
+					m_ExtraValues = value.Skip(1).ToArray();
 			}
+			else
+				m_ExtraValues = value;
+		}
+
+		public string[] ExtraValues
+		{
+			get => m_ExtraValues;
+			//private set // note 2019/04: We set this to private, then removed the whole setter to SetValues (soon: SetValuesOrig)
+			//{
+			//	if (Value == null && value.NotNulle()) {
+			//		Value = value[0];
+			//		if (value.Length > 1)
+			//			m_ExtraValues = value.Skip(1).ToArray();
+			//	}
+			//	else
+			//		m_ExtraValues = value;
+			//}
 		}
 
 		public override string ToString()

@@ -86,14 +86,14 @@ namespace DotNetXtensions.Globalization
 				}
 				else {
 					if (group != null && group.Count > 0)
-						kvsArr[lastI].Values = group.ToArray();
+						kvsArr[lastI].SetValues(group.ToArray()); // kvsArr[lastI].ExtraValues = group.ToArray();
 					lastI = i;
 					group = null;
 				}
 			}
 
 			if (group != null && group.Count > 0)
-				kvsArr[kvsArr.Length - 1].Values = group.ToArray();
+				kvsArr[kvsArr.Length - 1].SetValues(group.ToArray()); //.ExtraValues = group.ToArray();
 
 			kvsArr = kvsArr
 				.Where(v => v.Key != null)
@@ -103,7 +103,7 @@ namespace DotNetXtensions.Globalization
 			for (int i = 0; i < kvsArr.Length; i++) {
 
 				string val = kvsArr[i].Value;
-				var values = kvsArr[i].Values;
+				var values = kvsArr[i].ExtraValues;
 
 				if (!val.StartsWith("001_"))
 					throw new Exception();
@@ -112,7 +112,7 @@ namespace DotNetXtensions.Globalization
 					continue;
 
 				if (values.Length == 0) {
-					kvsArr[i].Values = null;
+					kvsArr[i].SetValues(null); //.ExtraValues = null;
 					continue;
 				}
 
@@ -124,16 +124,18 @@ namespace DotNetXtensions.Globalization
 					if (values[j] == orig001Value)
 						values[j] = null;
 
-				kvsArr[i].Values = values
+				string[] _vals = values
 					.Where(x => x != null)
 					.OrderBy(v => v)
 					.Distinct()
 					.ToArray();
 
-				if (kvsArr[i].Values.Length == 0)
-					kvsArr[i].Values = null;
+				kvsArr[i].SetValues(_vals); //.ExtraValues = _vals;
 
-				if (kvsArr[i].Values != null && kvsArr[i].Values.FirstOrDefault((x => x == null)) != null)
+				if (kvsArr[i].ExtraValues.Length == 0)
+					kvsArr[i].SetValues(null); //.ExtraValues = null;
+
+				if (kvsArr[i].ExtraValues != null && kvsArr[i].ExtraValues.FirstOrDefault((x => x == null)) != null)
 					throw new Exception();
 			}
 
@@ -165,8 +167,8 @@ namespace DotNetXtensions.Globalization
 				sb.Append("\r\n");
 				sb.Append(kv.Value);
 
-				if (kv.Values != null) {
-					foreach (var val in kv.Values) {
+				if (kv.ExtraValues != null) {
+					foreach (var val in kv.ExtraValues) {
 						sb.Append("\r\n");
 						sb.Append(val);
 					}
@@ -212,7 +214,7 @@ namespace DotNetXtensions.Globalization
 				if (vals.Count == 1)
 					currKv.Value = vals[0];
 				else
-					currKv.Values = vals.ToArray();
+					currKv.SetValues(vals.ToArray()); //.ExtraValues = vals.ToArray();
 
 				i += vals.Count;
 				vals.Clear();
@@ -227,7 +229,7 @@ namespace DotNetXtensions.Globalization
 
 			foreach (var v in windowsTimeZones) {
 				string key = v.Key;
-				string[] values = v.Values;
+				string[] values = v.ExtraValues;
 				tzTimeZonesList.Add(new KeyValuePair<string, string>(v.Value, key));
 				tzDict.Add(v.Value, key);
 				if (values != null && values.Length > 0)
@@ -242,14 +244,16 @@ namespace DotNetXtensions.Globalization
 
 		public static Dictionary<string, string> GetTZTimeZonesDictionaryFromWinZones(TZKeyValues[] windowsTimeZones)
 		{
-			var tzDict = new Dictionary<string, string>(440);
+			var tzDict = new Dictionary<string, string>(500);
 
 			foreach (var v in windowsTimeZones) {
 				string key = v.Key;
-				string[] values = v.Values;
+				string[] extraValues = v.ExtraValues;
+
 				tzDict.Add(v.Value, key);
-				if (values != null && values.Length > 0)
-					foreach (var vl in values) {
+
+				if (extraValues != null && extraValues.Length > 0)
+					foreach (var vl in extraValues) {
 						tzDict.Add(vl, key);
 					}
 			}

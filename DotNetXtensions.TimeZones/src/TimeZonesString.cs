@@ -190,6 +190,7 @@ America/Sao_Paulo
 America/New_York
 America/Detroit
 America/Grand_Turk
+America/Indiana/Indianapolis
 America/Indiana/Petersburg
 America/Indiana/Vincennes
 America/Indiana/Winamac

@@ -13,7 +13,7 @@ namespace DotNetXtensions.Globalization
 			get
 			{
 				if (__TZDictionary == null)
-					__Init();
+					Init();
 				return __TZDictionary;
 			}
 		}
@@ -22,21 +22,21 @@ namespace DotNetXtensions.Globalization
 			get
 			{
 				if (__WinDictionary == null)
-					__Init();
+					Init();
 				return __WinDictionary;
 			}
 		}
 
 		#region Initialize
 
-		public static void Initialize()
-		{
-			if (TZDictionary == null || WinDictionary == null) {
-				TimeZonesGenerator.GetDictionaries(out __WinDictionary, out __TZDictionary);
-			}
-		}
+		//public static void Initialize()
+		//{
+		//	if (TZDictionary == null || WinDictionary == null) {
+		//		TimeZonesGenerator.GetDictionaries(out __WinDictionary, out __TZDictionary);
+		//	}
+		//}
 
-		public static void __Init()
+		public static void Init()
 		{
 			TimeZonesGenerator.GetDictionaries(out __WinDictionary, out __TZDictionary);
 		}
@@ -48,7 +48,7 @@ namespace DotNetXtensions.Globalization
 			if (tzId == null)
 				return null;
 			if (TZDictionary == null)
-				__Init();
+				Init();
 
 			string winZone;
 			if (!TZDictionary.TryGetValue(tzId, out winZone))
@@ -63,7 +63,7 @@ namespace DotNetXtensions.Globalization
 			if (winTZId == null)
 				return null;
 			if (WinDictionary == null)
-				__Init();
+				Init();
 
 			TZKeyValues winZone;
 			if (!WinDictionary.TryGetValue(winTZId, out winZone))

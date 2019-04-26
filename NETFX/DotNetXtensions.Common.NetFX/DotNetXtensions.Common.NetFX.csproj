@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A461BF6F-F5E7-4836-9B5B-80A754EE4E25}</ProjectGuid>
+    <ProjectGuid>{613F3898-F7C6-40C5-AC7E-8E32F16D55CF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DotNetXtensions.Common.NetFX</RootNamespace>
-    <AssemblyName>DotNetXtensions.Common.NetFX</AssemblyName>
+    <RootNamespace>DotNetXtensions.Common2.NetFX</RootNamespace>
+    <AssemblyName>DotNetXtensions.Common2.NetFX</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>TRACE;DEBUG;DNXPublic;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\DotNetXtensions.Common.NetFX.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\DotNetXtensions.Common2.NetFX.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -30,67 +30,100 @@
     <DefineConstants>TRACE;DNXPublic;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\DotNetXtensions.Common.NetFX.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\DotNetXtensions.Common2.NetFX.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Color\ColorRGB.cs">
-      <Link>src\Color\ColorRGB.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Async\AsyncPump.cs">
+      <Link>src\Async\AsyncPump.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Color\Colour.cs">
-      <Link>src\Color\Colour.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Async\ConcurrentTasksQueueHandler.cs">
+      <Link>src\Async\ConcurrentTasksQueueHandler.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Globalization\GeoNames.cs">
-      <Link>src\Globalization\GeoNames.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Async\ConcurrentTasksRunner.cs">
+      <Link>src\Async\ConcurrentTasksRunner.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\KV.cs">
-      <Link>src\KV.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\BiDirectionalDictionary.cs">
+      <Link>src\Collections\BiDirectionalDictionary.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\MimeTypes\BasicMimeTypeEnum.cs">
-      <Link>src\MimeTypes\BasicMimeTypeEnum.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\BinarySearch\BinarySearch.cs">
+      <Link>src\Collections\BinarySearch\BinarySearch.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\MimeTypes\BasicMimeTypesX.cs">
-      <Link>src\MimeTypes\BasicMimeTypesX.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\BinarySearch\BinarySearchFailedLowHigh.cs">
+      <Link>src\Collections\BinarySearch\BinarySearchFailedLowHigh.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Text\CsvFuncs.cs">
-      <Link>src\Text\CsvFuncs.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\BinarySearch\BinarySearchX.cs">
+      <Link>src\Collections\BinarySearch\BinarySearchX.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Text\Diacritics.cs">
-      <Link>src\Text\Diacritics.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\BinarySearch\IndexRangeWindow.cs">
+      <Link>src\Collections\BinarySearch\IndexRangeWindow.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Text\HtmlTag.cs">
-      <Link>src\Text\HtmlTag.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\DropOffStack.cs">
+      <Link>src\Collections\DropOffStack.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Text\OnePassHtmlToMarkdown.cs">
-      <Link>src\Text\OnePassHtmlToMarkdown.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\DropOffStackConcurrent.cs">
+      <Link>src\Collections\DropOffStackConcurrent.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Text\TextFuncs.cs">
-      <Link>src\Text\TextFuncs.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\FixedList.cs">
+      <Link>src\Collections\FixedList.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Text\UriPathInfo.cs">
-      <Link>src\Text\UriPathInfo.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\OrderedDictionary.cs">
+      <Link>src\Collections\OrderedDictionary.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\Text\XmlTextFuncs.cs">
-      <Link>src\Text\XmlTextFuncs.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Collections\Queues\PriorityQueue.cs">
+      <Link>src\Collections\Queues\PriorityQueue.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\TimeZones\TimeZones.cs">
-      <Link>src\TimeZones\TimeZones.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\IO\DebugWriter.cs">
+      <Link>src\IO\DebugWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\TimeZones\TimeZonesGenerator.cs">
-      <Link>src\TimeZones\TimeZonesGenerator.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\PasswordStrengthEvaluator.cs">
+      <Link>src\PasswordStrengthEvaluator.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\TimeZones\TimeZonesString.cs">
-      <Link>src\TimeZones\TimeZonesString.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Reflection\FastInvoke.cs">
+      <Link>src\Reflection\FastInvoke.cs</Link>
     </Compile>
-    <Compile Include="..\..\DotNetXtensions.Common\src\TimeZones\TZKeyValues.cs">
-      <Link>src\TimeZones\TZKeyValues.cs</Link>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Reflection\FastPropertyInfo.cs">
+      <Link>src\Reflection\FastPropertyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Reflection\FastPropertyInfoGroup.cs">
+      <Link>src\Reflection\FastPropertyInfoGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Timers\TimerJob.cs">
+      <Link>src\Timers\TimerJob.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Timers\TimerJobAsync.cs">
+      <Link>src\Timers\TimerJobAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Timers\TimerJobAsync2.cs">
+      <Link>src\Timers\TimerJobAsync2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Types\GuidTimeStamp.cs">
+      <Link>src\Types\GuidTimeStamp.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Types\ValueWrap.cs">
+      <Link>src\Types\ValueWrap.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\Types\XProperty.cs">
+      <Link>src\Types\XProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\XEasy.cs">
+      <Link>src\XEasy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\XMLLinq.cs">
+      <Link>src\XMLLinq.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\XMLSchema.cs">
+      <Link>src\XMLSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\DotNetXtensions.Common\src\XRegex.cs">
+      <Link>src\XRegex.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
+		<Version>3.0.1</Version>
+		<AssemblyVersion>3.0.1.0</AssemblyVersion>
+		<FileVersion>3.0.1.0</FileVersion>
+		<Authors>Nicholas Petersen</Authors>
+		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
+		<PackageTags>mime-type dotnet helper-functions</PackageTags>
+		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>MIME type helper for getting some common ("basic") MIME types, the ability to know their associated file extensions (or to find a MIME type from an extension), and so forth. and their file extensions. This is not intended to be exhaustive, but to represent most of the commonly encountered file / MIME types one encounters particularly on the web.</Description>
+		<PackageReleaseNotes />
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>TRACE;DNXPublic;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DefineConstants>TRACE;DNXPublic;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DotNetXtensions\DotNetXtensions.csproj" />
+	</ItemGroup>
+</Project>

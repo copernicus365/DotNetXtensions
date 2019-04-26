@@ -1,27 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	  <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
+		<Version>3.0.1</Version>
+		<AssemblyVersion>3.0.1.0</AssemblyVersion>
+		<FileVersion>3.0.1.0</FileVersion>
+		<Authors>Nicholas Petersen</Authors>
+		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
+		<PackageTags>json newtonsoft-json extensions dotnet helper-functions</PackageTags>
+		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Some Newtonsoft.JSON helper extension methods and types (JsonConverters). Most important is the extension method on objects exposting a `ToJson` extension method, which allows one to serialize to Json with a single call, while being able to specify whether to indent, to camel-case property names, to serialize enums as strings, and etc. On the other end exposes a DeserializeJson extension method on strings and byte arrays.</Description>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<PackageReleaseNotes />
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;DNXPublic;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-    <DocumentationFile>bin\Debug\netstandard2.0\DotNetXtensions.Json.xml</DocumentationFile>
-    <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>TRACE;DEBUG;DNXPublic;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+		<DocumentationFile>bin\Debug\netstandard2.0\DotNetXtensions.Json.xml</DocumentationFile>
+		<NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;RELEASE;DNXPublic;</DefineConstants>
-    <DocumentationFile>bin\Release\netstandard2.0\DotNetXtensions.Json.xml</DocumentationFile>
-    <NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DefineConstants>TRACE;RELEASE;DNXPublic;</DefineConstants>
+		<DocumentationFile>bin\Release\netstandard2.0\DotNetXtensions.Json.xml</DocumentationFile>
+		<NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DotNetXtensions\DotNetXtensions.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DotNetXtensions\DotNetXtensions.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -6,6 +6,9 @@ using System.Linq;
 #if DNXPublic
 namespace DotNetXtensions
 #else
+
+using DotNetXtensions;
+
 namespace DotNetXtensionsPrivate
 #endif
 {
@@ -425,7 +428,6 @@ namespace DotNetXtensionsPrivate
 
 	static class MTIXte
 	{
-
 		public static BasicMimeTypesX.MTI ExtraExtensions(this BasicMimeTypesX.MTI m, params string[] exts)
 		{
 			if (m.ExtraExts == null)

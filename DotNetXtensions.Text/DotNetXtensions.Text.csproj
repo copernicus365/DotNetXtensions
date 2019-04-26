@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
+		<Version>3.0.1</Version>
+		<AssemblyVersion>3.0.1.0</AssemblyVersion>
+		<FileVersion>3.0.1.0</FileVersion>
+		<Authors>Nicholas Petersen</Authors>
+		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
+		<PackageTags>text-functions xml csv diacritics xml-escape dotnet dotnet-core helper-functions</PackageTags>
+		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Text-oriented functions for working with CSVs, clearing XML tags, Diacritics, a GridOutputBuilder (for outputting lines of output in aligned columns), etc.</Description>
+		<PackageReleaseNotes />
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>TRACE;DNXPublic;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DefineConstants>TRACE;DNXPublic;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DotNetXtensions\DotNetXtensions.csproj" />
+	</ItemGroup>
+</Project>

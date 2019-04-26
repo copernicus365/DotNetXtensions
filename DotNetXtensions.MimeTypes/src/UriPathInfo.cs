@@ -60,7 +60,7 @@ namespace DotNetXtensionsPrivate
 
 			if (qIdx >= 0) {
 				int qLen = len - qIdx;
-				if(qLen > 0) // to remove the '?'
+				if (qLen > 0) // to remove the '?'
 					QueryString = f.Substring(qIdx, qLen);
 				len = len - qLen - 1;
 			}

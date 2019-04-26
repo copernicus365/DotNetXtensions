@@ -6,12 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\DotNetXtensions.Common2\DotNetXtensions.Common2.csproj" />
-    <ProjectReference Include="..\..\DotNetXtensions.Common\DotNetXtensions.Common.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Cryptography\DotNetXtensions.Cryptography.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Json\DotNetXtensions.Json.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Net\DotNetXtensions.Net.csproj" />
-    <ProjectReference Include="..\..\DotNetXtensions.Toolbox\DotNetXtensions.Toolbox.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
     <ProjectReference Include="..\DotNetXtensions.Test\DotNetXtensions.Test.csproj" />
   </ItemGroup>

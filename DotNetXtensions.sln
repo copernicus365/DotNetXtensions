@@ -1,25 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27617.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Common2", "DotNetXtensions.Common2\DotNetXtensions.Common2.csproj", "{58616B55-F84B-489E-9C4A-C5F8C3932EF0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Json", "DotNetXtensions.Json\DotNetXtensions.Json.csproj", "{D4E52102-2786-4530-81A5-EF89684EF9C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Cryptography", "DotNetXtensions.Cryptography\DotNetXtensions.Cryptography.csproj", "{E221F29E-0E03-4418-9AB7-5BC117243A49}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Net", "DotNetXtensions.Net\DotNetXtensions.Net.csproj", "{2C348824-1DEF-4B0E-AB0A-8613D66B388A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Toolbox", "DotNetXtensions.Toolbox\DotNetXtensions.Toolbox.csproj", "{D792CB2F-4E1B-42A1-ADD0-56F9347AE0F6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions", "DotNetXtensions\DotNetXtensions.csproj", "{CC556FD3-4F29-4E95-A1D6-6636C0A2049B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Common", "DotNetXtensions.Common\DotNetXtensions.Common.csproj", "{63E91937-3AF8-4593-B46E-78035A14BE67}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFX", "NETFX", "{C177A79B-6E01-4B73-B27A-87BF7C3ECD7F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetXtensions.Common.NetFX", "NETFX\DotNetXtensions.Common.NetFX\DotNetXtensions.Common.NetFX.csproj", "{A461BF6F-F5E7-4836-9B5B-80A754EE4E25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetXtensions.Cryptography.NetFX", "NETFX\DotNetXtensions.Cryptography.NetFX\DotNetXtensions.Cryptography.NetFX.csproj", "{9B054EC5-3217-4F0F-A93C-56C01DB39BEE}"
 EndProject
@@ -31,13 +23,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetXtensions.NetFX", "NE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetXtensions.Toolbox.NetFX", "NETFX\DotNetXtensions.Toolbox.NetFX\DotNetXtensions.Toolbox.NetFX.csproj", "{3047096A-CB83-477F-822F-E627CC97B7F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetXtensions.Common2.NetFX", "NETFX\DotNetXtensions.Common2.NetFX\DotNetXtensions.Common2.NetFX.csproj", "{613F3898-F7C6-40C5-AC7E-8E32F16D55CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetXtensions.Common.NetFX", "NETFX\DotNetXtensions.Common.NetFX\DotNetXtensions.Common.NetFX.csproj", "{613F3898-F7C6-40C5-AC7E-8E32F16D55CF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{FA2C2B52-7D9F-409E-9129-61C0F1120350}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Test", "Test\DotNetXtensions.Test\DotNetXtensions.Test.csproj", "{778D807F-8196-421C-BBF9-3633F16ED844}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetXtensions.Test.ConsoleApp", "Test\DotNetXtensions.Test.ConsoleApp\DotNetXtensions.Test.ConsoleApp.csproj", "{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Test.ConsoleApp", "Test\DotNetXtensions.Test.ConsoleApp\DotNetXtensions.Test.ConsoleApp.csproj", "{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.MimeTypes", "DotNetXtensions.MimeTypes\DotNetXtensions.MimeTypes.csproj", "{84A71092-2CE0-4C77-9AC9-DBFDDE1B8E09}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.TimeZones", "DotNetXtensions.TimeZones\DotNetXtensions.TimeZones.csproj", "{705932B3-E6CD-410C-949F-88F96B1597B3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Common", "DotNetXtensions.Common\DotNetXtensions.Common.csproj", "{F6133483-1F38-4A24-AC57-4C5CB665E96F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Text", "DotNetXtensions.Text\DotNetXtensions.Text.csproj", "{BCE05AD6-00FC-485B-B2AF-430367C2888E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,10 +45,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{58616B55-F84B-489E-9C4A-C5F8C3932EF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58616B55-F84B-489E-9C4A-C5F8C3932EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58616B55-F84B-489E-9C4A-C5F8C3932EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58616B55-F84B-489E-9C4A-C5F8C3932EF0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D4E52102-2786-4530-81A5-EF89684EF9C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D4E52102-2786-4530-81A5-EF89684EF9C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4E52102-2786-4530-81A5-EF89684EF9C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -61,22 +57,10 @@ Global
 		{2C348824-1DEF-4B0E-AB0A-8613D66B388A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C348824-1DEF-4B0E-AB0A-8613D66B388A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C348824-1DEF-4B0E-AB0A-8613D66B388A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D792CB2F-4E1B-42A1-ADD0-56F9347AE0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D792CB2F-4E1B-42A1-ADD0-56F9347AE0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D792CB2F-4E1B-42A1-ADD0-56F9347AE0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D792CB2F-4E1B-42A1-ADD0-56F9347AE0F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CC556FD3-4F29-4E95-A1D6-6636C0A2049B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CC556FD3-4F29-4E95-A1D6-6636C0A2049B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC556FD3-4F29-4E95-A1D6-6636C0A2049B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC556FD3-4F29-4E95-A1D6-6636C0A2049B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63E91937-3AF8-4593-B46E-78035A14BE67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63E91937-3AF8-4593-B46E-78035A14BE67}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63E91937-3AF8-4593-B46E-78035A14BE67}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63E91937-3AF8-4593-B46E-78035A14BE67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A461BF6F-F5E7-4836-9B5B-80A754EE4E25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A461BF6F-F5E7-4836-9B5B-80A754EE4E25}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A461BF6F-F5E7-4836-9B5B-80A754EE4E25}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A461BF6F-F5E7-4836-9B5B-80A754EE4E25}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B054EC5-3217-4F0F-A93C-56C01DB39BEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B054EC5-3217-4F0F-A93C-56C01DB39BEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B054EC5-3217-4F0F-A93C-56C01DB39BEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -109,12 +93,27 @@ Global
 		{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84A71092-2CE0-4C77-9AC9-DBFDDE1B8E09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84A71092-2CE0-4C77-9AC9-DBFDDE1B8E09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84A71092-2CE0-4C77-9AC9-DBFDDE1B8E09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84A71092-2CE0-4C77-9AC9-DBFDDE1B8E09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{705932B3-E6CD-410C-949F-88F96B1597B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{705932B3-E6CD-410C-949F-88F96B1597B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{705932B3-E6CD-410C-949F-88F96B1597B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{705932B3-E6CD-410C-949F-88F96B1597B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6133483-1F38-4A24-AC57-4C5CB665E96F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6133483-1F38-4A24-AC57-4C5CB665E96F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6133483-1F38-4A24-AC57-4C5CB665E96F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6133483-1F38-4A24-AC57-4C5CB665E96F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCE05AD6-00FC-485B-B2AF-430367C2888E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCE05AD6-00FC-485B-B2AF-430367C2888E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCE05AD6-00FC-485B-B2AF-430367C2888E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCE05AD6-00FC-485B-B2AF-430367C2888E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A461BF6F-F5E7-4836-9B5B-80A754EE4E25} = {C177A79B-6E01-4B73-B27A-87BF7C3ECD7F}
 		{9B054EC5-3217-4F0F-A93C-56C01DB39BEE} = {C177A79B-6E01-4B73-B27A-87BF7C3ECD7F}
 		{B1F5F296-46FB-49A4-99CB-F1A79471B778} = {C177A79B-6E01-4B73-B27A-87BF7C3ECD7F}
 		{D5A9E965-BBED-44F8-AA6E-DC67DDBEEDA7} = {C177A79B-6E01-4B73-B27A-87BF7C3ECD7F}

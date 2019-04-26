@@ -270,8 +270,8 @@ namespace DotNetXtensions.Globalization
 			out Dictionary<string, TZKeyValues> winDict,
 			out Dictionary<string, string> tzDict)
 		{
-			TZKeyValues[] windowsTimeZones;
-			KeyValuePair<string, string>[] tzTimeZones;
+			//TZKeyValues[] windowsTimeZones;
+			//KeyValuePair<string, string>[] tzTimeZones;
 
 			var winKeyVals = ReadTimeZonesPersistStringToWindowsTimeZones(TimeZonesString.TZString);
 

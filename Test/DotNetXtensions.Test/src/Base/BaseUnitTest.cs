@@ -12,14 +12,39 @@ namespace DotNetXtensions.Test
 	{
 		static BaseUnitTest() => INIT();
 
+		public static string AssemblyDirPath { get; private set; }
+		public static string RootProjPath { get; private set; }
+
+		public static string ProjPath(string endPath)
+		{
+			string rootPth = RootProjPath;
+			if (rootPth.IsNulle())
+				return null;
+			return rootPth + endPath;
+		}
+
+		public static string ProjSrcPath(string endPathAfterSrc)
+			=> ProjPath("src/" + endPathAfterSrc);
+
 		public static string VsOutLogPath { get; private set; }
 
 		static void INIT()
 		{
 			string logPath = null; // to set on manually here, will override if NotNulle
 
-			if(logPath.IsNulle())
-				logPath = _getBinLogPath("VsOutLog");
+			if (logPath.IsNulle()) {
+				(string assemblyDir, string path) = _getBinLogPath("VsOutLog");
+				AssemblyDirPath = assemblyDir;
+				logPath = path;
+
+				if (assemblyDir.NotNulle()) {
+					int binIdx = assemblyDir.LastIndexOf(@"/bin/");
+					if (binIdx > 0) {
+						string rootProjPath = assemblyDir.Substring(0, binIdx + 1);
+						RootProjPath = rootProjPath;
+					}
+				}
+			}
 
 			DebugWriter.SetConsoleOut(
 				writeToOrigConsoleOutStill: true,
@@ -33,22 +58,26 @@ Log path: ""{logPath}""
 ".Print();
 		}
 
-		static string _getBinLogPath(string fileNamePrefix = null)
+		static (string assemblyDir, string path) _getBinLogPath(string fileNamePrefix = null)
 		{
 			var assm = System.Reflection.Assembly.GetExecutingAssembly();
 			var exAssNm = assm.GetName();
 			string fullNm = exAssNm.Name;
 
-			string path = System.IO.Path.GetDirectoryName(
+			string dirPath = System.IO.Path.GetDirectoryName(
 				exAssNm.CodeBase)?
 				.Replace('\\', '/')
 				.SubstringAfterStartsWith("file:/")
 				.NullIfEmptyTrimmed();
 
-			if (path.NotNulle()) {
-				
-				if(path.Last() != '/')
-					 path = path + '/';
+			string path = null;
+
+			if (dirPath.NotNulle()) {
+
+				path = dirPath;
+
+				if (path.Last() != '/')
+					 path += '/';
 
 				int lastIdxBin = path.LastIndexOf("/bin/");
 				if (lastIdxBin > 0)
@@ -60,7 +89,7 @@ Log path: ""{logPath}""
 				VsOutLogPath = path = $"{path}{fileNamePrefix}.{fullNm}.txt";
 			}
 
-			return path;
+			return (dirPath, path);
 		}
 
 
@@ -94,6 +123,8 @@ Log path: ""{logPath}""
 
 		public void Fail() => Assert.True(false);
 
+		public void False(bool val) => Assert.True(!val);
 
+		public void True(bool val) => Assert.True(val);
 	}
 }

@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
-		<Version>3.0.1</Version>
-		<AssemblyVersion>3.0.1.0</AssemblyVersion>
-		<FileVersion>3.0.1.0</FileVersion>
+		<Version>3.0.2</Version>
+		<AssemblyVersion>3.0.2.0</AssemblyVersion>
+		<FileVersion>3.0.2.0</FileVersion>
 		<Authors>Nicholas Petersen</Authors>
 		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
 		<PackageTags>time-zones tz globalization dotnet dotnet-core helper-functions</PackageTags>
@@ -17,6 +17,18 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<DefineConstants>TRACE;DNXPublic;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+	  <DocumentationFile>C:\1All\repos\DotNetXtensions\DotNetXtensions.TimeZones\DotNetXtensions.TimeZones.xml</DocumentationFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+	  <DocumentationFile>C:\1All\repos\DotNetXtensions\DotNetXtensions.TimeZones\DotNetXtensions.TimeZones.xml</DocumentationFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net471|AnyCPU'">
+		<DocumentationFile>C:\1All\repos\DotNetXtensions\DotNetXtensions.TimeZones\bin\Release\net471\DotNetXtensions.TimeZones.xml</DocumentationFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net471|AnyCPU'">
+		<DocumentationFile>C:\1All\repos\DotNetXtensions\DotNetXtensions.TimeZones\bin\Debug\net471\DotNetXtensions.TimeZones.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>

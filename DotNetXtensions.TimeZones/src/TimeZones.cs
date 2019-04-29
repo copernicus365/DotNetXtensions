@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace DotNetXtensions.Globalization
 {
+	/// <summary>
+	/// TimeZone helper, allowing conversions from the common TZ ids, to .NET / Windows
+	/// <see cref="TimeZoneInfo"/>s.
+	/// </summary>
 	public class TimeZones
 	{
 		private static Dictionary<string, string> __TZDictionary;

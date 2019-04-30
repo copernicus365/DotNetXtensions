@@ -1,8 +1,5 @@
-﻿#if DNXPublic
+﻿#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
 	/// For types that need to custom serialize to and from a string and that can
@@ -14,8 +11,10 @@ namespace DotNetXtensionsPrivate
 	/// For instance, our "Colour" type (a struct) can implement this interface without necessarily now
 	/// having anything to say or do with Json.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 		interface IStringSerializable
 	{

@@ -3,7 +3,7 @@ using System.Timers;
 
 namespace DotNetXtensions.Timers
 {
-
+	// [Obsolete] // <-- let's mark this obsolete soon...
 	public class TimerJob : IDisposable
 	{
 		#region Fields / Properties
@@ -12,14 +12,12 @@ namespace DotNetXtensions.Timers
 		Action execute;
 		TimeSpan interval;
 		bool isRunning;
-		public Action ExecuteAction
-		{
+		public Action ExecuteAction {
 			get { return execute; }
 			set { execute = value; }
 		}
 
-		public TimeSpan Interval
-		{
+		public TimeSpan Interval {
 			get { return interval; }
 			set { interval = value; }
 		}
@@ -36,7 +34,7 @@ namespace DotNetXtensions.Timers
 		{
 			this.execute = execute;
 			this.interval = interval;
-			
+
 			if (startImmediately)
 				Start(executeImmediately);
 		}
@@ -76,7 +74,8 @@ namespace DotNetXtensions.Timers
 					isRunning = true;
 					timer.Enabled = false;
 					Execute();
-				} finally {
+				}
+				finally {
 					isRunning = false;
 					timer.Enabled = true;
 				}

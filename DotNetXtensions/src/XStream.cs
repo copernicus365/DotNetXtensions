@@ -1,18 +1,18 @@
 using System;
 using System.IO;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
 	/// Extension methods for Streams.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
+
 	static class XStream
 	{
 		#region Buffer Size

@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-
-using DotNetXtensions;
-
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
-	/// A type for working with mimetypes.
+	/// A type for working with basic mime types.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
+
 	static class BasicMimeTypesX
 	{
 

@@ -27,7 +27,7 @@ namespace DotNetXtensions.Json
 	/// but until then this class makes available such functionality in a pretty good way, about as good as you could hope for. 
 	/// In fact it is a lot terser than the ternary (if condition return null else object) route anyways.
 	/// </summary>
-#if DNXPublic
+#if !DNXPrivate
 	public
 #endif
 	static class JSON

@@ -5,24 +5,39 @@
 		<Version>3.0.1</Version>
 		<AssemblyVersion>3.0.1.0</AssemblyVersion>
 		<FileVersion>3.0.1.0</FileVersion>
+		<Authors>Nicholas Petersen</Authors>
+		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
+		<PackageTags>Hashes SHA XZip ZipArchive RandomStringGenerator RandomNumbers CryptoRandom RNGCryptoServiceProvider dotnet helper-functions random cryptography</PackageTags>
+		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>
+			Some cryptography and compression related helper extension methods and types. 
+			Extension methods that make it easy to get SHA hashes on strings and byte-arrays.
+			XZip which makes it easy to convert byte arrays and Streams to and from a ZipArchive
+			(a zip file). RandomStringGenerator and RandomNumbers types, a PasswordStrengthEvaluator, and
+			a CryptoRandom type (which inherits Random), which allows semi-crytographically secure random
+			generation, based on RNGCryptoServiceProvider, but which uses a caching system that greatly 
+			expediates performance.
+		</Description>
+		<PackageReleaseNotes />
+		<Description></Description>
+		<NoWarn>1701;1702;1705;0159;1591;</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DefineConstants>TRACE;DEBUG;DNXPublic;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-		<DocumentationFile>bin\Debug\netstandard2.0\DotNetXtensions.Cryptography.xml</DocumentationFile>
-		<NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
+		<DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+		<DocumentationFile>\bin\Debug\netstandard2.0\DotNetXtensions.Cryptography.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DefineConstants>TRACE;RELEASE;DNXPublic;</DefineConstants>
-		<DocumentationFile>bin\Release\netstandard2.0\DotNetXtensions.Cryptography.xml</DocumentationFile>
-		<NoWarn>1701;1702;1705;0159;1591;0168;0169;0414</NoWarn>
+		<DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+		<DocumentationFile>\bin\Release\netstandard2.0\DotNetXtensions.Cryptography.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="src\_Exclude\**" />
-		<EmbeddedResource Remove="src\_Exclude\**" />
-		<None Remove="src\_Exclude\**" />
+	  <Compile Remove="src\exclude\**" />
+	  <EmbeddedResource Remove="src\exclude\**" />
+	  <None Remove="src\exclude\**" />
 	</ItemGroup>
 
 	<ItemGroup>

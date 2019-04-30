@@ -6,17 +6,16 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
-	/// Extension methods for Types.
+	/// Extension methods for Type.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XType
 	{

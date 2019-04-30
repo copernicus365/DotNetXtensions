@@ -5,17 +5,16 @@ using System.Web;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
 	/// Extension methods for numbers, math, and related functions.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XNumeric
 	{

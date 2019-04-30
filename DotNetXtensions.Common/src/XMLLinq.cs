@@ -5,17 +5,16 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
-	/// Contains Linq to Xml extension methods.
+	/// Includes LINQ to Xml extension methods.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XMLLinq
 	{

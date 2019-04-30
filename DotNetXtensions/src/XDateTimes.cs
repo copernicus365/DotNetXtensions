@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
-	/// Extension methods for DateTimes and TimeSpans.
+	/// Extension methods for DateTimes / DateTimeOffsets and for TimeSpans.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XDateTimes
 	{

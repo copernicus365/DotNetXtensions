@@ -16,7 +16,7 @@ namespace DotNetXtensions
 	/// (NOTE: In future should we combine this with <see cref="JSON"/> class? There's pros and cons
 	/// to each. The stuff here is a lot more technical and not about simply LINQ constructing. Cogitating...)
 	/// </summary>
-#if DNXPublic
+#if !DNXPrivate
 	public
 #endif
 	static class XJson
@@ -143,7 +143,9 @@ namespace DotNetXtensions
 						enumConv = new StringEnumConverter();
 						list.Add(enumConv);
 					}
+#pragma warning disable CS0618 // Type or member is obsolete
 					enumConv.CamelCaseText = camelCaseEnumText;
+#pragma warning restore CS0618 // Type or member is obsolete
 				}
 				else if(list.NotNulle()) {
 					int foundIdx = list.FindIndex(c => c is StringEnumConverter);
@@ -286,7 +288,7 @@ namespace DotNetXtensions
 
 namespace DotNetXtensions.Json
 {
-#if DNXPublic
+#if !DNXPrivate
 	public
 #endif
 	static class XJson

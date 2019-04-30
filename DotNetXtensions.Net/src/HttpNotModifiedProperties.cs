@@ -41,33 +41,6 @@ namespace DotNetXtensions.Net
 			return EqualContentLengthIsNotModified && headerContentLength > 0 && ContentLength == headerContentLength;
 		}
 
-
-		/////// <summary>
-		/////// Special property that may be used in addition to the official <see cref="HttpNotModifiedProperties"/>,
-		/////// to be used if desired when the response represents a list of items (like an RSS feed), with this property 
-		/////// representing the count of items in the list.
-		/////// </summary>
-		////public int? ItemsCount { get; set; }
-
-		/////// <summary>
-		/////// Special property that may be used in addition to the official <see cref="HttpNotModifiedProperties"/>,
-		/////// to be used if desired when the response represents a list of items (like an RSS feed), with this property 
-		/////// representing the first item id.
-		/////// </summary>
-		////public string FirstItemId { get; set; }
-
-		/////// <summary>
-		/////// Special property that may be used in addition to the official <see cref="HttpNotModifiedProperties"/>,
-		/////// with this property representing a hash that if equal would represent the response is not-modified (example:
-		/////// all the ids in the feed could be hashed, if all the same, it could represent no new items).
-		/////// </summary>
-		////public string Hash { get; set; }
-
-
-
-
-
-
 		/// <summary>
 		/// Resets the three HTTP values (ETag, ContentLength, and LastModified) to null values
 		/// but leaves the other (3) in places (e.g. FirstItemId).
@@ -95,3 +68,24 @@ namespace DotNetXtensions.Net
 
 	}
 }
+
+/////// <summary>
+/////// Special property that may be used in addition to the official <see cref="HttpNotModifiedProperties"/>,
+/////// to be used if desired when the response represents a list of items (like an RSS feed), with this property 
+/////// representing the count of items in the list.
+/////// </summary>
+////public int? ItemsCount { get; set; }
+
+/////// <summary>
+/////// Special property that may be used in addition to the official <see cref="HttpNotModifiedProperties"/>,
+/////// to be used if desired when the response represents a list of items (like an RSS feed), with this property 
+/////// representing the first item id.
+/////// </summary>
+////public string FirstItemId { get; set; }
+
+/////// <summary>
+/////// Special property that may be used in addition to the official <see cref="HttpNotModifiedProperties"/>,
+/////// with this property representing a hash that if equal would represent the response is not-modified (example:
+/////// all the ids in the feed could be hashed, if all the same, it could represent no new items).
+/////// </summary>
+////public string Hash { get; set; }

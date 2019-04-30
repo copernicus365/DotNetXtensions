@@ -22,7 +22,7 @@ namespace DotNetXtensions.Compression
 	public class ZipArchiveDictionary<T> : ZipArchive, IDictionary<string, T>
 	{
 
-		Func<byte[], T> converter = null;
+		//Func<byte[], T> converter = null;
 
 
 		/// <summary>

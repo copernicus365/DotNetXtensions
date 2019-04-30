@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.Net.Http;
-//using System.Net.Http.Formatting;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using DotNetXtensions;
-using System.Threading;
+using System.Net.Http;
+
+//using System.Net.Http.Formatting;
+//using System.Net.Http.Headers;
 
 namespace DotNetXtensions.Net
 {
-
 	/// <summary>
 	/// Provides a fluid, user-friendly way of creating a FormUrlEncodedContent object
 	/// with its values (chain the Add methods, followed by ToFormUrlEncodedContent,
@@ -53,6 +48,4 @@ namespace DotNetXtensions.Net
 		}
 
 	}
-
-
 }

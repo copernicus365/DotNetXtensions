@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
+{
+	public
 #else
 namespace DotNetXtensionsPrivate
-#endif
 {
-#if DNXPublic
-	public
 #endif
 		class StartsWithComparer : IComparer<string>
 	{

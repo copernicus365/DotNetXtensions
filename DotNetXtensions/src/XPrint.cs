@@ -5,17 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
+{
+	public
 #else
 namespace DotNetXtensionsPrivate
-#endif
 {
-	/// <summary>
-	/// Extension methods for Collections.
-	/// </summary>
-#if DNXPublic
-	public
 #endif
 	static class XPrint
 	{

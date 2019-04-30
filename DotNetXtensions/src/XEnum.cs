@@ -4,11 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
 	/// Inspired by:
@@ -17,15 +14,17 @@ namespace DotNetXtensionsPrivate
 	/// https://code.google.com/p/unconstrained-melody/
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XEnum<T> where T : struct, IConvertible
 	{
 		// FIELDS
 		static int m_Count;
 		static bool m_IsSequential;
-		static bool m_CaseInsensitive;
+		//static bool m_CaseInsensitive;
 		static string[] m_Names;
 		static T[] m_Values;
 		static int[] m_NValues;

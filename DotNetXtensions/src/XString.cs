@@ -6,18 +6,18 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
 	/// Extension methods for strings.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
+
 	static class XString
 	{
 		#region All

@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
 	/// Class useful for being able to send in a simple
@@ -17,8 +14,10 @@ namespace DotNetXtensionsPrivate
 	/// case for instance with Array and many other CLR types.
 	/// </summary>
 	/// <typeparam name="T">Type.</typeparam>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	class ComparerX<T> : Comparer<T>, IEqualityComparer<T>
 	{

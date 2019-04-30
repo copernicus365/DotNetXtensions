@@ -9,7 +9,7 @@ namespace DotNetXtensions
 	/// <summary>
 	/// Regular Expression extension methods.
 	/// </summary>
-#if DNXPublic
+#if !DNXPrivate
 	public
 #endif
 	static class XRegex

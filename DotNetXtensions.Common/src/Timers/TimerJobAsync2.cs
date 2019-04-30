@@ -1,10 +1,15 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace DotNetXtensions.Timers
 {
+	/// <summary>
+	/// A simple timer job type, based internally on nothing but Task.Delay*, which makes it easy 
+	/// to run a task at a set-interval, and where the interval doesn't begin again 
+	/// until the last task has ended.
+	/// * (As opposed to being based on System.Timers.Timer, as `TimerJob` and `TimerJobAsync` 
+	/// had long been, both of which are now Obsolete)
+	/// </summary>
 	public class TimerJobAsync2
 	{
 		// --- Fields / Properties ---

@@ -3,17 +3,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
 	/// Extension methods for StringBuilder.
 	/// </summary>
-#if DNXPublic
-	public 
+	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XStringBuilder
 	{

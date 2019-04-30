@@ -4,19 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
 	/// Wraps a generic System.Comparison[T] delegate in an IComparer to make it easy 
 	/// to use a lambda expression for methods that take an IComparer or IComparer T.
 	/// Source: http://www.velir.com/blog/index.php/2011/02/17/ilistt-sorting-a-better-way/
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 		class ComparisonComparer<T> : IComparer<T>, IComparer
 	{
@@ -38,7 +37,7 @@ namespace DotNetXtensionsPrivate
 		}
 	}
 
-#if DNXPublic
+#if !DNXPrivate
 	public
 #endif
 		static class ComparisonComparerZ

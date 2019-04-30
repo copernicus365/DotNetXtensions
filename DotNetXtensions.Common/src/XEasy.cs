@@ -5,7 +5,7 @@ using DotNetXtensions;
 
 namespace DotNetXtensions
 {
-#if DNXPublic
+#if !DNXPrivate
 	public
 #endif
 	static class XEasy

@@ -2,17 +2,13 @@
 using System.Runtime.CompilerServices;
 using System.Text;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
+{
+	public
 #else
 namespace DotNetXtensionsPrivate
-#endif
 {
-	/// <summary>
-	/// ...
-	/// </summary>
-#if DNXPublic
-	public
 #endif
 	static class XChar
 	{

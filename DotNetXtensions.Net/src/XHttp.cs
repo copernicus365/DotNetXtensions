@@ -12,6 +12,11 @@ using System.Diagnostics;
 
 namespace DotNetXtensions.Net
 {
+	/// <summary>
+	/// Type that allows one to make simple http requests with a lot of easily accessible
+	/// response information, to do things like make easy not-modified http requests,
+	/// and so forth.
+	/// </summary>
 	public static class XHttp
 	{
 
@@ -618,12 +623,6 @@ namespace DotNetXtensions.Net
 
 
 		#endregion
-
-
-
-
-
-
 
 		#region --- GetContentXml / SetContentXml ---
 

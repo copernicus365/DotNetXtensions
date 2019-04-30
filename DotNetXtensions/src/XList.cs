@@ -6,17 +6,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
-	/// Extension methods for Collections.
+	/// Extra LINQ type extension methods for Lists.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XList
 	{

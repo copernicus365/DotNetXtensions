@@ -5,17 +5,16 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
-	/// Extension methods for various conversions.
+	/// Base64 extension methods..
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XBase64
 	{

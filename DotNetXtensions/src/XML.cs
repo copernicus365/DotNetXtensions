@@ -7,17 +7,16 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
-	/// Contains XML type functions and extensions.
+	/// Contains XML related functions and extension methods.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XML
 	{
@@ -662,7 +661,7 @@ namespace DotNetXtensionsPrivate
 	/// 	e.Attribute("xmlns").Remove();
 	/// </code></example>
 	/// </summary>
-#if DNXPublic
+#if !DNXPrivate
 	public
 #endif
 	class RootNamespaceIgnorantXmlTextReader : XmlTextReader
@@ -792,7 +791,7 @@ namespace DotNetXtensionsPrivate
 		#endregion GetNamespaceIgnorantXElement
 	}
 
-#if DNXPublic
+#if !DNXPrivate
 	public
 #endif
 	class XmlTextWriterIgnoreInvalidChars : XmlTextWriter

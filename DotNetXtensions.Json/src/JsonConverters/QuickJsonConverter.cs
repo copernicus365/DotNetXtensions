@@ -55,22 +55,22 @@ namespace DotNetXtensions.Json
 		public override bool CanConvert(Type objectType)
 		{
 			timesCanConvertHit++;
-			bool canConv = objectType == _typeT || objectType == _typeTNullable;
+			bool canConv = objectType == TypeT || objectType == TypeTNullable;
 			return canConv;
 		}
 
 
-		static Type _typeT = typeof(T);
-		static Type _typeTNullable;
-		static bool isNullableType;
+		public static readonly Type TypeT = typeof(T);
+		public static readonly Type TypeTNullable;
+		public static readonly bool IsNullableType;
 
 		static QuickJsonConverter()
 		{
-			Type t1 = _typeT.GetUnderlyingTypeIfNullable();
+			Type t1 = TypeT.GetUnderlyingTypeIfNullable();
 			if(t1 != null) {
-				isNullableType = true;
-				_typeTNullable = _typeT;
-				_typeT = t1;
+				IsNullableType = true;
+				TypeTNullable = TypeT;
+				TypeT = t1;
 			}
 		}
 

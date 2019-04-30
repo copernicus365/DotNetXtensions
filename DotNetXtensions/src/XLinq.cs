@@ -7,17 +7,16 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
-	/// Extension methods for Collections.
+	/// Extra LINQ type extension methods, particularly for collections.
 	/// </summary>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
 	static class XLinq
 	{

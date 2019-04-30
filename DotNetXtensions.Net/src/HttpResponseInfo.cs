@@ -6,6 +6,11 @@ using System.Xml.Linq;
 
 namespace DotNetXtensions.Net
 {
+	/// <summary>
+	/// A helpful type for http responses that extends <see cref="HttpNotModifiedProperties"/>, which provides
+	/// information about an Http Response, such as the <see cref="HttpResponseResult"/> and <see cref="HttpStatusCode"/>
+	/// values, whether the request timed out, a headers dictionary, the content of the response, and so forth.
+	/// </summary>
 	public class HttpResponseInfo : HttpNotModifiedProperties
 	{
 		public HttpResponseInfo() { }

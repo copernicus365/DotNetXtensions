@@ -5,11 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
-#else
-namespace DotNetXtensionsPrivate
-#endif
 {
 	/// <summary>
 	/// Task helpers.
@@ -25,10 +22,12 @@ namespace DotNetXtensionsPrivate
 	/// http://stackoverflow.com/questions/5095183/how-would-i-run-an-async-taskt-method-synchronously
 	/// orig: http://social.msdn.microsoft.com/Forums/en/async/thread/163ef755-ff7b-4ea5-b226-bbe8ef5f4796
 	/// </remarks>
-#if DNXPublic
 	public
+#else
+namespace DotNetXtensionsPrivate
+{
 #endif
-		static class XTask
+	static class XTask
 	{
 		public static T RunSync<T>(this Func<Task<T>> func)
 		{

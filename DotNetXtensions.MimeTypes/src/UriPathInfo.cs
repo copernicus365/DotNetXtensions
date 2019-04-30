@@ -1,12 +1,11 @@
 ﻿
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
+{
+	public
 #else
 namespace DotNetXtensionsPrivate
-#endif
 {
-#if DNXPublic
-	public
 #endif
 	struct UriPathInfo
 	{

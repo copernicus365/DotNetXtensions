@@ -11,7 +11,7 @@ namespace DotNetXtensions
 	/// <summary>
 	/// Contains XML type functions and extensions.
 	/// </summary>
-#if DNXPublic
+#if !DNXPrivate
 	public
 #endif
 	static class XMLSchema

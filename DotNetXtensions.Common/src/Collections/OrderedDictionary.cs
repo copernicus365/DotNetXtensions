@@ -436,6 +436,7 @@ namespace DotNetXtensions.Collections // Com.Github.DataStructures
 	{
 		#region --- ToOrderedDictionary ---
 
+#pragma warning disable CS0618 // Type or member is obsolete
 		public static OrderedDictionary<TKey, TValue> ToOrderedDictionary<TKey, TValue>(
 			this IEnumerable<TValue> source, Func<TValue, TKey> keySelector, IEqualityComparer<TKey> comparer = null)
 		{
@@ -450,6 +451,7 @@ namespace DotNetXtensions.Collections // Com.Github.DataStructures
 
 			return d;
 		}
+#pragma warning restore CS0618 // Type or member is obsolete
 
 		#endregion
 

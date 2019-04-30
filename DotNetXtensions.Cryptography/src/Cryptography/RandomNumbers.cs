@@ -39,7 +39,6 @@ namespace DotNetXtensions.Cryptography
 			return intArr;
 		}
 
-
 		public static ulong[] GetRandomLongArray(int length)
 		{
 			if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));

@@ -10,8 +10,6 @@ namespace DotNetXtensions.Compression
 	/// </summary>
 	public static class XZip
 	{
-
-
 		// --- WRITE ZipArchvie ---
 
 		public static void ZipToArchive(this Stream readStream, Stream writeStream, string fileName)

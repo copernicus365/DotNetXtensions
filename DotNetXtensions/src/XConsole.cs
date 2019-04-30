@@ -6,17 +6,13 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 
-#if DNXPublic
+#if !DNXPrivate
 namespace DotNetXtensions
+{
+	public
 #else
 namespace DotNetXtensionsPrivate
-#endif
 {
-	/// <summary>
-	/// Extension methods for byte arrays.
-	/// </summary>
-#if DNXPublic
-	public
 #endif
 	static class XConsole
 	{

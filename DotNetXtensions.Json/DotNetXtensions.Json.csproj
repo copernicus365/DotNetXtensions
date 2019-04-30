@@ -13,9 +13,8 @@
 		<PackageTags>json newtonsoft-json extensions dotnet helper-functions</PackageTags>
 		<PackageReleaseNotes />
 		<Description>
-			Some Newtonsoft.JSON helper extension methods and types (e.g. JsonConverters). Most important is the extension method on objects exposting a useful `ToJson` extension method, which allows one to serialize any object to Json with a single call, while being able to specify whether to indent, to camel-case property names, to serialize enums as strings, and etc. On the other end exposes a DeserializeJson extension method on strings and byte arrays.
-			Nothing earth-shattering here, but helps those cases where you want quick and no-nonsense JSON serialization / 
-			deserialization.
+			Some Newtonsoft.JSON helper extension methods and types (e.g. JsonConverters). Most important is the extension method on objects exposting a useful `ToJson` extension method, which allows one to serialize any object to Json with a single call, while being able to specify whether to indent, to camel-case property names, to serialize enums as strings, and etc. On the other end exposes a DeserializeJson extension method on strings and byte arrays. 
+			Nothing earth-shattering here, but helps those cases where you want quick and no-nonsense JSON serialization / deserialization.
 		</Description>
 		<NoWarn>1701;1702;1705;0159;1591;</NoWarn>
 	</PropertyGroup>

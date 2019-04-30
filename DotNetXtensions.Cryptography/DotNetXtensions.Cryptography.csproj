@@ -6,10 +6,12 @@
 		<AssemblyVersion>3.0.1.0</AssemblyVersion>
 		<FileVersion>3.0.1.0</FileVersion>
 		<Authors>Nicholas Petersen</Authors>
-		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
-		<PackageTags>Hashes SHA XZip ZipArchive RandomStringGenerator RandomNumbers CryptoRandom RNGCryptoServiceProvider dotnet helper-functions random cryptography</PackageTags>
-		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
+		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Cryptography</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Cryptography</PackageProjectUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>Hashes SHA XZip ZipArchive RandomStringGenerator RandomNumbers CryptoRandom RNGCryptoServiceProvider dotnet helper-functions random cryptography</PackageTags>
+		<PackageReleaseNotes />
 		<Description>
 			Some cryptography and compression related helper extension methods and types. 
 			Extension methods that make it easy to get SHA hashes on strings and byte-arrays.
@@ -19,8 +21,6 @@
 			generation, based on RNGCryptoServiceProvider, but which uses a caching system that greatly 
 			expediates performance.
 		</Description>
-		<PackageReleaseNotes />
-		<Description></Description>
 		<NoWarn>1701;1702;1705;0159;1591;</NoWarn>
 	</PropertyGroup>
 

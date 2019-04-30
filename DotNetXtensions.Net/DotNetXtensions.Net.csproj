@@ -6,17 +6,18 @@
 		<AssemblyVersion>3.0.1.0</AssemblyVersion>
 		<FileVersion>3.0.1.0</FileVersion>
 		<Authors>Nicholas Petersen</Authors>
-		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
-		<PackageTags>http not-modified http-headers FormUrlEncodedContent dotnet helper-functions</PackageTags>
-		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
+		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Net</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Net</PackageProjectUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>http not-modified http-headers FormUrlEncodedContent dotnet helper-functions</PackageTags>
+		<PackageReleaseNotes />
 		<Description>
 			`XHttp` makes it easy to make 304 NotModified requests, to get rich request
 			response data in fewer lines of code, makes working with some annoying things
 			like FormUrlEncodedContent simpler, and so forth. Nothing earth-shattering here,
 			just something to simplify http coding a bit.
 		</Description>
-		<PackageReleaseNotes />
 		<NoWarn>1701;1702;1705;0159;1591;</NoWarn>
 	</PropertyGroup>
 

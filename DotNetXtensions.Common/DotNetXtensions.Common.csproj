@@ -6,10 +6,11 @@
 		<AssemblyVersion>3.0.1.0</AssemblyVersion>
 		<FileVersion>3.0.1.0</FileVersion>
 		<Authors>Nicholas Petersen</Authors>
-		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
-		<PackageTags>DropOffStack PriorityQueue binary-search GuidTimeStamp dotnet helper-functions</PackageTags>
-		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
+		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Common</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Common</PackageProjectUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>DropOffStack PriorityQueue binary-search GuidTimeStamp dotnet helper-functions</PackageTags>
 		<PackageReleaseNotes />
 		<Description>
 			A number of helpful collections, such as a DropOffStack, a PriorityQueue, some binary-search

@@ -6,14 +6,17 @@
 		<AssemblyVersion>3.0.1.0</AssemblyVersion>
 		<FileVersion>3.0.1.0</FileVersion>
 		<Authors>Nicholas Petersen</Authors>
-		<Description>A general purpose toolbox of helpful .NET extensions methods (and some types).
-		Helpful extension methods on Dictionary, DateTime / DateTimeOffset, on strings and StringBuilder,
-		on general collections, and so forth.</Description>
-		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
-		<PackageTags>dotnet dotnet-core helper-functions helpers-library</PackageTags>
+		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>dotnet dotnet-core helper-functions helpers-library</PackageTags>
 		<PackageReleaseNotes />
+		<Description>
+			A general purpose toolbox of helpful .NET extensions methods (and some types).
+			Helpful extension methods on Dictionary, DateTime / DateTimeOffset, on strings and StringBuilder,
+			on general collections, and so forth.
+		</Description>
 		<NoWarn>1701;1702;1705;0159;1591;</NoWarn>
 	</PropertyGroup>
 

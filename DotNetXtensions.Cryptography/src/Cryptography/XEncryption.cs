@@ -572,7 +572,13 @@ namespace DotNetXtensions.Cryptography
 		public static byte[] DecryptUrlSafeBase64(this string cryptedBase64Text, string privateKey, string publicKey = null)
 		{
 			byte[] decryptedBytes = __DecryptHub(
-				cryptedBase64Text, privateKey, null, null, null, null, inputStrIsUrlSafeBase64: true);
+				cryptedBase64Text, privateKey, publicKey, null, null, null, inputStrIsUrlSafeBase64: true);
+			return decryptedBytes;
+		}
+		public static byte[] DecryptUrlSafeBase64(this string cryptedBase64Text, byte[] privateKey, byte[] publicKey = null)
+		{
+			byte[] decryptedBytes = __DecryptHub(
+				cryptedBase64Text, null, null, null, privateKey, publicKey, inputStrIsUrlSafeBase64: true);
 			return decryptedBytes;
 		}
 

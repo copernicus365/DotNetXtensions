@@ -23,5 +23,21 @@ namespace DotNetXtensions.Test
 			True(valBack == text1);
 		}
 
+		[Fact]
+		public void Test_UrlSafeBase64_FromBytes()
+		{
+			byte[] pass1Bytes = pass1.GetSHA(SHALevel.SHA256);
+
+			string encVal = text1.EncryptToUrlSafeBase64(pass1Bytes);
+			True(encVal != text1 && encVal.Length > text1.Length);
+
+			string valBack = encVal.DecryptUrlSafeBase64ToString(pass1Bytes);
+			True(valBack == text1);
+
+			string valBack2 = encVal.DecryptUrlSafeBase64(pass1Bytes).GetString();
+			True(valBack == text1);
+		}
+
+
 	}
 }

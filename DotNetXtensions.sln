@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Common", "D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Text", "DotNetXtensions.Text\DotNetXtensions.Text.csproj", "{BCE05AD6-00FC-485B-B2AF-430367C2888E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.XUnit", "DotNetXtensions.XUnit\DotNetXtensions.XUnit.csproj", "{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{BCE05AD6-00FC-485B-B2AF-430367C2888E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCE05AD6-00FC-485B-B2AF-430367C2888E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCE05AD6-00FC-485B-B2AF-430367C2888E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
 		<PackageReference Include="xunit" Version="2.4.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
 			<PrivateAssets>all</PrivateAssets>
@@ -24,6 +24,12 @@
 		<ProjectReference Include="..\..\DotNetXtensions.Text\DotNetXtensions.Text.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.TimeZones\DotNetXtensions.TimeZones.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="DotNetXtensions.XUnit">
+	    <HintPath>..\..\DotNetXtensions.XUnit\bin\Debug\netstandard2.0\DotNetXtensions.XUnit.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

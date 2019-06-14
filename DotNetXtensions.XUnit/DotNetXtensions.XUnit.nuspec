@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <description>$description$</description>
+    <license type="expression">MIT</license>
+    <projectUrl>$RepositoryUrl$</projectUrl>
+    <repository url="$RepositoryUrl$" />
+    <!--<repositoryUrl>$repositoryUrl$</repositoryUrl>-->
+
+    <!--
+    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
+    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>Tag1 Tag2</tags>
+    -->
+
+    <dependencies>
+      <dependency id="DotNetXtensions" version="3.0.1" />
+      <dependency id="DotNetXtensions.Common" version="3.0.1" />
+    </dependencies>
+  </metadata>
+</package>

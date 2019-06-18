@@ -28,7 +28,7 @@
 
 	<ItemGroup>
 	  <Reference Include="DotNetXtensions.XUnit">
-	    <HintPath>..\..\DotNetXtensions.XUnit\bin\Debug\netstandard2.0\DotNetXtensions.XUnit.dll</HintPath>
+	    <HintPath>..\..\DotNetXtensions.XUnit\bin\Release\netstandard2.0\DotNetXtensions.XUnit.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 

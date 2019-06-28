@@ -31,7 +31,8 @@ namespace DotNetXtensions
 			DefaultValueHandling? defValueHandling = null,
 			bool treatAsList = false,
 			bool camelCase = false,
-			bool? camelCaseEnumText = null)
+			bool? camelCaseEnumText = null,
+			bool? singleQuotes = null)
 		{
 			if(treatAsList)
 				obj = new object[] { obj };
@@ -44,38 +45,54 @@ namespace DotNetXtensions
 			if(defValueHandling != null)
 				settings.DefaultValueHandling(defValueHandling.Value);
 
-			string json = settings.Formatting == Formatting.None
-				? JsonConvert.SerializeObject(obj, settings)
-				: _toJsonTabIndented(obj, settings); // JsonConvert.SerializeObject(obj, formatting2, settings);
+			bool useCustomWriter = settings.Formatting != Formatting.None || singleQuotes == true;
+			string jsn = useCustomWriter
+				? _customSerializeJson(obj, settings, singleQuotes: singleQuotes)
+				: JsonConvert.SerializeObject(obj, settings);
 
-			return json;
+			return jsn;
 		}
 
-		public static string ToJson(this object obj, JsonSerializerSettings settings, bool? indent = null, bool? treatAsList = null)
+		public static string ToJson(
+			this object obj, 
+			JsonSerializerSettings settings, 
+			bool? indent = null, 
+			bool? treatAsList = null,
+			bool? singleQuotes = null)
 		{
 			if(treatAsList == true)
 				obj = new object[] { obj };
 
 			// do NOT set this on the settings instance! Allow this to override it which thankfully the JsonConvert.SerializeObject call below allows
-			Formatting? f = indent == null
-				? (Formatting?)null
-				: (indent == true ? Formatting.Indented : Formatting.None);
+			Formatting formatting = settings.Formatting;
+			if(indent != null)
+				formatting = indent == true ? Formatting.Indented : Formatting.None;
 
-			Formatting formatting2 = f ?? settings.Formatting;
+			bool useCustomWriter = formatting != Formatting.None || singleQuotes == true;
 
-			string json = formatting2 == Formatting.None
-				? JsonConvert.SerializeObject(obj, Formatting.None, settings)
-				: _toJsonTabIndented(obj, settings); // JsonConvert.SerializeObject(obj, formatting2, settings);
-			return json;
+			string jsn;
+			if(useCustomWriter) {
+				settings.Formatting = formatting;
+				jsn = _customSerializeJson(obj, settings, singleQuotes: singleQuotes);
+			}
+			else
+				jsn = JsonConvert.SerializeObject(obj, Formatting.None, settings);
+
+			return jsn;
 		}
 
-		static string _toJsonTabIndented(object obj, JsonSerializerSettings settings)
+		static string _customSerializeJson(object obj, JsonSerializerSettings settings, bool? singleQuotes)
 		{
 			using(var sw = new StringWriter())
 			using(var jw = new JsonTextWriter(sw)) {
-				jw.Formatting = Formatting.Indented;
-				jw.IndentChar = '	';
-				jw.Indentation = 1;
+				if(settings.Formatting == Formatting.Indented) {
+					jw.Formatting = Formatting.Indented;
+					jw.IndentChar = '	';
+					jw.Indentation = 1;
+				}
+
+				if(singleQuotes == true)
+					jw.QuoteChar = '\'';
 
 				var js = JsonSerializer.Create(settings);
 
@@ -250,17 +267,17 @@ namespace DotNetXtensions
 
 		#region --- Value handling ---
 
-		public static bool HasValue(this JProperty prop) 
+		public static bool HasValue(this JProperty prop)
 			=> prop != null && prop.ValueObjectNullIfDef() != null;
 
 		public static object ValueObjectNullIfDef(this JProperty prop)
 		{
-			if (prop != null && prop.Value is JValue value) {
+			if(prop != null && prop.Value is JValue value) {
 				object valueObj = value.Value;
-				if (valueObj == null)
+				if(valueObj == null)
 					return null;
 
-				switch (value.Type) {
+				switch(value.Type) {
 					case JTokenType.String:
 						return valueObj.Equals("");
 					case JTokenType.Integer:
@@ -275,7 +292,7 @@ namespace DotNetXtensions
 
 		public static object ValueObject(this JProperty prop)
 		{
-			if (prop.Value is JValue value) {
+			if(prop.Value is JValue value) {
 				object valueObj = value.Value;
 				return valueObj;
 			}

@@ -13,9 +13,9 @@ namespace DotNetXtensions
 		static ProjectPath() => Init();
 
 
-		public static void Init()
+		public static void Init(bool getFromAppDomain = true)
 		{
-			GetAssemblyDirectory(out string baseDir, out string rootProjDir);
+			GetAssemblyDirectory(out string baseDir, out string rootProjDir, getFromAppDomain);
 			BaseDirectory = baseDir;
 			RootProjectDirectory = rootProjDir;
 		}
@@ -41,9 +41,13 @@ namespace DotNetXtensions
 			return root + end;
 		}
 
-		public static void GetAssemblyDirectory(out string baseDirectory, out string rootProjDirectory)
+
+		public static void GetAssemblyDirectory(
+			out string baseDirectory, 
+			out string rootProjDirectory,
+			bool getFromAppDomain = true)
 		{
-			string dir1 = GetExeBaseDirectory()
+			string dir1 = GetExeBaseDirectory(getFromAppDomain)
 				.Replace('\\', '/');
 
 			if (dir1.LastN() != '/')
@@ -60,10 +64,10 @@ namespace DotNetXtensions
 			}
 		}
 
-		public static string GetExeBaseDirectory(bool useAssemblyRoute = false)
+		public static string GetExeBaseDirectory(bool getFromAppDomain = true)
 		{
 			string val;
-			if (!useAssemblyRoute)
+			if (getFromAppDomain)
 				val = AppDomain.CurrentDomain.BaseDirectory;
 			else {
 				string codeBase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;

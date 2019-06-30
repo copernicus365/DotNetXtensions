@@ -4,6 +4,10 @@ using DotNetXtensions.Net;
 
 namespace DotNetXtensions
 {
+	/// <summary></summary>
+	/// <remarks>
+	/// Note: In the future, should we rename this to CachedHttpString (adding Http)?
+	/// </remarks>
 	public abstract class CachedString : ICachedString
 	{
 		public abstract string DocUrl { get; set; }

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DotNetXtensions.Test
 {
-	public class XDateTimes_DateTimeParsing : BaseUnitTest
+	public class XDateTimes_DateTimeParsing : DnxTestBase
 	{
 		[Fact]
 		public void Test_DateTimeStringHasOffset()
@@ -22,7 +22,7 @@ namespace DotNetXtensions.Test
 				("Jan 28, 2014 23:32:32-11:22", true, new TimeSpan(11, 22, 0).Negate()),
 			};
 
-			for (int i = 0; i < dateStrings.Length; i++) {
+			for(int i = 0; i < dateStrings.Length; i++) {
 				(string dateStr, bool hasOffset, TimeSpan expectedOffset) = dateStrings[i];
 
 				bool hadOffset = XDateTimes.DateTimeStringHasOffset(dateStr, out TimeSpan offset);
@@ -37,7 +37,7 @@ namespace DotNetXtensions.Test
 		{
 			var argsArray = ParseDateTimeWithOffsetInfoArgs.GetTestArgs();
 
-			for (int i = 0; i < argsArray.Length; i++) {
+			for(int i = 0; i < argsArray.Length; i++) {
 				ParseDateTimeWithOffsetInfoArgs args = argsArray[i];
 
 				args.AssertIsValid();
@@ -67,7 +67,7 @@ namespace DotNetXtensions.Test
 				this.hasOffset = hasOffset != null
 					? hasOffset.Value
 					: offset != null;
-				if (offset != null)
+				if(offset != null)
 					this.offset = offset.Value;
 			}
 
@@ -89,13 +89,13 @@ namespace DotNetXtensions.Test
 
 					Assert.True(hasOffset == hadOffsetRes);
 
-					if (hasOffset)
+					if(hasOffset)
 						Assert.True(offset == result.Offset);
 
-					if (expectedDTO > DateTimeOffset.MinValue)
+					if(expectedDTO > DateTimeOffset.MinValue)
 						Assert.True(expectedDTO == result && expectedDTO.ToString() == result.ToString());
 				}
-				catch (Exception ex) {
+				catch(Exception ex) {
 					Assert.True(
 						shouldFail &&
 						!handleObsoleteUSTimeZones); // <- latter is only one that should have actually thrown exception

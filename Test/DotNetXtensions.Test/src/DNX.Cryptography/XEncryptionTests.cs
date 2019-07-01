@@ -8,7 +8,7 @@ using DotNetXtensions.Cryptography;
 
 namespace DotNetXtensions.Test
 {
-	public class XEncryptionTests : BaseUnitTest
+	public class XEncryptionTests : DnxTestBase
 	{
 		const string text1 = "Lorem ipsum ... 123";
 		const string pass1 = "someP33";

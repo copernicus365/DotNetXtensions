@@ -5,7 +5,7 @@ using DotNetXtensions.Json;
 
 namespace DotNetXtensions.Test
 {
-	public class XJsonTests : BaseUnitTest
+	public class XJsonTests : DnxTestBase
 	{
 		public class Foo
 		{

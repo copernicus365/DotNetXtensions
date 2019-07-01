@@ -7,7 +7,7 @@ using Xunit;
 
 namespace DotNetXtensions.Test
 {
-	public class StringContainsAnyXmlTagsTests : BaseUnitTest
+	public class StringContainsAnyXmlTagsTests : DnxTestBase
 	{
 		[Fact]
 		public void Null_Fail() =>

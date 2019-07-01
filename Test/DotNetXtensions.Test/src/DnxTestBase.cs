@@ -8,11 +8,10 @@ using System.Linq;
 
 namespace DotNetXtensions.Test
 {
-	public class XDictionary_UnitTests : DnxTestBase
+	public class DnxTestBase : XUnitTestBase
 	{
-		//[Fact]
-		//public void Test11()
-		//{
-		//}
+		public DnxTestBase() : base(true)
+		{
+		}
 	}
 }

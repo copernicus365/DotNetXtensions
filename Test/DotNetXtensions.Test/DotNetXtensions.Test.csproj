@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp2.1</TargetFramework>
+		<TargetFramework>netcoreapp2.2</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<NoWarn>1701;1702;1705;0159;1591;0168;0169;0414;xUnit1013;</NoWarn>
 	</PropertyGroup>
@@ -16,6 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Common\DotNetXtensions.Common.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Cryptography\DotNetXtensions.Cryptography.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Json\DotNetXtensions.Json.csproj" />
@@ -23,13 +24,13 @@
 		<ProjectReference Include="..\..\DotNetXtensions.Net\DotNetXtensions.Net.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Text\DotNetXtensions.Text.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.TimeZones\DotNetXtensions.TimeZones.csproj" />
-		<ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
+		<ProjectReference Include="..\..\DotNetXtensions.XUnit\DotNetXtensions.XUnit.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<!--<ItemGroup>
 	  <Reference Include="DotNetXtensions.XUnit">
-	    <HintPath>..\..\DotNetXtensions.XUnit\bin\Release\netstandard2.0\DotNetXtensions.XUnit.dll</HintPath>
+	    <HintPath>..\..\DotNetXtensions.XUnit\bin\Debug\netstandard2.0\DotNetXtensions.XUnit.dll</HintPath>
 	  </Reference>
-	</ItemGroup>
+	</ItemGroup>-->
 
 </Project>

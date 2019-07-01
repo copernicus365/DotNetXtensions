@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace DotNetXtensions.Test
 {
-	public class XDictionary_NameValueCollection_ToDictionary : BaseUnitTest
+	public class XDictionary_NameValueCollection_ToDictionary : DnxTestBase
 	{
 		public XDictionary_NameValueCollection_ToDictionary()
 		{

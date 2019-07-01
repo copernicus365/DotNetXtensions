@@ -7,7 +7,7 @@ using Xunit;
 
 namespace DotNetXtensions.Test
 {
-	public class TZ_GenTests : BaseUnitTest
+	public class TZ_GenTests : DnxTestBase
 	{
 		[Fact]
 		public void TestNewIndianaTZ()

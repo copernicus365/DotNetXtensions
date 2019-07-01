@@ -3,6 +3,7 @@ using System.IO;
 
 namespace DotNetXtensions
 {
+	/// <summary>*</summary>
 	public static class ProjectPath
 	{
 		public static string BaseDirectory { get; set; }

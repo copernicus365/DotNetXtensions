@@ -19,11 +19,11 @@
 		<ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Common\DotNetXtensions.Common.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Cryptography\DotNetXtensions.Cryptography.csproj" />
+		<ProjectReference Include="..\..\DotNetXtensions.Globalization\DotNetXtensions.Globalization.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Json\DotNetXtensions.Json.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.MimeTypes\DotNetXtensions.MimeTypes.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Net\DotNetXtensions.Net.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Text\DotNetXtensions.Text.csproj" />
-		<ProjectReference Include="..\..\DotNetXtensions.TimeZones\DotNetXtensions.TimeZones.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.XUnit\DotNetXtensions.XUnit.csproj" />
 	</ItemGroup>
 

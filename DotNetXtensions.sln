@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Test.Consol
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.MimeTypes", "DotNetXtensions.MimeTypes\DotNetXtensions.MimeTypes.csproj", "{84A71092-2CE0-4C77-9AC9-DBFDDE1B8E09}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.TimeZones", "DotNetXtensions.TimeZones\DotNetXtensions.TimeZones.csproj", "{705932B3-E6CD-410C-949F-88F96B1597B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Globalization", "DotNetXtensions.Globalization\DotNetXtensions.Globalization.csproj", "{705932B3-E6CD-410C-949F-88F96B1597B3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Common", "DotNetXtensions.Common\DotNetXtensions.Common.csproj", "{F6133483-1F38-4A24-AC57-4C5CB665E96F}"
 EndProject

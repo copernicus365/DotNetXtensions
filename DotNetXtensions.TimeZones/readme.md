@@ -1,2 +1,0 @@
-# DotNetXtensions.TimeZones
-

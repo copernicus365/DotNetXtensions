@@ -546,24 +546,26 @@ namespace DotNetXtensions.Globalization
 			return XEnum<USCanadaState>.Value(GetLongStateName(value));
 		}
 
-		public static GeoCountry? ToCountryOrNull(string value)
+		public static GeoCountry? ToCountryOrNull(string value, bool includeNone = false)
 		{
 			Init();
 			if(!value.IsNulle()) {
-				GeoCountry val;
-				if(XEnum<GeoCountry>.TryGetValue(GetLongCountryName(value), out val))
-					return val;
+				if(XEnum<GeoCountry>.TryGetValue(GetLongCountryName(value), out GeoCountry val)) {
+					if(val != GeoCountry.None || includeNone)
+						return val;
+				}
 			}
 			return null;
 		}
 
-		public static USCanadaState? ToStateOrNull(string value)
+		public static USCanadaState? ToStateOrNull(string value, bool includeNone = false)
 		{
 			Init();
 			if(!value.IsNulle()) {
-				USCanadaState val;
-				if(XEnum<USCanadaState>.TryGetValue(GetLongStateName(value), out val))
-					return val;
+				if(XEnum<USCanadaState>.TryGetValue(GetLongStateName(value), out USCanadaState val)) {
+					if(val != USCanadaState.None || includeNone)
+						return val;
+				}
 			}
 			return null;
 		}

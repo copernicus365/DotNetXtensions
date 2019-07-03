@@ -15,5 +15,15 @@ namespace DotNetXtensions.Test
 			string genCode = GeoNames.GetGeoNamesEnumsCode();
 			True(genCode.NotNulle());
 		}
+
+		[Fact]
+		public void Test_ToCountryOrNull()
+		{
+			True(GeoNames.ToCountryOrNull("United States") == GeoCountry.United_States);
+
+			True(GeoNames.ToCountryOrNull("None") == null);
+
+			True(GeoNames.ToCountryOrNull("None", includeNone: true) == GeoCountry.None);
+		}
 	}
 }

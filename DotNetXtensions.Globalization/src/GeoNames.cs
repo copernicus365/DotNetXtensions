@@ -53,17 +53,37 @@ namespace DotNetXtensions.Globalization
 
 		static GeoNames()
 		{
-			GeoCountries = GeoCountriesDict.Values.ToArray().Sort();
-			USCanadaStates = USCanadaStatesDict.Values.ToArray().Sort();
+			// ----- COUNTRIES -----
 
+			// NOTE: GeoCountriesDict is foundational one (already inited)
+
+			GeoCountries = GeoCountriesByAbbreviationDict.Values.ToArray().Sort();
 			GeoCountriesOrdered = GeoCountries.OrderBy(s => s).ToArray();
-			USCanadaStatesOrdered = USCanadaStates.OrderBy(s => s).ToArray();
-
-			GeoCountriesDictByFullName = GeoCountriesDict.ToDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
-			USCanadaStatesDictByFullName = USCanadaStatesDict.ToDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
+			GeoCountriesDictByFullName = GeoCountriesByAbbreviationDict.ToDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
 
 			// important, init this after these others (at least the country inits)
 			GeoCountriesTopped = GetCountriesWithTheseOnTop("US", "CA", "UK", "DE", "AU");
+
+
+			// ----- STATES -----
+
+			// NOTE: USCanadaStatesDict is foundational one (already inited)
+
+			USCanadaStates = USCanadaStatesByAbbreviationDict.Values.ToArray().Sort();
+			USCanadaStatesOrdered = USCanadaStates.OrderBy(s => s).ToArray();
+			USCanadaStatesDictByFullName = USCanadaStatesByAbbreviationDict.ToDictionary(kv => kv.Value, kv => kv.Key, StringComparer.OrdinalIgnoreCase);
+
+
+			// --- Init ---
+
+			AllCountryNamesDict = new Dictionary<string, GeoCountry>(700, StringComparer.OrdinalIgnoreCase);
+			InitCountryEnum(ref AllCountryNamesDict);
+
+			AllUSCanadaStateNamesDict = new Dictionary<string, USCanadaState>(200, StringComparer.OrdinalIgnoreCase);
+			InitUSCanadaStateEnum(ref AllUSCanadaStateNamesDict);
+
+			// AllCountryNamesDict = new Dictionary<string, GeoCountry>(250, StringComparer.OrdinalIgnoreCase);
+			// AllUSCanadaStateNamesDict = new Dictionary<string, USCanadaState>(250, StringComparer.OrdinalIgnoreCase);
 		}
 
 
@@ -78,7 +98,7 @@ namespace DotNetXtensions.Globalization
 		/// Information was initially based on: http://www.paladinsoftware.com/Generic/countries.htm (Nov 2013)
 		/// </remarks>
 		/// </summary>
-		public static readonly IDictionary<string, string> GeoCountriesDict = new Dictionary<string, string>(250, StringComparer.OrdinalIgnoreCase)
+		public static readonly IDictionary<string, string> GeoCountriesByAbbreviationDict = new Dictionary<string, string>(250, StringComparer.OrdinalIgnoreCase)
 		{
 			#region ===== COUNTRIES =====
 
@@ -328,7 +348,7 @@ namespace DotNetXtensions.Globalization
 		/// A dictionary of state names <i>keyed by the country abbreviation</i>, with the full state name as the value.
 		/// So this allows one to lookup the abbreviation for a state when they already have the full state name.
 		/// </summary>
-		public static readonly IDictionary<string, string> USCanadaStatesDict = new Dictionary<string, string>(75, StringComparer.OrdinalIgnoreCase)
+		public static readonly IDictionary<string, string> USCanadaStatesByAbbreviationDict = new Dictionary<string, string>(75, StringComparer.OrdinalIgnoreCase)
 		{
 			#region ===== US States =====
 			{ "AL", "Alabama" },
@@ -422,7 +442,7 @@ namespace DotNetXtensions.Globalization
 					string nm = top[i];
 					if(!nm.IsNulle()) {
 						top[i] = nm = nm.Length == 2
-							? GeoCountriesDict.ValueOrDefault(nm)
+							? GeoCountriesByAbbreviationDict.ValueOrDefault(nm)
 							: GeoCountriesDictByFullName.ValueOrDefault(nm);
 					}
 					if(nm.IsNulle())
@@ -431,11 +451,11 @@ namespace DotNetXtensions.Globalization
 				top = top.Where(n => n.NotNulle()).ToArray();
 			}
 			if(top.IsNulle())
-				return GeoCountriesDict.Values.ToArray();
+				return GeoCountriesByAbbreviationDict.Values.ToArray();
 
 			//bool isAbbrevs = false;
 
-			int cnt = GeoCountriesDict.Count;
+			int cnt = GeoCountriesByAbbreviationDict.Count;
 			var d = new Dictionary<string, bool>(cnt);
 			List<string> names = new List<string>(cnt);
 
@@ -448,7 +468,7 @@ namespace DotNetXtensions.Globalization
 			}
 
 			// now add items from countries dict only if the value hasn't already been encountered
-			foreach(string name in GeoCountriesDict.Values) {
+			foreach(string name in GeoCountriesByAbbreviationDict.Values) {
 				if(!d.ContainsKey(name)) {
 					names.Add(name);
 					d.Add(name, false);
@@ -464,13 +484,11 @@ namespace DotNetXtensions.Globalization
 
 		public static string Name(this USCanadaState value)
 		{
-			Init();
 			return XEnum<USCanadaState>.Name((int)value);
 		}
 
 		public static string Name(this GeoCountry value)
 		{
-			Init();
 			return XEnum<GeoCountry>.Name((int)value);
 		}
 
@@ -514,75 +532,11 @@ namespace DotNetXtensions.Globalization
 			return ((GeoCountry)value).Abbreviation();
 		}
 
-		public static string GetLongCountryName(string name)
-		{
-			if(name != null && name.Length == 2) {
-				string lnm;
-				if(GeoCountriesDict.TryGetValue(name, out lnm))
-					return lnm;
-			}
-			return name;
-		}
 
-		public static string GetLongStateName(string name)
-		{
-			if(name != null && name.Length == 2) {
-				string lnm;
-				if(USCanadaStatesDict.TryGetValue(name, out lnm))
-					return lnm;
-			}
-			return name;
-		}
-
-		public static GeoCountry ToCountry(string value)
-		{
-			Init();
-			return XEnum<GeoCountry>.Value(GetLongCountryName(value));
-		}
-
-		public static USCanadaState ToState(string value)
-		{
-			Init();
-			return XEnum<USCanadaState>.Value(GetLongStateName(value));
-		}
-
-		public static GeoCountry? ToCountryOrNull(string value, bool includeNone = false)
-		{
-			Init();
-			if(!value.IsNulle()) {
-				if(XEnum<GeoCountry>.TryGetValue(GetLongCountryName(value), out GeoCountry val)) {
-					if(val != GeoCountry.None || includeNone)
-						return val;
-				}
-			}
-			return null;
-		}
-
-		public static USCanadaState? ToStateOrNull(string value, bool includeNone = false)
-		{
-			Init();
-			if(!value.IsNulle()) {
-				if(XEnum<USCanadaState>.TryGetValue(GetLongStateName(value), out USCanadaState val)) {
-					if(val != USCanadaState.None || includeNone)
-						return val;
-				}
-			}
-			return null;
-		}
-
-		private static void Init()
-		{
-			if(!_init) {
-				_init = true;
-				InitUSCanadaStateEnum();
-				InitCountryEnum();
-			}
-		}
-
-		private static void InitUSCanadaStateEnum()
+		private static void InitUSCanadaStateEnum(ref IDictionary<string, USCanadaState> allStateNamesDict)
 		{
 			// auto-generated
-			var _names = new Dictionary<USCanadaState, string>(65) {
+			var _d = new Dictionary<USCanadaState, string>(65) {
 				{ USCanadaState.None, "None" },
 				{ USCanadaState.Alabama, "Alabama" },
 				{ USCanadaState.Alaska, "Alaska" },
@@ -650,13 +604,52 @@ namespace DotNetXtensions.Globalization
 				{ USCanadaState.Yukon, "Yukon" }
 			};
 
-			XEnum<USCanadaState>.SetNames(_names);
+			XEnum<USCanadaState>.SetNames(_d);
 			XEnum<USCanadaState>.CaseInsensitive = true;
+
+			// ---
+
+			var alld = allStateNamesDict;
+
+			foreach(var kv in XEnum<USCanadaState>.ValuesDict) {
+
+				int intVal = kv.Key;
+				string flNm = kv.Value;
+				USCanadaState gcVal = (USCanadaState)intVal;
+				string enumNm = gcVal.ToString();
+				string enumNm_NoUnderscores = enumNm.Replace("_", "");
+
+				if(gcVal == USCanadaState.None)
+					continue;
+
+				// Add full country name
+				if(!alld.ContainsKey(flNm))
+					alld.Add(flNm, gcVal);
+
+				// Add raw enum country name (underscores)
+				if(enumNm != flNm && !alld.ContainsKey(enumNm))
+					alld.Add(enumNm, gcVal);
+
+				// Add enum country name removed underscores
+				if(enumNm_NoUnderscores != enumNm && !alld.ContainsKey(enumNm_NoUnderscores))
+					alld.Add(enumNm_NoUnderscores, gcVal);
+			}
+
+			// Add abbreviations
+
+			foreach(var kv in USCanadaStatesByAbbreviationDict) {
+				string abbr = kv.Key;
+				string fnm = kv.Value;
+				USCanadaState val = XEnum<USCanadaState>.Value(fnm);
+
+				if(!alld.ContainsKey(abbr))
+					alld.Add(abbr, val);
+			}
 		}
 
-		private static void InitCountryEnum()
+		private static void InitCountryEnum(ref IDictionary<string, GeoCountry> allCountryNamesDict)
 		{
-			var _names = new Dictionary<GeoCountry, string>(240) {
+			var _d = new Dictionary<GeoCountry, string>(240) {
 				{ GeoCountry.None, "None" },
 				{ GeoCountry.Afghanistan, "Afghanistan" },
 				{ GeoCountry.Albania, "Albania" },
@@ -899,9 +892,51 @@ namespace DotNetXtensions.Globalization
 				{ GeoCountry.Zimbabwe, "Zimbabwe" }
 			};
 
-			XEnum<GeoCountry>.SetNames(_names);
+			XEnum<GeoCountry>.SetNames(_d);
 			XEnum<GeoCountry>.CaseInsensitive = true;
+
+			// ---
+
+			var alld = allCountryNamesDict;
+
+			foreach(var kv in XEnum<GeoCountry>.ValuesDict) {
+
+				int intVal = kv.Key;
+				string flNm = kv.Value;
+				GeoCountry gcVal = (GeoCountry)intVal;
+				string enumNm = gcVal.ToString();
+				string enumNm_NoUnderscores = enumNm.Replace("_", "");
+
+				if(gcVal == GeoCountry.None)
+					continue;
+
+				// Add full country name
+				if(!alld.ContainsKey(flNm))
+					alld.Add(flNm, gcVal);
+
+				// Add raw enum country name (underscores)
+				if(enumNm != flNm && !alld.ContainsKey(enumNm))
+					alld.Add(enumNm, gcVal);
+
+				// Add enum country name removed underscores
+				if(enumNm_NoUnderscores != enumNm && !alld.ContainsKey(enumNm_NoUnderscores))
+					alld.Add(enumNm_NoUnderscores, gcVal);
+			}
+
+			// Add abbreviations
+
+			foreach(var kv in GeoCountriesByAbbreviationDict) {
+				string abbr = kv.Key;
+				string fnm = kv.Value;
+				GeoCountry val = XEnum<GeoCountry>.Value(fnm);
+
+				if(!alld.ContainsKey(abbr))
+					alld.Add(abbr, val);
+			}
 		}
+
+		public static readonly IDictionary<string, GeoCountry> AllCountryNamesDict;
+		public static readonly IDictionary<string, USCanadaState> AllUSCanadaStateNamesDict;
 
 		#endregion
 
@@ -926,5 +961,35 @@ namespace DotNetXtensions.Globalization
 
 		#endregion
 
+
+
+
+		/// <summary>
+		/// Returns the Country enum value for input string of a country 
+		/// full name, or two-letter abbreviation, or string representation of the enum 
+		/// (with and without underscores). Throws if not found.
+		/// </summary>
+		public static GeoCountry GetCountry(string value)
+			=> AllCountryNamesDict[value];
+
+		/// <summary>
+		/// See notes on <see cref="GetCountry(string)"/>, this returns null if not found.
+		/// </summary>
+		public static GeoCountry? GetCountryOrNull(string value)
+			=> AllCountryNamesDict.ValueN(value);
+
+		/// <summary>
+		/// Returns the State enum value for input string of a state 
+		/// full name, or two-letter abbreviation, or string representation of the enum 
+		/// (with and without underscores). Throws if not found.
+		/// </summary>
+		public static USCanadaState GetState(string value)
+			=> AllUSCanadaStateNamesDict[value];
+
+		/// <summary>
+		/// See notes on <see cref="GetState(string)"/>, this returns null if not found.
+		/// </summary>
+		public static USCanadaState? GetStateOrNull(string value)
+			=> AllUSCanadaStateNamesDict.ValueN(value);
 	}
 }

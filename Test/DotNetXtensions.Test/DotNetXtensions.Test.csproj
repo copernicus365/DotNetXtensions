@@ -26,11 +26,5 @@
 		<ProjectReference Include="..\..\DotNetXtensions.Text\DotNetXtensions.Text.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.XUnit\DotNetXtensions.XUnit.csproj" />
 	</ItemGroup>
-
-	<!--<ItemGroup>
-	  <Reference Include="DotNetXtensions.XUnit">
-	    <HintPath>..\..\DotNetXtensions.XUnit\bin\Debug\netstandard2.0\DotNetXtensions.XUnit.dll</HintPath>
-	  </Reference>
-	</ItemGroup>-->
-
+  
 </Project>

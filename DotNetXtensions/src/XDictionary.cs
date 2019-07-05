@@ -67,7 +67,7 @@ namespace DotNetXtensionsPrivate
 
 		public static Dictionary<TKey, TValue> AddIfNotContainsKey<TKey, TValue>(this Dictionary<TKey, TValue> d, TKey key, TValue value)
 		{
-			if (!d.ContainsKey(key))
+			if(!d.ContainsKey(key))
 				d.Add(key, value);
 			return d;
 		}
@@ -87,12 +87,9 @@ namespace DotNetXtensionsPrivate
 		/// if either the key is null or if the key does not exist in the dictionary.
 		/// </summary>
 		[DebuggerStepThrough]
-		public static TValue V<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default(TValue))
+		public static TValue V<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default)
 		{
-			if (key == null)
-				return defaultValue;
-			TValue value;
-			if (dictionary.TryGetValue(key, out value))
+			if(key != null && dictionary.TryGetValue(key, out TValue value))
 				return value;
 			return defaultValue;
 		}
@@ -102,9 +99,7 @@ namespace DotNetXtensionsPrivate
 		/// </summary>
 		[DebuggerStepThrough]
 		public static TValue ValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default(TValue))
-		{
-			return V(dictionary, key, defaultValue);
-		}
+			=> V(dictionary, key, defaultValue);
 
 		/// <summary>
 		/// Allows lookup of a key value from the input dictionary where the key is of type struct,
@@ -113,9 +108,8 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static TValue? ValueN<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key) where TValue : struct
 		{
-			//if(key == null) return null; // not needed, key is struct
-			TValue value;
-			if (dictionary.TryGetValue(key, out value))
+			// `key != null` IS needed bec string comes thru as struct (believe it or not)
+			if(key != null && dictionary.TryGetValue(key, out TValue value))
 				return value;
 			return null;
 		}
@@ -123,12 +117,12 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static bool TryGetValueAny<TKey, TVal>(this IDictionary<TKey, TVal> dict, out TVal val, params TKey[] values)
 		{
-			if (dict != null && dict.Count > 0 && values != null && values.Length > 0) {
-				for (int i = 0; i < values.Length; i++)
-					if (dict.TryGetValue(values[i], out val))
+			if(dict.NotNulle() && values.NotNulle()) {
+				for(int i = 0; i < values.Length; i++)
+					if(dict.TryGetValue(values[i], out val))
 						return true;
 			}
-			val = default(TVal);
+			val = default;
 			return false;
 		}
 
@@ -136,7 +130,7 @@ namespace DotNetXtensionsPrivate
 
 		public static bool NoKey<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key)
 		{
-			if (dict == null) return false;
+			if(dict == null) return false;
 			bool noExist = !dict.ContainsKey(key);
 			return noExist;
 		}
@@ -167,7 +161,7 @@ namespace DotNetXtensionsPrivate
 			bool ignoreCase = false,
 			bool forMultiValuesOnlyGetFirst = false)
 		{
-			if (nvcoll == null)
+			if(nvcoll == null)
 				return null;
 
 			IEqualityComparer<string> equalityComparer = ignoreCase
@@ -176,20 +170,20 @@ namespace DotNetXtensionsPrivate
 
 			var d = new Dictionary<string, string>(nvcoll.Count, equalityComparer);
 
-			if (nvcoll.Count < 1)
+			if(nvcoll.Count < 1)
 				return d;
 
-			foreach (var kv in nvcoll.ToEnumerable(forMultiValuesOnlyGetFirst)) {
+			foreach(var kv in nvcoll.ToEnumerable(forMultiValuesOnlyGetFirst)) {
 
 				string val = kv.Value.TrimIfNeeded() ?? "";
 
-				if (d.TryGetValue(kv.Key, out string currVal)) {
+				if(d.TryGetValue(kv.Key, out string currVal)) {
 
-					if (currVal == null) currVal = "";
+					if(currVal == null) currVal = "";
 
-					if (forMultiValuesOnlyGetFirst) {
+					if(forMultiValuesOnlyGetFirst) {
 						// only add if original val was empty string and new val is notNulle
-						if (val.NotNulle() && currVal.IsNulle())
+						if(val.NotNulle() && currVal.IsNulle())
 							d[kv.Key] = val;
 					}
 					else {
@@ -216,7 +210,7 @@ namespace DotNetXtensionsPrivate
 			this NameValueCollection nvcoll,
 			bool ignoreCase = false)
 		{
-			if (nvcoll == null)
+			if(nvcoll == null)
 				return null;
 
 			IEqualityComparer<string> equalityComparer = ignoreCase
@@ -225,14 +219,14 @@ namespace DotNetXtensionsPrivate
 
 			var d = new Dictionary<string, string[]>(nvcoll.Count, equalityComparer);
 
-			if (nvcoll.Count < 1)
+			if(nvcoll.Count < 1)
 				return d;
 
-			foreach (var kv in nvcoll.ToEnumerableMultiValues()) {
+			foreach(var kv in nvcoll.ToEnumerableMultiValues()) {
 
 				string[] values = kv.Value;
 
-				if (d.TryGetValue(kv.Key, out string[] currValues)) {
+				if(d.TryGetValue(kv.Key, out string[] currValues)) {
 					values = values.ConcatToArray(currValues);
 				}
 
@@ -253,10 +247,10 @@ namespace DotNetXtensionsPrivate
 			this NameValueCollection nvcoll,
 			bool forMultiValuesOnlyGetFirst = false)
 		{
-			if (nvcoll != null) {
-				foreach (string key in nvcoll.AllKeys) {
+			if(nvcoll != null) {
+				foreach(string key in nvcoll.AllKeys) {
 
-					if (forMultiValuesOnlyGetFirst) {
+					if(forMultiValuesOnlyGetFirst) {
 
 						// IMPORTANT! From brief internal inspection I believe the NameValueCollection
 						// ALREADY stores the multi-values as string arrays, so I don't think 
@@ -266,7 +260,7 @@ namespace DotNetXtensionsPrivate
 							?.FirstOrDefault() // -- note: this is not a collection iterator, there's no predicate
 							?.NullIfEmptyTrimmed();
 
-						if (val == null && values.CountN() > 1) {
+						if(val == null && values.CountN() > 1) {
 							// Perf! This AVOIDS these LINQ operations if first already existed and not nulle and if Length was already == 1
 							val = values?
 								.Select(v => v.NullIfEmptyTrimmed())
@@ -285,8 +279,8 @@ namespace DotNetXtensionsPrivate
 
 		public static IEnumerable<KeyValuePair<string, string[]>> ToEnumerableMultiValues(this NameValueCollection nvcoll)
 		{
-			if (nvcoll != null) {
-				foreach (string key in nvcoll.AllKeys) {
+			if(nvcoll != null) {
+				foreach(string key in nvcoll.AllKeys) {
 					string[] values = nvcoll.GetValues(key);
 					yield return new KeyValuePair<string, string[]>(key, values);
 				}
@@ -341,26 +335,26 @@ namespace DotNetXtensionsPrivate
 			IEqualityComparer<TKey> comparer = null,
 			Func<TKey, TElement, TElement, TElement> handleDuplicate = null) //Func<Tuple<TKey, TElement, TElement>, TElement> handleDuplicate = null
 		{
-			if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
-			if (elementSelector == null) throw new ArgumentNullException(nameof(elementSelector));
+			if(keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+			if(elementSelector == null) throw new ArgumentNullException(nameof(elementSelector));
 
 			var d = comparer == null
 				? new Dictionary<TKey, TElement>()
 				: new Dictionary<TKey, TElement>(comparer);
 
-			if (source == null)
+			if(source == null)
 				return d;
 
 			bool handleDups = handleDuplicate != null;
 
-			foreach (TSource item in source) {
+			foreach(TSource item in source) {
 				TKey key = keySelector(item);
 				TElement val = elementSelector(item);
-				if (!d.TryGetValue(key, out TElement currVal)) {
+				if(!d.TryGetValue(key, out TElement currVal)) {
 					d.Add(key, val);
 				}
-				else if (handleDups) { // ELSE: Ignore, first value in wins ignore next
-					//TElement newVal = handleDuplicate(new Tuple<TKey, TElement, TElement>(key, currVal, val));
+				else if(handleDups) { // ELSE: Ignore, first value in wins ignore next
+									  //TElement newVal = handleDuplicate(new Tuple<TKey, TElement, TElement>(key, currVal, val));
 					TElement newVal = handleDuplicate(key, currVal, val);
 					d[key] = newVal;
 				}
@@ -390,23 +384,23 @@ namespace DotNetXtensionsPrivate
 			Func<TSource, TElement> elementSelector,
 			IEqualityComparer<TKey> comparer = null)
 		{
-			if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
-			if (elementSelector == null) throw new ArgumentNullException(nameof(elementSelector));
+			if(keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+			if(elementSelector == null) throw new ArgumentNullException(nameof(elementSelector));
 
 			var d = comparer == null
 				? new Dictionary<TKey, List<TElement>>()
 				: new Dictionary<TKey, List<TElement>>(comparer);
 
-			if (source == null)
+			if(source == null)
 				return d;
 
-			foreach (TSource item in source) {
+			foreach(TSource item in source) {
 
 				TKey key = keySelector(item);
 				TElement val = elementSelector(item);
 
 				List<TElement> list; // currVal;
-				if (!d.TryGetValue(key, out list)) {
+				if(!d.TryGetValue(key, out list)) {
 					list = new List<TElement>(source.CountIfCollection(defaultVal: 16));
 					d.Add(key, list);
 				}
@@ -445,16 +439,16 @@ namespace DotNetXtensionsPrivate
 			this IEnumerable<TSource> source,
 			Func<TSource, TKey> keySelector)
 		{
-			if (source == null) return null;
-			if (keySelector == null) throw new ArgumentNullException();
+			if(source == null) return null;
+			if(keySelector == null) throw new ArgumentNullException();
 
 			var dict = new Dictionary<TKey, List<TSource>>();
 
-			foreach (var item in source) {
+			foreach(var item in source) {
 				TKey key = keySelector(item);
 
 				List<TSource> grp;
-				if (dict.TryGetValue(key, out grp) == false) {
+				if(dict.TryGetValue(key, out grp) == false) {
 					var list = new List<TSource>();
 					list.Add(item);
 					dict[key] = list;
@@ -481,19 +475,19 @@ namespace DotNetXtensionsPrivate
 		{
 			var d1 = dict;
 			var d2 = expectedMatchDict;
-			if (d1 == null || d2 == null)
+			if(d1 == null || d2 == null)
 				return d1 == null && d2 == null;
 
-			if (d1.Count != d2.Count)
+			if(d1.Count != d2.Count)
 				return false;
 
-			foreach (string key in d1.Keys) {
+			foreach(string key in d1.Keys) {
 				string val = d1[key];
 
-				if (!d2.TryGetValue(key, out string val2))
+				if(!d2.TryGetValue(key, out string val2))
 					return false;
 
-				if (val != val2)
+				if(val != val2)
 					return false;
 			}
 			return true;
@@ -503,19 +497,19 @@ namespace DotNetXtensionsPrivate
 		{
 			var d1 = dict;
 			var d2 = expectedMatchDict;
-			if (d1 == null || d2 == null)
+			if(d1 == null || d2 == null)
 				return d1 == null && d2 == null;
 
-			if (d1.Count != d2.Count)
+			if(d1.Count != d2.Count)
 				return false;
 
-			foreach (string key in d1.Keys) {
+			foreach(string key in d1.Keys) {
 				string[] vals = d1[key];
 
-				if (!d2.TryGetValue(key, out string[] vals2))
+				if(!d2.TryGetValue(key, out string[] vals2))
 					return false;
 
-				if (vals == null || vals2 == null)
+				if(vals == null || vals2 == null)
 					return vals == vals2;
 
 				return vals.SequenceEqual(vals2);
@@ -540,19 +534,19 @@ namespace DotNetXtensionsPrivate
 			IEnumerable<TKey> ignore = null)
 		//bool firstInWins = false)
 		{
-			if (dict == null)
+			if(dict == null)
 				return null;
 
 			Dictionary<TKey, TKey> ignoreD = ignore != null ? ignore.ToDictionary(k => k) : null;
-			if (ignoreD.IsNulle())
+			if(ignoreD.IsNulle())
 				ignoreD = null;
 
 			bool chkIgnoreD = ignoreD != null;
 
 			Dictionary<TValue, TKey> rdict = new Dictionary<TValue, TKey>(dict.Count);
 
-			foreach (var kv in dict) {
-				if (chkIgnoreD && ignoreD.ContainsKey(kv.Key))
+			foreach(var kv in dict) {
+				if(chkIgnoreD && ignoreD.ContainsKey(kv.Key))
 					continue;
 
 				//if (firstInWins && rdict.ContainsKey(kv.Value))
@@ -570,10 +564,10 @@ namespace DotNetXtensionsPrivate
 			Func<object, TKey> keyConverter,
 			Func<object, TValue> valueConverter)
 		{
-			if (dict == null) return null;
+			if(dict == null) return null;
 			var d = new Dictionary<TKey, TValue>(dict.Count);
 
-			foreach (var kv in dict.AsEnumerable(keyConverter, valueConverter))
+			foreach(var kv in dict.AsEnumerable(keyConverter, valueConverter))
 				d.Add(kv.Key, kv.Value);
 
 			return d;
@@ -581,10 +575,10 @@ namespace DotNetXtensionsPrivate
 
 		public static Dictionary<object, object> ToDictionary(this IDictionary dict)
 		{
-			if (dict == null) return null;
+			if(dict == null) return null;
 			var d = new Dictionary<object, object>(dict.Count);
 
-			foreach (var kv in dict.AsEnumerable())
+			foreach(var kv in dict.AsEnumerable())
 				d.Add(kv.Key, kv.Value);
 
 			return d;
@@ -592,11 +586,11 @@ namespace DotNetXtensionsPrivate
 
 		public static IEnumerable<KeyValuePair<object, object>> AsEnumerable(this IDictionary dict)
 		{
-			if (dict == null)
+			if(dict == null)
 				yield break;
 
 			var enm = dict.GetEnumerator();
-			while (enm.MoveNext())
+			while(enm.MoveNext())
 				yield return new KeyValuePair<object, object>(enm.Key, enm.Value);
 		}
 
@@ -605,11 +599,11 @@ namespace DotNetXtensionsPrivate
 			Func<object, TKey> keyConverter,
 			Func<object, TValue> valueConverter)
 		{
-			if (dict == null)
+			if(dict == null)
 				yield break;
 
 			var enm = dict.GetEnumerator();
-			while (enm.MoveNext()) {
+			while(enm.MoveNext()) {
 				TKey key = keyConverter(enm.Key);
 				TValue value = valueConverter(enm.Value);
 				yield return new KeyValuePair<TKey, TValue>(key, value);

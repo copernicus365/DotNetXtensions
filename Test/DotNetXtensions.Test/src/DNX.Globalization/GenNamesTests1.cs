@@ -10,121 +10,81 @@ namespace DotNetXtensions.Test
 	public class GenNamesTests1 : DnxTestBase
 	{
 		[Fact]
-		public void Test_GetGeoNamesEnumsCode_NotEmptyResult()
+		public void GetGeoNamesEnumsCode_NotEmptyResult()
 		{
 			string genCode = GeoNames.GetGeoNamesEnumsCode();
 			True(genCode.NotNulle());
 		}
 
 		[Fact]
-		public void GetCountryOrNull_US_PASS()
+		public void GetCountry_US_NZ_PASS()
 		{
-			gcNull_PASS(GeoCountry.United_States, 
+			// NOTE: .GetCountry calls (not GetCountryOrNull) will / should throw 
+			// if not found
+			var arr = tarray(
 				"United States",
 				"United_States",
 				"UnitedStates",
 				"uNITed STaTes",
 				"US",
 				"uS");
-		}
 
-		[Fact]
-		public void GetCountry_US_PASS()
-		{
-			gc_PASS(GeoCountry.United_States,
-				"United States",
-				"United_States",
-				"UnitedStates",
-				"uNITed STaTes",
-				"US",
-				"uS");
-		}
+			foreach(string v in arr) {
+				True(GeoNames.GetCountryOrNull(v) == GeoCountry.United_States);
+				True(GeoNames.GetCountry(v) == GeoCountry.United_States);
+			}
 
-		[Fact]
-		public void GetCountryOrNull_NZ_PASS()
-		{
-			gcNull_PASS(GeoCountry.New_Zealand,
+			arr = tarray(
 				"New Zealand",
 				"NewZealand",
 				"NewZEALand",
 				"NZ",
 				"nZ");
+
+			foreach(string v in arr) {
+				True(GeoNames.GetCountry(v) == GeoCountry.New_Zealand);
+				True(GeoNames.GetCountryOrNull(v) == GeoCountry.New_Zealand);
+			}
 		}
 
 		[Fact]
 		public void GetCountryOrNull_None_Fail()
 		{
-			gcNull_FAIL("None");
-			gcNull_FAIL("none");
+			var arr = tarray(
+				"None",
+				"none");
+
+			foreach(string v in arr)
+				True(GeoNames.GetCountryOrNull(v) == null);
 		}
 
 		[Fact]
 		public void GetCountryOrNull_BogusNames_Fails()
 		{
-			gcNull_FAIL("New Zealand1");
-			gcNull_FAIL("nzz");
-			gcNull_FAIL("nn");
-			gcNull_FAIL("New-Zealand");
+			var arr = tarray(
+				"New Zealand1",
+				"nzz",
+				"nn",
+				"New-Zealand");
+
+			foreach(string v in arr)
+				True(GeoNames.GetCountryOrNull(v) == null);
 		}
 
-
-
-
-
 		[Fact]
-		public void GetStateOrNull_NewYork_PASS()
+		public void GetStateOrNull_SpacedStateName_PASS()
 		{
-			gstateNull_PASS(USCanadaState.New_York,
+			var arr = tarray(
 				"New York",
 				"New_York",
 				"NewYork",
 				"nEWYork",
 				"NY",
 				"nY");
+
+			foreach(string v in arr)
+				True(GeoNames.GetStateOrNull(v) == USCanadaState.New_York);
 		}
-
-
-
-
-
-
-		void gstateNull_PASS(USCanadaState val, params string[] names)
-		{
-			for(int i = 0; i < names.Length; i++)
-				True(GeoNames.GetStateOrNull(names[i]) == val);
-		}
-
-
-
-
-		void gcNull_PASS(GeoCountry val, params string[] names)
-		{
-			for(int i = 0; i < names.Length; i++)
-				True(GeoNames.GetCountryOrNull(names[i]) == val);
-		}
-
-		void gc_PASS(GeoCountry val, params string[] names)
-		{
-			for(int i = 0; i < names.Length; i++)
-				True(GeoNames.GetCountry(names[i]) == val);
-		}
-
-		void gc_FAIL(string nm)
-		{
-			try {
-				var val = GeoNames.GetCountry(nm);
-			} catch(Exception ex) {
-				return; // we WANT an exception, PASSES (a fail test "pass")
-			}
-			False(true);
-		}
-
-
-		void gcNull_PASS(string nm)
-			=> True(GeoNames.GetCountryOrNull(nm) == GeoCountry.United_States);
-
-		void gcNull_FAIL(string nm)
-			=> True(GeoNames.GetCountryOrNull(nm) == null);
 
 	}
 }

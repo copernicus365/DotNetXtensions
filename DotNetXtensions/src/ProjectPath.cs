@@ -83,7 +83,8 @@ namespace DotNetXtensions
 			if (getFromAppDomain)
 				val = AppDomain.CurrentDomain.BaseDirectory;
 			else {
-				string codeBase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+				var assm = System.Reflection.Assembly.GetExecutingAssembly();
+				string codeBase = assm.CodeBase;
 				UriBuilder uri = new UriBuilder(codeBase);
 				string path = Uri.UnescapeDataString(uri.Path);
 				val = Path.GetDirectoryName(path);

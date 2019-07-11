@@ -1,17 +1,17 @@
 using System;
-using DotNetXtensions;
 using System.Collections.Generic;
 using System.Linq;
+using DotNetXtensions;
 using Xunit;
-using System.Reflection;
-using System.IO;
 
 namespace DotNetXtensions.Test
 {
 	public abstract class XUnitTestBase : EmbeddedResources
 	{
+		public XUnitTestBase() { }
+
 		public XUnitTestBase(
-			Type typeForEmbeddedResources = null, 
+			Type typeForEmbeddedResources, 
 			string resourceBasePath = null,
 			bool? cacheResourceGets = null)
 			: base(typeForEmbeddedResources, resourceBasePath)

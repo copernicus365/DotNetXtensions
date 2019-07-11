@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.1.0-beta1.1</Version>
+    <Version>2.1.0</Version>
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <FileVersion>2.1.0.0</FileVersion>
     <Authors>Nicholas Petersen</Authors>
@@ -13,6 +13,17 @@
     <PackageTags>xunit helper-library</PackageTags>
     <PackageReleaseNotes />
     <Description>Provides minor set of xunit helpers</Description>
+    <NoWarn>1591;</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+    <DocumentationFile>\bin\Debug\netstandard2.0\DotNetXtensions.XUnit.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+    <DocumentationFile>\bin\Release\netstandard2.0\DotNetXtensions.XUnit.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

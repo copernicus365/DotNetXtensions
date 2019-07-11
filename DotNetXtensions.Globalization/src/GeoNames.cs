@@ -480,8 +480,6 @@ namespace DotNetXtensions.Globalization
 
 		#region Country and State Enum Conversions
 
-		static bool _init;
-
 		public static string Name(this USCanadaState value)
 		{
 			return XEnum<USCanadaState>.Name((int)value);

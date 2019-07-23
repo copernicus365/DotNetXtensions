@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>netcoreapp2.2</TargetFramework>
 		<IsPackable>false</IsPackable>
-		<NoWarn>1701;1702;1705;0159;1591;0168;0169;0414;xUnit1013;</NoWarn>
+		<NoWarn>1701;1702;1705;0159;1591;0168;0169;1998;0414;xUnit1013;</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

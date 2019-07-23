@@ -1,9 +1,10 @@
 using System;
-using System.Text;
-using DotNetXtensions.Globalization;
 using Xunit;
+using DotNetXtensions;
+using DotNetXtensions.Globalization;
+using DotNetXtensions.Test;
 
-namespace DotNetXtensions.Test
+namespace DNX.Test.DateTimes
 {
 	public class XDateTimes_DateTimeParsing : DnxTestBase
 	{

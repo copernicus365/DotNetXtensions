@@ -20,6 +20,23 @@ namespace DotNetXtensionsPrivate
 	static partial class XDateTimes
 	{
 		/// <summary>
+		/// Rounds this DateTime to the day, so resultant TimeOfDay will equal Zero. 
+		/// When rounding down this simply returns dt.Date. For <paramref name="roundUp"/>, 
+		/// directly returns input dt if it already has a zero TimeOfDay, else adds a day 
+		/// and returns the date. For more documentation, see similar principles
+		/// documented on <see cref="RoundToWeekday(DateTime, DayOfWeek, bool)"/>.
+		/// </summary>
+		public static DateTime RoundToDay(this DateTime dt, bool roundUp = false)
+		{
+			if(!roundUp)
+				return dt.Date;
+
+			return dt.TimeOfDay == TimeSpan.Zero
+				? dt
+				: dt.AddDays(1).Date;
+		}
+
+		/// <summary>
 		/// Rounds this DateTime to the specified day of the week. If it is already a match, returns the 
 		/// input value, in which case the <see cref="DateTime.TimeOfDay"/> value is not cleared
 		/// (simply call <see cref="DateTime.Date"/> to clear). 

@@ -44,6 +44,33 @@ namespace DNX.Test.DateTimes
 		}
 
 		[Fact]
+		public async Task RoundToDay_NxtPrv()
+		{
+			DateTime dt = new DateTime(2018, 7, 2, 3, 3, 3);
+
+			string expDTStr = "2018-07-02T03:03:03";
+			True(dt.DayOfWeek == DayOfWeek.Monday && dt.ToString("yyyy-MM-ddTHH:mm:ss") == expDTStr);
+
+			DateTime dtPrv = dt.RoundToDay();
+			DateTime dtPrv_DefParamIsRoundUpFalse = dt.RoundToDay(roundUp: false);
+
+			True(dtPrv_DefParamIsRoundUpFalse == dtPrv);
+
+			True(dtPrv == dt.Date);
+
+			DateTime dtNxt = dt.RoundToDay(roundUp: true);
+
+			True(dtNxt == dt.Date.AddDays(1));
+
+			// no-change when rounding up
+
+			DateTime dtNoTime = new DateTime(2018, 7, 2, 0, 0, 0);
+			DateTime dtNxtNoChange = dtNoTime.RoundToDay(roundUp: true);
+
+			True(dtNoTime == dtNxtNoChange);
+		}
+
+		[Fact]
 		public async Task RoundToMonth_NxtPrv()
 		{
 			DateTime dt = new DateTime(2018, 7, 4);

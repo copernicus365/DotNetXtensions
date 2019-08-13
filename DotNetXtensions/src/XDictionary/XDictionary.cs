@@ -16,7 +16,7 @@ namespace DotNetXtensions
 namespace DotNetXtensionsPrivate
 {
 #endif
-	static class XDictionary
+	static partial class XDictionary
 	{
 
 		#region --- Nulle ---
@@ -411,7 +411,6 @@ namespace DotNetXtensionsPrivate
 
 
 
-
 		#region --- ToGroupedDictionary / GroupByQuick ---
 
 		//public static Dictionary<TKey, GroupKV<TSource, TKey>> ToGroupedDictionary<TSource, TKey>(
@@ -467,57 +466,6 @@ namespace DotNetXtensionsPrivate
 		//}
 
 		#endregion
-
-
-		// Temp: Future: Make both generic, not just strings...
-
-		public static bool DictionariesAreEqual(this Dictionary<string, string> dict, Dictionary<string, string> expectedMatchDict)
-		{
-			var d1 = dict;
-			var d2 = expectedMatchDict;
-			if(d1 == null || d2 == null)
-				return d1 == null && d2 == null;
-
-			if(d1.Count != d2.Count)
-				return false;
-
-			foreach(string key in d1.Keys) {
-				string val = d1[key];
-
-				if(!d2.TryGetValue(key, out string val2))
-					return false;
-
-				if(val != val2)
-					return false;
-			}
-			return true;
-		}
-
-		public static bool DictionariesAreEqual(this Dictionary<string, string[]> dict, Dictionary<string, string[]> expectedMatchDict)
-		{
-			var d1 = dict;
-			var d2 = expectedMatchDict;
-			if(d1 == null || d2 == null)
-				return d1 == null && d2 == null;
-
-			if(d1.Count != d2.Count)
-				return false;
-
-			foreach(string key in d1.Keys) {
-				string[] vals = d1[key];
-
-				if(!d2.TryGetValue(key, out string[] vals2))
-					return false;
-
-				if(vals == null || vals2 == null)
-					return vals == vals2;
-
-				return vals.SequenceEqual(vals2);
-			}
-
-			return true;
-		}
-
 
 
 

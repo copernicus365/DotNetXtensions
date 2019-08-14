@@ -19,7 +19,7 @@ namespace DotNetXtensions.Collections
 	/// We intentionally decided to not make that an outrageous calculation, but to simply
 	/// return the count of internal items. To get a count of items that haven't expired, 
 	/// you can call <see cref="CountPurged"/>, but that does take a full scan (just like 
-	/// <see cref="PurgeExpiredItems"/>), and also note that the moment you get the value,
+	/// <see cref="PurgeExpiredItems()"/>), and also note that the moment you get the value,
 	/// the count may still change 1 nanosecond later. 
 	/// For further details on how the items are actually purged internally, see further below:
 	/// <para />
@@ -30,7 +30,7 @@ namespace DotNetXtensions.Collections
 	/// 2) need to try to be robust if the timer itself failed, leaving items building up in memory 
 	/// after expiration, and so forth. For these and other reasons it seemed best to
 	/// keep a full polling timer external to this type, but one can freely implement that,
-	/// just call <see cref="PurgeExpiredItems"/> whenever desired.
+	/// just call <see cref="PurgeExpiredItems()"/> whenever desired.
 	/// <para />
 	/// On the other hand, we still have implemented passive means to purge expired items. These are:
 	/// 1) When an item's value is retrieved which has already expired, that item will be
@@ -38,7 +38,7 @@ namespace DotNetXtensions.Collections
 	/// 2) In addition, <see cref="RunPurgeTS"/>, which by default is set to 1 minute, is used to set 
 	/// a future expiration date added to UtcNow. A number of TRIGGER POINTS will always check first if
 	/// that time has expired (i.e. has it been 1 minute or more since a purge was attempted?).
-	/// If so then <see cref="PurgeExpiredItems"/> is fired. Critically though, this
+	/// If so then <see cref="PurgeExpiredItems()"/> is fired. Critically though, this
 	/// is NOT (!!) fired every time these trigger points are hit. These trigger points are:
 	/// a) When a lookup is made (TryGetValue, through the indexer, etc),
 	/// b) When an item is Set or Added, or 
@@ -52,7 +52,7 @@ namespace DotNetXtensions.Collections
 	/// One must note that this is still a passive means of ensuring expired items get removed, so if 
 	/// this instance isn't interacted with for an hour, no purging of expired items will occur. If one critically 
 	/// needs such periodic purging without exceptions, then again, simply implement an external timer 
-	/// yourself and call <see cref="PurgeExpiredItems"/> on the desired interval. 
+	/// yourself and call <see cref="PurgeExpiredItems()"/> on the desired interval. 
 	/// </summary>
 	/// <typeparam name="TKey"></typeparam>
 	/// <typeparam name="TValue"></typeparam>
@@ -115,7 +115,10 @@ namespace DotNetXtensions.Collections
 
 			ExpiresAfter = expires;
 
-			D = new ConcurrentDictionary<TKey, (DateTime expires, TValue value)>(equalityComparer);
+			// note: It seems that netcore allows null input, but old fx doesn't!
+			D = equalityComparer == null
+				? new ConcurrentDictionary<TKey, (DateTime expires, TValue value)>()
+				: new ConcurrentDictionary<TKey, (DateTime expires, TValue value)>(equalityComparer);
 		}
 
 

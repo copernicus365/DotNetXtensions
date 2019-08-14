@@ -14,7 +14,7 @@ namespace DotNetXtensionsPrivate
 #endif
 	static partial class XDictionary
 	{
-		// Temp: Future: Make both generic, not just strings...
+		// Remove these string based ones soon...
 
 		public static bool DictionariesAreEqual(this Dictionary<string, string> dict, Dictionary<string, string> expectedMatchDict)
 		{
@@ -66,8 +66,10 @@ namespace DotNetXtensionsPrivate
 		public static bool DictionariesAreEqual<TKey, TValue>(
 			this IDictionary<TKey, TValue> dict1, 
 			IDictionary<TKey, TValue> dict2,
-			Func<TValue, TValue, bool> comparer = null) // IEqualityComparer<TValue> equalityComparer = null)
+			Func<TValue, TValue, bool> comparer = null)
 		{
+			// IEqualityComparer<TValue> equalityComparer = null)
+
 			if(dict1 == null || dict2 == null)
 				return dict1 == null && dict2 == null;
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -100,18 +100,17 @@ namespace DotNetXtensionsPrivate
 		}
 
 
-
 		/// <summary>
 		/// Gets the extension of the input url or file path by using <see cref="UriPathInfo"/>, 
 		/// and then gets the corresponding mimetype, if any.
 		/// </summary>
 		public static BasicMimeType GetMimeTypeFromPathOrUrl(string url)
 		{
-			if (url.NotNulle()) {
+			if(url.NotNulle()) {
 				UriPathInfo info = new UriPathInfo(url);
 				string ext = info.Extension;
 				// old: GetExtFromUrl(url);
-				if (ext.NotNulle())
+				if(ext.NotNulle())
 					return GetMimeTypeFromFileExtension(ext);
 			}
 			return BasicMimeType.none;
@@ -157,13 +156,13 @@ namespace DotNetXtensionsPrivate
 		/// <param name="secondary">A secondary mime type, which will only override the primary if it is more qualified.</param>
 		public static BasicMimeType GetMostQualifiedMimeType(this BasicMimeType primary, BasicMimeType secondary)
 		{
-			if (primary == BasicMimeType.none)
+			if(primary == BasicMimeType.none)
 				return secondary;
 
-			if (secondary == BasicMimeType.none)
+			if(secondary == BasicMimeType.none)
 				return primary;
 
-			if (primary.HasNoSubtype())
+			if(primary.HasNoSubtype())
 				return secondary.HasNoSubtype() ? primary : secondary;
 
 			return primary; // primary at this point HAS a subtype, so no matter if secondary is fully set, primary wins at this point
@@ -182,18 +181,18 @@ namespace DotNetXtensionsPrivate
 		/// <param name="allowGenericMatchOnNotFound">See notes above.</param>
 		public static BasicMimeType GetMimeTypeFromString(string mimeTypeStr, bool allowGenericMatchOnNotFound = false)
 		{
-			if (mimeTypeStr != null && mimeTypeStr.Length < 50) {
+			if(mimeTypeStr != null && mimeTypeStr.Length < 50) {
 
-				if (MTIDict_ByMimeNames.TryGetValue(mimeTypeStr, out MTI mti))
+				if(MTIDict_ByMimeNames.TryGetValue(mimeTypeStr, out MTI mti))
 					return mti.MimeType;
 
-				if (allowGenericMatchOnNotFound) {
+				if(allowGenericMatchOnNotFound) {
 					int maxCount = Math.Min(13, mimeTypeStr.Length - 2);
-					for (int i = 0; i < maxCount; i++) {
-						if (mimeTypeStr[i] == '/') {
+					for(int i = 0; i < maxCount; i++) {
+						if(mimeTypeStr[i] == '/') {
 							string subType = mimeTypeStr.Substring(0, i + 1);
 
-							if (MTIDict_ByMimeNames.TryGetValue(subType, out mti))
+							if(MTIDict_ByMimeNames.TryGetValue(subType, out mti))
 								return mti.MimeType;
 						}
 					}
@@ -222,17 +221,17 @@ namespace DotNetXtensionsPrivate
 		{
 			int val = (int)m;
 
-			if (val < 400) { // if so, is text or nothing
-				if (val >= 100)
+			if(val < 400) { // if so, is text or nothing
+				if(val >= 100)
 					return BasicMimeType.text;
 				else
 					return BasicMimeType.none;
 			}
-			else if (val < 500)
+			else if(val < 500)
 				return BasicMimeType.image;
-			else if (val < 600)
+			else if(val < 600)
 				return BasicMimeType.audio;
-			else if (val < 700)
+			else if(val < 700)
 				return BasicMimeType.video;
 			else //if (val < 800)
 				return BasicMimeType.application;
@@ -248,19 +247,19 @@ namespace DotNetXtensionsPrivate
 			MTIDict_ByMimeNames = AllTypes.ToDictionary(v => v.MimeTypeString, v => v);
 			MTIDict_ByExtensions = AllTypes.Where(v => v.Ext.NotNulle()).ToDictionary(v => v.Ext, v => v);
 
-			for (int i = 0; i < AllTypes.Length; i++) {
+			for(int i = 0; i < AllTypes.Length; i++) {
 				MTI mti = AllTypes[i];
 
-				if (mti.ExtraMimeStrings.NotNulle()) {
-					foreach (string extMimeStr in mti.ExtraMimeStrings) {
-						if (!MTIDict_ByMimeNames.ContainsKey(extMimeStr))
+				if(mti.ExtraMimeStrings.NotNulle()) {
+					foreach(string extMimeStr in mti.ExtraMimeStrings) {
+						if(!MTIDict_ByMimeNames.ContainsKey(extMimeStr))
 							MTIDict_ByMimeNames.Add(extMimeStr, mti);
 					}
 				}
 
-				if (mti.ExtraExts.NotNulle()) {
-					foreach (string ext in mti.ExtraExts) {
-						if (!MTIDict_ByExtensions.ContainsKey(ext))
+				if(mti.ExtraExts.NotNulle()) {
+					foreach(string ext in mti.ExtraExts) {
+						if(!MTIDict_ByExtensions.ContainsKey(ext))
 							MTIDict_ByExtensions.Add(ext, mti);
 					}
 				}
@@ -351,6 +350,7 @@ namespace DotNetXtensionsPrivate
 
 			new MTI(BasicMimeType.image_png, "image/png", "png"),
 
+			new MTI(BasicMimeType.image_svg, "image/svg+xml", "svg"),
 
 
 			// ------- TEXT -------
@@ -411,8 +411,8 @@ namespace DotNetXtensionsPrivate
 				GenericMimeType = mimeType.GetGenericMimeType();
 				MimeTypeString = mimeTypeString;
 				Ext = ext;
-				if (mtStrMain != BasicMimeType.none) {
-					if (mimeTypeString.NotNulle())
+				if(mtStrMain != BasicMimeType.none) {
+					if(mimeTypeString.NotNulle())
 						throw new ArgumentException();
 					MainMimeStringType = mtStrMain;
 				}
@@ -427,12 +427,12 @@ namespace DotNetXtensionsPrivate
 	{
 		public static BasicMimeTypesX.MTI ExtraExtensions(this BasicMimeTypesX.MTI m, params string[] exts)
 		{
-			if (m.ExtraExts == null)
+			if(m.ExtraExts == null)
 				m.ExtraExts = new List<string>();
 
-			foreach (string ext in exts) {
+			foreach(string ext in exts) {
 				string x = ext.NullIfEmptyTrimmed();
-				if (x != null)
+				if(x != null)
 					m.ExtraExts.Add(x);
 			}
 			return m;
@@ -440,12 +440,12 @@ namespace DotNetXtensionsPrivate
 
 		public static BasicMimeTypesX.MTI ExtraMimeStrings(this BasicMimeTypesX.MTI m, params string[] mimeStrs)
 		{
-			if (m.ExtraMimeStrings == null)
+			if(m.ExtraMimeStrings == null)
 				m.ExtraMimeStrings = new List<string>();
 
-			foreach (string mim in mimeStrs) {
+			foreach(string mim in mimeStrs) {
 				string _mim = mim.NullIfEmptyTrimmed();
-				if (_mim != null)
+				if(_mim != null)
 					m.ExtraMimeStrings.Add(_mim);
 			}
 			return m;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -60,6 +60,9 @@ namespace DotNetXtensionsPrivate
 
 		/// <summary>image/png</summary>
 		image_png = 406,
+
+		/// <summary>image/svg</summary>
+		image_svg = 407,
 
 		/// <summary>image/gif</summary>
 		image_gif = 409,

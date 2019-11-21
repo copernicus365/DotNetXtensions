@@ -14,7 +14,7 @@ namespace DotNetXtensions.Test
 			RunTest(false, null);
 
 		[Fact]
-		public void EmptyString_Fail() => 
+		public void EmptyString_Fail() =>
 			RunTest(false, "");
 
 		[Fact]
@@ -74,12 +74,16 @@ namespace DotNetXtensions.Test
 		public void EndsWithOpenP_Fail() =>
 			RunTest(false, "test test <");
 
+		[Fact]
+		public void StartsWithNeverClosedOpenPointy() =>
+			RunTest(false, "<Cheers maties \r\nhowdy.");
+
 		void RunTest(bool isXml, string text)
 		{
 			bool testHadXml = XmlTextFuncs.StringContainsAnyXmlTagsQuick(text);
 
 			bool passed = testHadXml == isXml;
-			if (!passed)
+			if(!passed)
 				Assert.True(passed);
 		}
 	}

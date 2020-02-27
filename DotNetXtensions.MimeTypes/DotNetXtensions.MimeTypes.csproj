@@ -1,9 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>3.2.0</Version>
-		<AssemblyVersion>3.2.0.0</AssemblyVersion>
-		<FileVersion>3.2.0.0</FileVersion>
+    
+		<Version>4.0.0-alpha.1</Version>
+		<AssemblyVersion>4.0.0-beta.1</AssemblyVersion>
+		<FileVersion>4.0.0-beta.1</FileVersion>
+    
+    <!--have to set `GenerateAssemblyInfo`: false to fix error in
+    assInfo not allowing prerelease versioning
+    (https://semver.org/spec/v2.0.0.html,
+    https://stackoverflow.com/a/55573656/264031) -->
+    <!--<Deterministic>False</Deterministic>-->
+    
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<Authors>Nicholas Petersen</Authors>
 		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.MimeTypes</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.MimeTypes</PackageProjectUrl>

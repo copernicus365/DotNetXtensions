@@ -29,16 +29,17 @@ namespace DotNetXtensions
 		/// Type which is contained within the desired assembly that contains the embedded 
 		/// resources to access. See notes on this type in <see cref="InitEmbeddedResources(Type, string)"/>.
 		/// </summary>
-		public Type TypeForResources { get; private set; } 
-		
+		public Type TypeForResources { get; private set; }
+
+		string _ResourceBasePath { get; set; }
+
 		/// <summary>
 		/// The default resource base path.
 		/// Note: In the final scenario the final resource path that is used to get 
 		/// embedded resourceds will be prefixed with the assembly name, but that part 
 		/// is auto-handled by us. Of which, see <see cref="TypeForResources"/> and its documentation.
 		/// </summary>
-		public virtual string ResourceBasePath { get; set; } 
-			
+		public string ResourceBasePath => _ResourceBasePath;
 
 		/// <summary>
 		/// Initializes this <see cref="EmbeddedResources"/>, before which its members 
@@ -56,8 +57,7 @@ namespace DotNetXtensions
 			_assm = Assembly.GetAssembly(TypeForResources);
 			_assmName = _assm.GetName().Name;
 
-			if(resourceBasePath != null)
-				ResourceBasePath = resourceBasePath.NullIfEmptyTrimmed();
+			_ResourceBasePath = InitResourceBasePath(_assmName, resourceBasePath);
 
 			if(_resStringCache != null)
 				_resStringCache = null;
@@ -66,13 +66,43 @@ namespace DotNetXtensions
 				_resDataCache = null;
 		}
 
+		public static string InitResourceBasePath(string assmName, string resPath)
+		{
+			resPath = resPath.NullIfEmptyTrimmed();
+			if(resPath == null)
+				return null; // assmName;
+
+			if(resPath.Last() == '.') {
+				resPath = resPath.CutEnd(1).NullIfEmptyTrimmed();
+				if(resPath == null)
+					return null; // assmName;
+			}
+
+			if(resPath.StartsWith(assmName)) {
+				return resPath == assmName
+					? null
+					: resPath;
+			}
+			else
+				return $"{assmName}.{resPath}";
+		}
 
 
 		public string ResourcePath(string path)
 		{
-			string fullPath = ResourceBasePath.IsNulle()
-				? $"{_assmName}.{path}"
-				: $"{_assmName}.{ResourceBasePath}.{path}";
+			string fullPath;
+
+			if(_ResourceBasePath.IsNulle()) {
+				fullPath = (path?.StartsWith(_assmName) ?? false)
+					? path
+					: $"{_assmName}.{path}";
+			}
+			else {
+				fullPath = $"{_ResourceBasePath}.{path}";
+			}
+
+			// NEW: if set, the INIT requires rbp already prefixed with assmNm
+			//: $"{_assmName}.{_ResourceBasePath}.{path}";
 
 			if(path.IsNulle()) // rare, but used within to get the base path before final path name
 				fullPath = fullPath.CutEnd(1);
@@ -84,7 +114,7 @@ namespace DotNetXtensions
 
 		/// <summary>
 		/// Gets the embedded resource value string, using 
-		/// <see cref="ResourceBasePath"/> to contruct the full path,
+		/// <see cref="_ResourceBasePath"/> to contruct the full path,
 		/// or if it's null expects the full resource path.
 		/// </summary>
 		/// <param name="nameAfterBasePath"></param>
@@ -104,7 +134,7 @@ namespace DotNetXtensions
 
 		/// <summary>
 		/// Gets the embedded resource value byte array, using 
-		/// <see cref="ResourceBasePath"/> to contruct the full path,
+		/// <see cref="_ResourceBasePath"/> to contruct the full path,
 		/// or if it's null expects the full resource path.
 		/// </summary>
 		/// <param name="nameAfterBasePath"></param>
@@ -129,7 +159,7 @@ namespace DotNetXtensions
 		/// <param name="resourceName">"The case-sensitive name of the (embedded) manifest resource".</param>
 		/// <param name="cache">True to use the input cache to cache the result.</param>
 		public static string GetResourceString(
-			Assembly assm, 
+			Assembly assm,
 			string resourceName,
 			Dictionary<string, string> cache = null)
 		{

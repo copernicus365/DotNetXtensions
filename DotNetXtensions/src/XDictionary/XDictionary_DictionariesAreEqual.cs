@@ -1,4 +1,4 @@
-﻿// XDictionary_DictionariesAreEqual
+// XDictionary_DictionariesAreEqual
 
 using System;
 using System.Collections.Generic;
@@ -64,7 +64,7 @@ namespace DotNetXtensionsPrivate
 		}
 
 		public static bool DictionariesAreEqual<TKey, TValue>(
-			this IDictionary<TKey, TValue> dict1, 
+			this IDictionary<TKey, TValue> dict1,
 			IDictionary<TKey, TValue> dict2,
 			Func<TValue, TValue, bool> comparer = null)
 		{
@@ -85,7 +85,7 @@ namespace DotNetXtensionsPrivate
 				if(!dict2.TryGetValue(key1, out TValue val2))
 					return false;
 
-				if(hasEqCmpr) {			
+				if(hasEqCmpr) {
 					if(!comparer(val1, val2)) // equalityComparer.Equals(val2))
 						return false;
 				}
@@ -131,6 +131,39 @@ namespace DotNetXtensionsPrivate
 			return true;
 		}
 
+		public static bool DictionariesAreEqual<TKey, TValue>(
+			this IDictionary<TKey, List<TValue>> dict1,
+			IDictionary<TKey, List<TValue>> dict2,
+			Func<List<TValue>, List<TValue>, bool> comparer = null)
+		{
+			if(dict1 == null || dict2 == null)
+				return dict1 == null && dict2 == null;
+
+			if(dict1.Count != dict2.Count)
+				return false;
+
+			bool hasEqCmpr = comparer != null;
+
+			foreach(var kv in dict1) {
+				TKey key1 = kv.Key;
+				List<TValue> arr1 = kv.Value;
+
+				if(!dict2.TryGetValue(key1, out List<TValue> arr2))
+					return false;
+
+				if(arr1 == null || arr2 == null)
+					if(arr1 != arr2)
+						return false;
+
+				if(hasEqCmpr) {
+					if(!comparer(arr1, arr2)) // equalityComparer.Equals(val2))
+						return false;
+				}
+				else if(!arr1.SequenceEqual(arr2))
+					return false;
+			}
+			return true;
+		}
 
 	}
 }

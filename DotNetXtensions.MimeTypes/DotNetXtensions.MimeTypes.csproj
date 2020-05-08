@@ -2,21 +2,6 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
     <VersionPrefix>4.0.0</VersionPrefix>
-    <!--<VersionSuffix>beta.2</VersionSuffix>-->
-    <!--
-    <Version>4.0.0-beta.1</Version>
-		<AssemblyVersion>4.0.0-beta.1</AssemblyVersion>
-		<FileVersion>4.0.0-beta.1</FileVersion>
-    -->   
-    <!--
-    have to set `GenerateAssemblyInfo`: false to fix error in
-    assInfo not allowing prerelease versioning
-    (https://semver.org/spec/v2.0.0.html,
-    https://stackoverflow.com/a/55573656/264031)
-    
-    <Deterministic>False</Deterministic>
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    -->
 		<Authors>Nicholas Petersen</Authors>
 		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.MimeTypes</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.MimeTypes</PackageProjectUrl>
@@ -45,3 +30,17 @@
 		<ProjectReference Include="..\DotNetXtensions\DotNetXtensions.csproj" />
 	</ItemGroup>
 </Project>
+
+<!--
+		<VersionSuffix>beta.2</VersionSuffix>
+		<Version>4.0.0-beta.1</Version>
+		<AssemblyVersion>4.0.0-beta.1</AssemblyVersion>
+		<FileVersion>4.0.0-beta.1</FileVersion>
+		have to set `GenerateAssemblyInfo`: false to fix error in
+		assInfo not allowing prerelease versioning
+		(https://semver.org/spec/v2.0.0.html,
+		https://stackoverflow.com/a/55573656/264031)
+    
+		<Deterministic>False</Deterministic>
+		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+-->

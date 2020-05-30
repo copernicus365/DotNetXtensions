@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using DotNetXtensions;
-using DotNetXtensions.Concurrent;
 
 using Xunit;
 
@@ -21,7 +20,7 @@ namespace DotNetXtensions.Test
 			var queue = new ConcurrentQueue<(int val, int i)>();
 			//var completeds = new List<(int val, int i)>(); // -- doesn't work!!! is not concurrent!...
 
-			await inputSeq.RunTasksSequentially(5, async (int val, int i) => {
+			await inputSeq.ForEachAsyncConcurrent(5, async (int i, int val) => {
 
 				if(diagnostic)
 					$"START: {i}: Val: {val}".Print();

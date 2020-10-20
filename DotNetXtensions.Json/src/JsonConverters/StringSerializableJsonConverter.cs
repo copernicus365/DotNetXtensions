@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
+using System.Collections.Concurrent;
+
 using Newtonsoft.Json;
 
 namespace DotNetXtensions.Json
@@ -34,7 +35,7 @@ namespace DotNetXtensions.Json
 		// would greatly help performance for that instance though). Note that this type is not built 
 		// customizable, it does it's thing for IStringSerializable types and them alone, there's no reason therefore
 		// we can't cache these types
-		static Dictionary<Type, CanConvertType> _canConvertTypesDict = new Dictionary<Type, CanConvertType>();
+		static ConcurrentDictionary<Type, CanConvertType> _canConvertTypesDict = new ConcurrentDictionary<Type, CanConvertType>();
 
 		public override bool CanConvert(Type t)
 		{
@@ -48,7 +49,7 @@ namespace DotNetXtensions.Json
 
 			if(c.HadNullable)
 				_canConvertTypesDict[c.type] = c;
-			
+
 			return c.IsStringSerializable;
 		}
 

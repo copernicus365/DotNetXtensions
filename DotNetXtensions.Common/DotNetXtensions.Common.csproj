@@ -1,10 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Version>3.2.1</Version>
-		<AssemblyVersion>3.2.1.0</AssemblyVersion>
-		<FileVersion>3.2.1.0</FileVersion>
+    <VersionPrefix>3.4.0</VersionPrefix>    
 		<Authors>Nicholas Petersen</Authors>
 		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Common</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Common</PackageProjectUrl>

@@ -40,8 +40,28 @@ namespace DotNetXtensions.Test
 			True(equal);
 
 			bool equal2 = d1.DictionariesAreEqual(d2, (a, b) => a.SequenceIsEqual(b));
-			True(equal);
+			True(equal2);
 		}
+
+		[Fact]
+		public void Array_Pass_Equal_List()
+		{
+			Dictionary<string, List<int>> d1 = MockVals1.ToDictionary(kv => kv.Key, kv => new List<int>() { kv.Value, kv.Value + 1, kv.Value + 2 });
+			Dictionary<string, List<int>> d2 = MockVals1.ToDictionary(kv => kv.Key, kv => new List<int>() { kv.Value, kv.Value + 1, kv.Value + 2 });
+
+			bool equal = d1.DictionariesAreEqual(d2);
+			True(equal);
+
+			bool equal2 = d1.DictionariesAreEqual(d2, (a, b) => a.SequenceEqual(b));
+			True(equal2);
+
+			// TEST FAIL
+			// ALTER first dict (alter first item's value's first List value) so they should NOT be equal
+			d1.Values.First()[0] = 10001;
+
+			False(d1.DictionariesAreEqual(d2));
+		}
+
 
 		[Fact]
 		public void Array_NoPass()

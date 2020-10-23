@@ -1,18 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Extension methods for Dictionary.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDictionary
+	public static partial class XDictionary
 	{
 		public static bool NoKey<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key)
 		{

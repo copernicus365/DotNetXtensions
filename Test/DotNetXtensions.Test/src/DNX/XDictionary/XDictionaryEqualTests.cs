@@ -1,10 +1,10 @@
 using System;
-using Xunit;
-using DotNetXtensions;
-using System.Web;
-using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Linq;
+
+using DotNetXtensions;
+
+using Xunit;
 
 namespace DotNetXtensions.Test
 {
@@ -109,7 +109,7 @@ namespace DotNetXtensions.Test
 
 			True(d2.Count == d1.Count - 1);
 			bool equal = d1.DictionariesAreEqual(d2);
-			False(equal);		
+			False(equal);
 		}
 
 		static Dictionary<string, int> MockVals1 = new Dictionary<string, int>() {

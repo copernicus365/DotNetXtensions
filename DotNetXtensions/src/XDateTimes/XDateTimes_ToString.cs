@@ -1,16 +1,10 @@
-﻿// XDateTimes_ToString
+// XDateTimes_ToString
 
 using System;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDateTimes
+	public static partial class XDateTimes
 	{
 		/// <summary>
 		/// Simply returns dt.ToString("d").

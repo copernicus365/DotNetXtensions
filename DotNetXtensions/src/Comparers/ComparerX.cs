@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
@@ -14,12 +11,7 @@ namespace DotNetXtensions
 	/// case for instance with Array and many other CLR types.
 	/// </summary>
 	/// <typeparam name="T">Type.</typeparam>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	class ComparerX<T> : Comparer<T>, IEqualityComparer<T>
+	public class ComparerX<T> : Comparer<T>, IEqualityComparer<T>
 	{
 		#region --- static members ---
 

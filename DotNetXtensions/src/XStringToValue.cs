@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XStringToValue
+	public static class XStringToValue
 	{
 		public static int ToInt(this string val, int dflt = 0)
 		{

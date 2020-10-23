@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
@@ -14,12 +13,7 @@ namespace DotNetXtensions
 	/// https://code.google.com/p/unconstrained-melody/
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XEnum<T> where T : struct, IConvertible
+	public static class XEnum<T> where T : struct, IConvertible
 	{
 		// FIELDS
 		static int m_Count;
@@ -204,7 +198,7 @@ namespace DotNetXtensionsPrivate
 
 		public static T V(string name, T defaultValue = default(T), bool? caseInsensitive = null)
 		{
-			if (name.IsNulle()) return defaultValue;
+			if(name.IsNulle()) return defaultValue;
 			return Value(name, defaultValue, caseInsensitive);
 		}
 

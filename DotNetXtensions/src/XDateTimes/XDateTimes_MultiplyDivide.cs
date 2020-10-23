@@ -1,16 +1,10 @@
-﻿// XDateTimes_MultiplyDivide
+// XDateTimes_MultiplyDivide
 
 using System;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDateTimes
+	public static partial class XDateTimes
 	{
 		// --- TimeSpan.Multiply / Divide ---
 

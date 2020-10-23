@@ -1,17 +1,11 @@
-﻿// XDateTimes_OffsetTZConversions
+// XDateTimes_OffsetTZConversions
 
 using System;
 using System.Diagnostics;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDateTimes
+	public static partial class XDateTimes
 	{
 		public static DateTimeOffset SetTime(this DateTimeOffset dt, int? hours = null, int? mins = null, int? secs = null)
 		{

@@ -1,16 +1,10 @@
-﻿// XDateTimes_ToSetTZsEST
+// XDateTimes_ToSetTZsEST
 
 using System;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDateTimes
+	public static partial class XDateTimes
 	{
 		static TimeZoneInfo tzi_EST = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 

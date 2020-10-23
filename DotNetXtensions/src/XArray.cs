@@ -1,4 +1,4 @@
-﻿/* MAINTAINANCE NOTE!!
+/* MAINTAINANCE NOTE!!
 
 1) I wrote a huge portion of these functions nearly 10 years ago, ... yeah, prior
 to even the day when optional parameters existed! So would be good to go through
@@ -15,20 +15,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Extension methods for arrays.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XArray
+	public static class XArray
 	{
 
 		#region BinarySearch
@@ -101,9 +94,9 @@ namespace DotNetXtensionsPrivate
 
 		public static T[] Copy<T>(this T[] arr, int start, int length)
 		{
-			if (arr == null) return null;
+			if(arr == null) return null;
 
-			if ((start < 0) || (length < 0) || (start >= arr.Length) || (length > (arr.Length - start)))
+			if((start < 0) || (length < 0) || (start >= arr.Length) || (length > (arr.Length - start)))
 				throw new ArgumentOutOfRangeException();
 
 			T[] copiedArray = new T[length];
@@ -120,7 +113,7 @@ namespace DotNetXtensionsPrivate
 		{
 			if(list == null) return null;
 
-			if ((start < 0) || (length < 0) || (start >= list.Count) || (length > (list.Count - start)))
+			if((start < 0) || (length < 0) || (start >= list.Count) || (length > (list.Count - start)))
 				throw new ArgumentOutOfRangeException();
 
 			T[] copiedArray = new T[length];
@@ -136,9 +129,9 @@ namespace DotNetXtensionsPrivate
 		public static IEnumerable<T> Foreach<T>(this IEnumerable<T> source, Action<T> action)
 		{
 			if(source == null) return source;
-			if (action == null) throw new ArgumentNullException("action");
+			if(action == null) throw new ArgumentNullException("action");
 
-			foreach (T item in source)
+			foreach(T item in source)
 				action(item);
 
 			return source;
@@ -147,15 +140,15 @@ namespace DotNetXtensionsPrivate
 		public static IEnumerable<T> Foreach<T>(this IEnumerable<T> source, Action<T, int> action)
 		{
 			if(source == null) return source;
-			if (action == null) throw new ArgumentNullException("action");
+			if(action == null) throw new ArgumentNullException("action");
 
 			int i = 0;
-			foreach (T item in source)
+			foreach(T item in source)
 				action(item, i++);
-			
+
 			return source;
 		}
-		
+
 		#endregion
 
 		#region IndexOf -- Generic
@@ -196,18 +189,17 @@ namespace DotNetXtensionsPrivate
 		/// or an empty integer array (not a null array).</returns>
 		public static int[] IndexOfAll<T>(this T[] arr, T value)
 		{
-			if (arr == null) return null;
+			if(arr == null) return null;
 
 			List<int> indexes = new List<int>();
 
 			int indexHit = Array.IndexOf(arr, value);  // arr.IndexOf(value);
 
-			while (indexHit >= 0)
-			{
+			while(indexHit >= 0) {
 				indexes.Add(indexHit);
 				indexHit = Array.IndexOf(arr, value, indexHit + 1); // arr.IndexOf(value, indexHit + 1);
 			}
-			if (indexes.Count < 1)
+			if(indexes.Count < 1)
 				return new int[0];
 			else
 				return indexes.ToArray();
@@ -327,7 +319,7 @@ namespace DotNetXtensionsPrivate
 		/// <returns>The index of the find, or -1 if it is not found.</returns>
 		public static int IndexOfSequence<T>(this T[] srcArray, T[] findSeq) where T : IEquatable<T>
 		{
-			if (srcArray == null) throw new ArgumentNullException("srcArray");
+			if(srcArray == null) throw new ArgumentNullException("srcArray");
 
 			return IndexOfSequence(srcArray, findSeq, 0, srcArray.Length);
 		}
@@ -343,7 +335,7 @@ namespace DotNetXtensionsPrivate
 		/// <returns>The index of the find, or -1 if it is not found.</returns>
 		public static int IndexOfSequence<T>(this T[] srcArray, T[] findSeq, int start) where T : IEquatable<T>
 		{
-			if (srcArray == null) throw new ArgumentNullException("srcArray");
+			if(srcArray == null) throw new ArgumentNullException("srcArray");
 
 			return IndexOfSequence(srcArray, findSeq, start, (srcArray.Length - start));
 		}
@@ -360,17 +352,17 @@ namespace DotNetXtensionsPrivate
 		/// <returns>The index of the find, or -1 if it is not found.</returns>
 		public static int IndexOfSequence<T>(this T[] srcArray, T[] findSeq, int start, int length) where T : IEquatable<T>
 		{
-			if (srcArray == null) throw new ArgumentNullException("srcArray");
-			if (findSeq == null) throw new ArgumentNullException("findSeq");
+			if(srcArray == null) throw new ArgumentNullException("srcArray");
+			if(findSeq == null) throw new ArgumentNullException("findSeq");
 
-			if (srcArray.Length == 0) return -1;
+			if(srcArray.Length == 0) return -1;
 
-			if ((start < 0) || (length < 0) || (start >= srcArray.Length) || (length > (srcArray.Length - start)))
+			if((start < 0) || (length < 0) || (start >= srcArray.Length) || (length > (srcArray.Length - start)))
 				throw new ArgumentOutOfRangeException();
 
 			int findLen = findSeq.Length;
 
-			if (length < findLen)
+			if(length < findLen)
 				return -1;
 
 			int findLenMinus1 = findSeq.Length - 1;
@@ -382,15 +374,14 @@ namespace DotNetXtensionsPrivate
 			int i = 0;
 			int currentPos = Array.IndexOf(srcArray, firstItem, start);
 
-			for (; currentPos >= 0 && currentPos <= len; currentPos = Array.IndexOf(srcArray, firstItem, currentPos + 1))
-			{
-				if (srcArray[currentPos + findLenMinus1].Equals(lastItem)) // see notes
+			for(; currentPos >= 0 && currentPos <= len; currentPos = Array.IndexOf(srcArray, firstItem, currentPos + 1)) {
+				if(srcArray[currentPos + findLenMinus1].Equals(lastItem)) // see notes
 				{
-					for (i = 1; i < findLen; i++)
-						if (!findSeq[i].Equals(srcArray[currentPos + i]))
+					for(i = 1; i < findLen; i++)
+						if(!findSeq[i].Equals(srcArray[currentPos + i]))
 							break;
 
-					if (i == findLen)
+					if(i == findLen)
 						return currentPos;
 				}
 			}
@@ -436,37 +427,37 @@ namespace DotNetXtensionsPrivate
 		/// </summary>
 		public static T[] RemoveSequentialValues<T>(this T[] arr, T dup, bool trimEnds = false) where T : IEquatable<T>
 		{
-			if (arr == null) throw new ArgumentNullException();
+			if(arr == null) throw new ArgumentNullException();
 			int len = arr.Length;
-			if (len == 0) return arr;
+			if(len == 0) return arr;
 			List<T> list = new List<T>(len);
 			T t = default(T);
 			bool lastWas = false;
 
-			for (int i = 0; i < len; i++) {
+			for(int i = 0; i < len; i++) {
 
 				t = arr[i];
-				if (!t.Equals(dup)) {
+				if(!t.Equals(dup)) {
 					list.Add(t);
 					lastWas = false;
 				}
 				else {
-					if (!lastWas)
+					if(!lastWas)
 						list.Add(t);
 					lastWas = true;
 				}
 			}
 
-			if (trimEnds) {
+			if(trimEnds) {
 				len = list.Count;
-				if (len == 0)
+				if(len == 0)
 					return new T[0];
-				else if (len == 1 && list[0].Equals(dup))
+				else if(len == 1 && list[0].Equals(dup))
 					return new T[0];
 				else {
 					int start = list[0].Equals(dup) ? 1 : 0;
 					int cutLen = len - start - (list[len - 1].Equals(dup) ? 1 : 0);
-					if (cutLen != len)
+					if(cutLen != len)
 						return list.ToArray(start, cutLen);
 				}
 			}
@@ -525,7 +516,7 @@ namespace DotNetXtensionsPrivate
 		/// <returns></returns>
 		public static T[] ReverseArray<T>(this T[] arr, int start)
 		{
-			if (arr == null) return null;
+			if(arr == null) return null;
 
 			Array.Reverse(arr, start, (arr.Length - start));
 			return arr;
@@ -568,7 +559,7 @@ namespace DotNetXtensionsPrivate
 			if(srcArray == null) return comparisonArray == null;
 			if(comparisonArray == null) return false;
 
-			if (srcArray.Length != comparisonArray.Length)
+			if(srcArray.Length != comparisonArray.Length)
 				return false;
 
 			int loops = 8;
@@ -576,23 +567,22 @@ namespace DotNetXtensionsPrivate
 			int iterations = (srcArray.Length - remainder) / loops;
 			int pos = 0;
 
-			for (int i = 0; i < remainder; i++)
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			for(int i = 0; i < remainder; i++)
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 
-			if (iterations == 0) return true;
+			if(iterations == 0) return true;
 
-			do
-			{
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			do {
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 			}
-			while (--iterations > 0);
+			while(--iterations > 0);
 
 			return true;
 
@@ -623,7 +613,7 @@ namespace DotNetXtensionsPrivate
 			if(srcArray == null) return comparisonArray == null;
 			if(comparisonArray == null) return false;
 
-			if (srcArray.Length != comparisonArray.Length)
+			if(srcArray.Length != comparisonArray.Length)
 				return false;
 
 			int loops = 8;
@@ -631,23 +621,22 @@ namespace DotNetXtensionsPrivate
 			int iterations = (srcArray.Length - remainder) / loops;
 			int pos = 0;
 
-			for (int i = 0; i < remainder; i++)
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			for(int i = 0; i < remainder; i++)
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 
-			if (iterations == 0) return true;
+			if(iterations == 0) return true;
 
-			do
-			{
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			do {
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 			}
-			while (--iterations > 0);
+			while(--iterations > 0);
 
 			return true;
 		}
@@ -672,23 +661,22 @@ namespace DotNetXtensionsPrivate
 			int iterations = (srcArray.Length - remainder) / loops;
 			int pos = 0;
 
-			for (int i = 0; i < remainder; i++)
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			for(int i = 0; i < remainder; i++)
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 
-			if (iterations == 0) return true;
+			if(iterations == 0) return true;
 
-			do
-			{
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			do {
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 			}
-			while (--iterations > 0);
+			while(--iterations > 0);
 
 			return true;
 		}
@@ -713,23 +701,22 @@ namespace DotNetXtensionsPrivate
 			int iterations = (srcArray.Length - remainder) / loops;
 			int pos = 0;
 
-			for (int i = 0; i < remainder; i++)
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			for(int i = 0; i < remainder; i++)
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 
-			if (iterations == 0) return true;
+			if(iterations == 0) return true;
 
-			do
-			{
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			do {
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 			}
-			while (--iterations > 0);
+			while(--iterations > 0);
 
 			return true;
 		}
@@ -754,23 +741,22 @@ namespace DotNetXtensionsPrivate
 			int iterations = (srcArray.Length - remainder) / loops;
 			int pos = 0;
 
-			for (int i = 0; i < remainder; i++)
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			for(int i = 0; i < remainder; i++)
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 
-			if (iterations == 0) return true;
+			if(iterations == 0) return true;
 
-			do
-			{
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			do {
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 			}
-			while (--iterations > 0);
+			while(--iterations > 0);
 
 			return true;
 		}
@@ -795,23 +781,22 @@ namespace DotNetXtensionsPrivate
 			int iterations = (srcArray.Length - remainder) / loops;
 			int pos = 0;
 
-			for (int i = 0; i < remainder; i++)
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			for(int i = 0; i < remainder; i++)
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 
-			if (iterations == 0) return true;
+			if(iterations == 0) return true;
 
-			do
-			{
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			do {
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 			}
-			while (--iterations > 0);
+			while(--iterations > 0);
 
 			return true;
 		}
@@ -836,23 +821,22 @@ namespace DotNetXtensionsPrivate
 			int iterations = (srcArray.Length - remainder) / loops;
 			int pos = 0;
 
-			for (int i = 0; i < remainder; i++)
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			for(int i = 0; i < remainder; i++)
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 
-			if (iterations == 0) return true;
+			if(iterations == 0) return true;
 
-			do
-			{
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			do {
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 			}
-			while (--iterations > 0);
+			while(--iterations > 0);
 
 			return true;
 		}
@@ -877,23 +861,22 @@ namespace DotNetXtensionsPrivate
 			int iterations = (srcArray.Length - remainder) / loops;
 			int pos = 0;
 
-			for (int i = 0; i < remainder; i++)
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			for(int i = 0; i < remainder; i++)
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 
-			if (iterations == 0) return true;
+			if(iterations == 0) return true;
 
-			do
-			{
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
-				if (srcArray[pos] != comparisonArray[pos++]) return false;
+			do {
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
+				if(srcArray[pos] != comparisonArray[pos++]) return false;
 			}
-			while (--iterations > 0);
+			while(--iterations > 0);
 
 			return true;
 		}
@@ -926,23 +909,22 @@ namespace DotNetXtensionsPrivate
 			int iterations = (srcArray.Length - remainder) / loops;
 			int pos = 0;
 
-			for (int i = 0; i < remainder; i++)
-				if (!srcArray[pos].Equals(comparisonArray[pos++])) return false;
+			for(int i = 0; i < remainder; i++)
+				if(!srcArray[pos].Equals(comparisonArray[pos++])) return false;
 
-			if (iterations == 0) return true;
+			if(iterations == 0) return true;
 
-			do
-			{
-				if (!srcArray[pos].Equals(comparisonArray[pos++])) return false;
-				if (!srcArray[pos].Equals(comparisonArray[pos++])) return false;
-				if (!srcArray[pos].Equals(comparisonArray[pos++])) return false;
-				if (!srcArray[pos].Equals(comparisonArray[pos++])) return false;
-				if (!srcArray[pos].Equals(comparisonArray[pos++])) return false;
-				if (!srcArray[pos].Equals(comparisonArray[pos++])) return false;
-				if (!srcArray[pos].Equals(comparisonArray[pos++])) return false;
-				if (!srcArray[pos].Equals(comparisonArray[pos++])) return false;
+			do {
+				if(!srcArray[pos].Equals(comparisonArray[pos++])) return false;
+				if(!srcArray[pos].Equals(comparisonArray[pos++])) return false;
+				if(!srcArray[pos].Equals(comparisonArray[pos++])) return false;
+				if(!srcArray[pos].Equals(comparisonArray[pos++])) return false;
+				if(!srcArray[pos].Equals(comparisonArray[pos++])) return false;
+				if(!srcArray[pos].Equals(comparisonArray[pos++])) return false;
+				if(!srcArray[pos].Equals(comparisonArray[pos++])) return false;
+				if(!srcArray[pos].Equals(comparisonArray[pos++])) return false;
 			}
-			while (--iterations > 0);
+			while(--iterations > 0);
 
 			return true;
 		}

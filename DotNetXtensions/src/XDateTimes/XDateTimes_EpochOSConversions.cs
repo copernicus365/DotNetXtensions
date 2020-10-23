@@ -1,19 +1,8 @@
-﻿// XDateTimes_EpochOSConversions
+// XDateTimes_EpochOSConversions
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDateTimes
+	public static partial class XDateTimes
 	{
 		/// <summary>
 		/// Java / Unix time since Epoch converted to .NET ticks,

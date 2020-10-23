@@ -1,17 +1,11 @@
 // XNumeric_Hex
 
-#if !DNXPrivate
 using System;
 using System.Globalization;
 
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XNumeric
+	public static partial class XNumeric
 	{
 		// --- ToHex / ToIntFromHex ---
 

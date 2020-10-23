@@ -1,18 +1,11 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XChar
+	public static class XChar
 	{
-
 		#region GetBytes
 
 		/// <summary>
@@ -22,7 +15,7 @@ namespace DotNetXtensionsPrivate
 		/// <returns></returns>
 		public static byte[] GetBytes(this char thisChar)
 		{
-			if (thisChar < 127) // valid for UTF-8
+			if(thisChar < 127) // valid for UTF-8
 				return new byte[] { (byte)thisChar };
 
 			return Encoding.UTF8.GetBytes(new char[] { thisChar });
@@ -39,7 +32,7 @@ namespace DotNetXtensionsPrivate
 		/// <returns></returns>
 		public static int GetByteCount(this char thisChar)
 		{
-			if (thisChar < 127) // valid for UTF-8
+			if(thisChar < 127) // valid for UTF-8
 				return 1;
 
 			return Encoding.UTF8.GetByteCount(new char[] { thisChar });
@@ -60,7 +53,7 @@ namespace DotNetXtensionsPrivate
 		/// <returns>The new string.</returns>
 		public static string GetString(this char[] chars, int index, int length)
 		{
-			if (chars == null) throw new ArgumentNullException("chars");
+			if(chars == null) throw new ArgumentNullException("chars");
 
 			return new string(chars, index, length);
 		}
@@ -157,20 +150,21 @@ namespace DotNetXtensionsPrivate
 		/// Indicates whether all the characters in this string are ascii letters or numbers (a-z || A-Z || 0-9 only).
 		/// </summary>
 		public static bool IsAsciiAlphaNumeric(
-			this string s, 
+			this string s,
 			int start = 0,
 			bool allowUnderscore = false,
 			bool allowDash = false)
 		{
 			int len = _stringLoopBoundsCheck(s, start);
 
-			for (int i = start; i < len; i++)
-				if (!IsAsciiLetterOrDigit(s[i])) {
-					if (s[i] == '_') {
-						if (!allowUnderscore)
+			for(int i = start; i < len; i++)
+				if(!IsAsciiLetterOrDigit(s[i])) {
+					if(s[i] == '_') {
+						if(!allowUnderscore)
 							return false; // else falls thru and continues
-					} else if (s[i] == '-') {
-						if (!allowDash)
+					}
+					else if(s[i] == '-') {
+						if(!allowDash)
 							return false; // dido
 					}
 					else
@@ -182,11 +176,11 @@ namespace DotNetXtensionsPrivate
 
 		static int _stringLoopBoundsCheck(string s, int start)
 		{
-			if (s == null)
+			if(s == null)
 				throw new ArgumentNullException();
 
 			int len = s.Length;
-			if (start >= len && len > 0)
+			if(start >= len && len > 0)
 				throw new ArgumentOutOfRangeException();
 
 			return len;
@@ -241,10 +235,10 @@ namespace DotNetXtensionsPrivate
 
 		public static bool EqualsIgnoreCase(this char c, char comparisonChar, bool assumeCompareCharIsLower = false)
 		{
-			if (c == comparisonChar)
+			if(c == comparisonChar)
 				return true;
 			c = char.ToLower(c);
-			if (!assumeCompareCharIsLower)
+			if(!assumeCompareCharIsLower)
 				comparisonChar = char.ToLower(comparisonChar);
 			return c == comparisonChar;
 		}

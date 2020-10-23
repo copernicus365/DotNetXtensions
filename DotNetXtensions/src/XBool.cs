@@ -1,15 +1,8 @@
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XBool
+	public static class XBool
 	{
-
 		public static int ToBit(this bool b)
 			=> b ? 1 : 0;
 
@@ -30,7 +23,7 @@ namespace DotNetXtensionsPrivate
 		/// <param name="lower">True to have a lowercase result returned.</param>
 		public static string ToStringYesNo(this bool b, bool lower = false)
 		{
-			if (lower)
+			if(lower)
 				return b ? "yes" : "no";
 			return b ? "Yes" : "No";
 		}

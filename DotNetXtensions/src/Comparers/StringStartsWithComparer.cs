@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	class StringStartsWithComparer : IComparer<string>, IEqualityComparer<string>
+	public class StringStartsWithComparer : IComparer<string>, IEqualityComparer<string>
 	{
 		public bool IgnoreCase { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +19,6 @@ namespace DotNetXtensions.Net
 	/// </summary>
 	public static class XHttp
 	{
-
 		#region --- User-Agent ---
 
 		/// <summary>
@@ -40,9 +39,9 @@ namespace DotNetXtensions.Net
 
 		public static HttpRequestHeaders SetUserAgentIfNone(this HttpRequestHeaders headers, string userAgent = null)
 		{
-			if (headers?.UserAgent?.Count < 1) {
-				userAgent = userAgent.QQQ(DefaultUserAgent);
-				if (userAgent.NotNulle())
+			if(headers?.UserAgent?.Count < 1) {
+				userAgent = userAgent.FirstNotNulle(DefaultUserAgent);
+				if(userAgent.NotNulle())
 					headers.Add("User-Agent", userAgent);
 			}
 			return headers;
@@ -50,9 +49,9 @@ namespace DotNetXtensions.Net
 
 		public static HttpRequestHeaders SetAcceptIfNone(this HttpRequestHeaders headers, string accept = null)
 		{
-			if (headers != null && headers.Accept.Count < 1) {
-				accept = accept.QQQ(DefaultAcceptHeader);
-				if (accept.NotNulle())
+			if(headers != null && headers.Accept.Count < 1) {
+				accept = accept.FirstNotNulle(DefaultAcceptHeader);
+				if(accept.NotNulle())
 					headers.Accept.AddN(accept);
 			}
 			return headers;
@@ -60,7 +59,7 @@ namespace DotNetXtensions.Net
 
 		public static HttpRequestHeaders SetDefaultHeaders(this HttpRequestHeaders headers)
 		{
-			if (headers != null) {
+			if(headers != null) {
 				headers.SetAcceptIfNone();
 				headers.SetUserAgentIfNone();
 			}
@@ -69,7 +68,7 @@ namespace DotNetXtensions.Net
 
 		public static HttpRequestMessage SetDefaultHeaders(this HttpRequestMessage request)
 		{
-			if (request != null)
+			if(request != null)
 				request.Headers.SetDefaultHeaders();
 			return request;
 		}
@@ -84,7 +83,7 @@ namespace DotNetXtensions.Net
 		public static TimeSpan DefaultTimeout {
 			get { return _defaultTimeout; }
 			set {
-				if (value <= TimeSpan.Zero)
+				if(value <= TimeSpan.Zero)
 					throw new ArgumentOutOfRangeException();
 				_defaultTimeout = value;
 			}
@@ -128,7 +127,7 @@ namespace DotNetXtensions.Net
 		{
 			var swTotal = Stopwatch.StartNew();
 
-			if (url.IsNulle()) throw new ArgumentNullException(nameof(url));
+			if(url.IsNulle()) throw new ArgumentNullException(nameof(url));
 
 			var s = settings ?? new HttpNotModifiedProperties();
 			HttpResponseInfo h = new HttpResponseInfo() {
@@ -136,14 +135,14 @@ namespace DotNetXtensions.Net
 			};
 			h.CopyValuesToThis(s);
 
-			if (client == null)
+			if(client == null)
 				client = _getHttpClient();
 
 			CancellationToken cancelToken = cancellationToken ?? new CancellationToken();
 			bool condGet = s.ConditionalGet;
 
 			TimeSpan _timeout = timeout ?? TimeSpan.Zero;
-			if (_timeout <= TimeSpan.Zero)
+			if(_timeout <= TimeSpan.Zero)
 				_timeout = DefaultTimeout;
 			//if(timeoutSeconds > 0) // problem, HttpClient is supposed to be used globally!!
 			//	client.Timeout = TimeSpan.FromSeconds((int)timeoutSeconds);
@@ -156,11 +155,11 @@ namespace DotNetXtensions.Net
 					.SetDefaultHeaders();
 
 				// set request IfModifiedSince header if available
-				if (condGet)
+				if(condGet)
 					request.Headers.IfModifiedSince = s.LastModified;
 
 				// set request ETag if available
-				if (condGet && s.ETag.NotNulle()) {
+				if(condGet && s.ETag.NotNulle()) {
 					//request.Headers.IfNoneMatch.Add(new EntityTagHeaderValue(""))
 					request.Headers.Add("If-None-Match", FixETag(s.ETag));
 				}
@@ -178,7 +177,7 @@ namespace DotNetXtensions.Net
 					h.HeaderResponseTime = sw.ElapsedAndReset();
 
 					TimeSpan remainingTime = _timeout - h.HeaderResponseTime;
-					if (remainingTime <= TimeSpan.Zero) {
+					if(remainingTime <= TimeSpan.Zero) {
 						remainingTime = TimeSpan.FromMilliseconds(1);
 						// shouldn't happen, but if TimeoutAfterAsync didn't throw, make this not 
 						// a negative number at least, which is invalid for the next TimeoutAfterAsync call
@@ -192,7 +191,7 @@ namespace DotNetXtensions.Net
 
 					// --- Status code checks ---
 
-					if (response.StatusCode == HttpStatusCode.NotModified) {
+					if(response.StatusCode == HttpStatusCode.NotModified) {
 						h.Result = HttpResponseResult.NotModified;
 						return h;
 					}
@@ -209,12 +208,12 @@ namespace DotNetXtensions.Net
 					//	return h;
 					//}
 
-					if (isSuccess) {
+					if(isSuccess) {
 						// --- ETag ---
 
 						string responseEtag = FixETag(h.ResultHeadersDict.V("ETag")); // response.Headers.ETag; // IS NULL!! STUPID!! Come on guys!
 
-						if (condGet && s.ETag.NotNulle() && responseEtag == s.ETag) {
+						if(condGet && s.ETag.NotNulle() && responseEtag == s.ETag) {
 							h.Result = HttpResponseResult.NotModified;
 							return h;
 						}
@@ -223,7 +222,7 @@ namespace DotNetXtensions.Net
 						// --- ContentLength check #1) If Content-Length header is set ---
 
 						int? contentLengthHeader = h.ResultHeadersDict.V("Content-Length").TrimIfNeeded().ToIntN();
-						if (condGet && s.ContentLengthNotModified(contentLengthHeader)) {
+						if(condGet && s.ContentLengthNotModified(contentLengthHeader)) {
 							// contentLengthNotModified(eqCntLenNotMod, contentLengthHeader, s.ContentLength)) {
 							h.Result = HttpResponseResult.NotModified;
 							return h;
@@ -240,13 +239,13 @@ namespace DotNetXtensions.Net
 
 					h.ContentResponseTime = sw.ElapsedAndStop();
 
-					if (data == null) data = new byte[0]; // this seems right
+					if(data == null) data = new byte[0]; // this seems right
 					h.ContentData = data;
 
 					int dataLen = data.LengthN();
 
 					// --- ContentLength check #2) If actual data length is equal ---
-					if (isSuccess && condGet && s.ContentLengthNotModified(dataLen)) {
+					if(isSuccess && condGet && s.ContentLengthNotModified(dataLen)) {
 						h.Result = HttpResponseResult.NotModified;
 						return h;
 					}
@@ -255,9 +254,9 @@ namespace DotNetXtensions.Net
 
 					return h;
 				}
-				catch (Exception ex) {
+				catch(Exception ex) {
 					h.Result = HttpResponseResult.Fail;
-					if (ex is TimeoutException)
+					if(ex is TimeoutException)
 						h.Result = HttpResponseResult.TimeOut;
 					else
 						h.Ex = ex; // don't save if just a timeout
@@ -265,9 +264,9 @@ namespace DotNetXtensions.Net
 				}
 			}
 			finally {
-				if (closeClient && client != null)
+				if(closeClient && client != null)
 					client.Dispose();
-				if (h != null && swTotal != null && swTotal.IsRunning)
+				if(h != null && swTotal != null && swTotal.IsRunning)
 					h.TotalResponseTime = swTotal.Elapsed;
 			}
 		}
@@ -329,8 +328,8 @@ namespace DotNetXtensions.Net
 		/// <param name="etag">The etag or null. Returns null if nulle.</param>
 		public static string FixETag(string etag)
 		{
-			if (etag.NotNulle()) {
-				if (etag.Last() != '"')
+			if(etag.NotNulle()) {
+				if(etag.Last() != '"')
 					etag = '"' + etag + '"';
 			}
 			return etag;
@@ -338,10 +337,10 @@ namespace DotNetXtensions.Net
 
 		public static string Status(this HttpResponseMessage response)
 		{
-			if (response == null)
+			if(response == null)
 				return null;
 
-			string val = "({0}) {1}".FormatX(((int)response.StatusCode), response.ReasonPhrase);
+			string val = $"({(int)response.StatusCode}) {response.ReasonPhrase}";
 			return val.Last() == ' ' ? val.Trim() : val;
 		}
 
@@ -351,29 +350,29 @@ namespace DotNetXtensions.Net
 
 		public static List<KeyValuePair<string, string>> GetHeadersFromHttpMessageString(string headersStr, KeyValuePair<string, string>? topLine = null)
 		{
-			if (headersStr.IsNulle())
+			if(headersStr.IsNulle())
 				return new List<KeyValuePair<string, string>>();
 
 			string[] lines = headersStr
 				.SplitLines(trimLines: true, removeEmptyLines: true);
 
-			if (lines.IsNulle())
+			if(lines.IsNulle())
 				return new List<KeyValuePair<string, string>>();
 
 			// the output string has 3 lines we ignore, so even if 0 headers, should at least be 4
-			if (lines.Length < 3 || !lines[1].StartsWithN("{") || !lines.Last().StartsWithN("}"))
+			if(lines.Length < 3 || !lines[1].StartsWithN("{") || !lines.Last().StartsWithN("}"))
 				throw new ArgumentOutOfRangeException("This parse expects a certain format when HttpResponseMessage.ToString is called that was not met.");
 
 			int len = lines.Length - 1;
 			var list = new List<KeyValuePair<string, string>>(len);
 
-			if (topLine != null)
+			if(topLine != null)
 				list.Add(topLine.Value);
 
-			for (int i = 2; i < len; i++) {
+			for(int i = 2; i < len; i++) {
 				string ln = lines[i];
 				int idx = ln.IndexOf(':');
-				if (idx < 1)
+				if(idx < 1)
 					continue;
 
 				string ky = ln.Substring(0, idx).TrimN();
@@ -428,13 +427,13 @@ namespace DotNetXtensions.Net
 			var dict = new Dictionary<string, string>(20);
 
 			// simply overwrite existing member, no exception, and thus no double check lookup needed
-			foreach (var kv in headers) {
+			foreach(var kv in headers) {
 				string key = kv.Key ?? "";
 				string val = dict.V(key);
-				if (val.IsNulle())
+				if(val.IsNulle())
 					val = kv.Value;
 				else {
-					if (key.EqualsIgnoreCase("user-agent"))
+					if(key.EqualsIgnoreCase("user-agent"))
 						val = val + " " + kv.Value;
 					else
 						val = val + multiValueSeparator + kv.Value;
@@ -449,12 +448,12 @@ namespace DotNetXtensions.Net
 			var dict = new Dictionary<string, string>(20);
 
 			// simply overwrite existing member, no exception, and thus no double check lookup needed
-			foreach (var kv in headers) {
+			foreach(var kv in headers) {
 				string key = kv.Key.TrimIfNeeded() ?? "";
 				string val = kv.Value.TrimIfNeeded();
 				string currVal = dict.V(key);
 
-				if (currVal.NotNulle()) {
+				if(currVal.NotNulle()) {
 					string mvSep = key.EqualsIgnoreCase("user-agent")
 						? " "
 						: multiValueSeparator;
@@ -479,7 +478,7 @@ namespace DotNetXtensions.Net
 		public static async Task<bool> UrlExists(this HttpClient client, string url)
 		{
 			try {
-				if (client == null)
+				if(client == null)
 					client = _getHttpClient();
 
 				var httpRequestMsg = new HttpRequestMessage(HttpMethod.Head, url);
@@ -498,8 +497,8 @@ namespace DotNetXtensions.Net
 		public static HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> AddN(
 			this HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> coll, params string[] mediaTypes)
 		{
-			if (mediaTypes.NotNulle() && coll != null) {
-				for (int i = 0; i < mediaTypes.Length; i++)
+			if(mediaTypes.NotNulle() && coll != null) {
+				for(int i = 0; i < mediaTypes.Length; i++)
 					coll.Add(new MediaTypeWithQualityHeaderValue(mediaTypes[i]));
 			}
 			return coll;
@@ -508,8 +507,8 @@ namespace DotNetXtensions.Net
 		public static HttpHeaderValueCollection<StringWithQualityHeaderValue> AddN(
 			this HttpHeaderValueCollection<StringWithQualityHeaderValue> coll, params string[] mediaTypes)
 		{
-			if (mediaTypes.NotNulle() && coll != null) {
-				for (int i = 0; i < mediaTypes.Length; i++)
+			if(mediaTypes.NotNulle() && coll != null) {
+				for(int i = 0; i < mediaTypes.Length; i++)
 					coll.Add(new StringWithQualityHeaderValue(mediaTypes[i]));
 			}
 			return coll;
@@ -519,7 +518,7 @@ namespace DotNetXtensions.Net
 		static void __addKVNotNull(List<KeyValuePair<string, string>> kvs, string key, object value)
 		{
 			string val = value.ToStringN();
-			if (val.NotNulle())
+			if(val.NotNulle())
 				kvs.Add(new KeyValuePair<string, string>(key, val));
 		}
 
@@ -528,9 +527,9 @@ namespace DotNetXtensions.Net
 			StringBuilder sb = new StringBuilder(500);
 			string newLine = doubleLine ? "\r\n\r\n" : "\r\n";
 
-			foreach (var kv in headers) {
-				if (kv.Key.IsNulle()) {
-					if (kv.Value.IsNulle())
+			foreach(var kv in headers) {
+				if(kv.Key.IsNulle()) {
+					if(kv.Value.IsNulle())
 						continue;
 					else
 						sb.Append(kv.Value);
@@ -550,53 +549,53 @@ namespace DotNetXtensions.Net
 
 		public static HttpResponseMessage SetContent(this HttpResponseMessage m, string content, string mediaType = "text/plain", Encoding encoding = null)
 		{
-			if (m != null) m.Content = GetContent(content, mediaType, encoding);
+			if(m != null) m.Content = GetContent(content, mediaType, encoding);
 			return m;
 		}
 		public static HttpResponseMessage SetContent(this HttpResponseMessage m, byte[] content, int offset = 0, int count = 0)
 		{
-			if (m != null) m.Content = GetContent(content, offset, count);
+			if(m != null) m.Content = GetContent(content, offset, count);
 			return m;
 		}
 		public static HttpResponseMessage SetContentJson(this HttpResponseMessage m, string content, Encoding encoding = null)
 		{
-			if (m != null) m.Content = GetContentJson(content, encoding);
+			if(m != null) m.Content = GetContentJson(content, encoding);
 			return m;
 		}
 		public static HttpResponseMessage SetContentForms(this HttpResponseMessage m, FormUrlEncodedContentX formContent)
 		{
-			if (m != null) m.Content = SetContentForms(formContent);
+			if(m != null) m.Content = SetContentForms(formContent);
 			return m;
 		}
 		public static HttpResponseMessage SetContentForms(this HttpResponseMessage m, FormUrlEncodedContent formContent)
 		{
-			if (m != null) m.Content = formContent;
+			if(m != null) m.Content = formContent;
 			return m;
 		}
 
 		public static HttpRequestMessage SetContent(this HttpRequestMessage m, string content, string mediaType = "text/plain", Encoding encoding = null)
 		{
-			if (m != null) m.Content = GetContent(content, mediaType, encoding);
+			if(m != null) m.Content = GetContent(content, mediaType, encoding);
 			return m;
 		}
 		public static HttpRequestMessage SetContent(this HttpRequestMessage m, byte[] content, int offset = 0, int count = 0)
 		{
-			if (m != null) m.Content = GetContent(content, offset, count);
+			if(m != null) m.Content = GetContent(content, offset, count);
 			return m;
 		}
 		public static HttpRequestMessage SetContentJson(this HttpRequestMessage m, string content, Encoding encoding = null)
 		{
-			if (m != null) m.Content = GetContentJson(content, encoding);
+			if(m != null) m.Content = GetContentJson(content, encoding);
 			return m;
 		}
 		public static HttpRequestMessage SetContentForms(this HttpRequestMessage m, FormUrlEncodedContentX formContent)
 		{
-			if (m != null) m.Content = SetContentForms(formContent);
+			if(m != null) m.Content = SetContentForms(formContent);
 			return m;
 		}
 		public static HttpRequestMessage SetContentForms(this HttpRequestMessage m, FormUrlEncodedContent formContent)
 		{
-			if (m != null) m.Content = formContent;
+			if(m != null) m.Content = formContent;
 			return m;
 		}
 
@@ -607,7 +606,7 @@ namespace DotNetXtensions.Net
 		}
 		public static HttpContent GetContent(byte[] content, int offset = 0, int count = 0)
 		{
-			if (offset == 0 && count == 0)
+			if(offset == 0 && count == 0)
 				return new ByteArrayContent(content);
 			else
 				return new ByteArrayContent(content, offset, count);
@@ -628,12 +627,12 @@ namespace DotNetXtensions.Net
 
 		public static HttpResponseMessage SetContentXml(this HttpResponseMessage m, string content, Encoding encoding = null)
 		{
-			if (m != null) m.Content = GetContentXml(content, encoding);
+			if(m != null) m.Content = GetContentXml(content, encoding);
 			return m;
 		}
 		public static HttpRequestMessage SetContentXml(this HttpRequestMessage m, string content, Encoding encoding = null)
 		{
-			if (m != null) m.Content = GetContentXml(content, encoding);
+			if(m != null) m.Content = GetContentXml(content, encoding);
 			return m;
 		}
 		public static HttpContent GetContentXml(string content, Encoding encoding = null)
@@ -645,22 +644,22 @@ namespace DotNetXtensions.Net
 
 		public static HttpResponseMessage SetContentXml(this HttpResponseMessage m, XElement xml, Encoding encoding = null, bool format = false, bool newLineOnAttributes = false)
 		{
-			if (m != null) m.Content = GetContentXml(xml, encoding, format, newLineOnAttributes);
+			if(m != null) m.Content = GetContentXml(xml, encoding, format, newLineOnAttributes);
 			return m;
 		}
 
 
 		public static HttpRequestMessage SetContentXml(this HttpRequestMessage m, XElement xml, Encoding encoding = null, bool format = false, bool newLineOnAttributes = false)
 		{
-			if (m != null) m.Content = GetContentXml(xml, encoding, format, newLineOnAttributes);
+			if(m != null) m.Content = GetContentXml(xml, encoding, format, newLineOnAttributes);
 			return m;
 		}
 
 		public static HttpContent GetContentXml(XElement xml, Encoding encoding = null, bool format = false, bool newLineOnAttributes = false)
 		{
 			string content = null;
-			if (xml != null) {
-				if (newLineOnAttributes)
+			if(xml != null) {
+				if(newLineOnAttributes)
 					content = xml.ToStringFormatted(format, newLineOnAttributes);
 				else
 					content = xml.ToString(format ? SaveOptions.None : SaveOptions.DisableFormatting);

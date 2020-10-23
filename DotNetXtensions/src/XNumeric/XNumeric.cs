@@ -1,22 +1,9 @@
-using System;
-using System.Text;
-using System.Globalization;
-using System.Web;
-using System.Collections.Generic;
-using System.Diagnostics;
-
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Extension methods for numbers, math, and related functions.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XNumeric
+	public static partial class XNumeric
 	{
 		// --- Positive ---
 

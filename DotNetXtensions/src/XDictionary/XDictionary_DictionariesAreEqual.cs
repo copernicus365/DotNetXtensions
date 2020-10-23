@@ -4,15 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDictionary
+	public static partial class XDictionary
 	{
 		// Remove these string based ones soon...
 

@@ -1,19 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XmlTextFuncs
+	public static class XmlTextFuncs
 	{
 		/* NOTE! Since System.Net.WebUtility.HtmlDecode is included in vanilla netcore package (Microsoft.NETCore.App), 
          we can simplify and just allow this... maybe ... for now... so removing for now this conditional

@@ -1,28 +1,19 @@
-﻿using System;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Extra LINQ type extension methods for Lists.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XList
+	public static class XList
 	{
 		[DebuggerStepThrough]
 		public static List<TSource> ToListN<TSource>(this IEnumerable<TSource> source)
 		{
-			if (source == null)
+			if(source == null)
 				return null;
 			return source.ToList();
 		}
@@ -34,7 +25,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static List<T> E<T>(this List<T> list)
 		{
-			if (list == null) {
+			if(list == null) {
 				var l = new List<T>();
 				return l as List<T>;
 			}
@@ -48,7 +39,7 @@ namespace DotNetXtensionsPrivate
 
 		public static List<T> AddN<T>(this List<T> list, T item)
 		{
-			if (list == null) throw new ArgumentNullException();
+			if(list == null) throw new ArgumentNullException();
 			list.Add(item);
 			return list;
 		}
@@ -61,7 +52,7 @@ namespace DotNetXtensionsPrivate
 		/// <param name="value">Value</param>
 		public static List<KeyValuePair<TKey, TValue>> AddN<TKey, TValue>(this List<KeyValuePair<TKey, TValue>> list, TKey key, TValue value)
 		{
-			if (list != null)
+			if(list != null)
 				list.Add(new KeyValuePair<TKey, TValue>(key, value));
 			return list;
 		}
@@ -75,7 +66,7 @@ namespace DotNetXtensionsPrivate
 		/// <param name="value">Value</param>
 		public static List<KeyValuePair<TKey, string>> AddN<TKey>(this List<KeyValuePair<TKey, string>> list, TKey key, object value)
 		{
-			if (list != null) {
+			if(list != null) {
 				string strVal = value?.ToString();
 				list.Add(new KeyValuePair<TKey, string>(key, strVal));
 			}
@@ -85,21 +76,21 @@ namespace DotNetXtensionsPrivate
 
 		public static List<T> AddIf<T>(this List<T> list, bool add, T item)
 		{
-			if (add)
+			if(add)
 				list.Add(item);
 			return list;
 		}
 
 		public static List<T> AddIfNotNull<T>(this List<T> list, T item)
 		{
-			if (item != null)
+			if(item != null)
 				list.Add(item);
 			return list;
 		}
 
 		public static List<string> AddIfNotNulle(this List<string> list, string item)
 		{
-			if (item.NotNulle())
+			if(item.NotNulle())
 				list.Add(item);
 			return list;
 		}
@@ -112,8 +103,8 @@ namespace DotNetXtensionsPrivate
 		/// </summary>
 		public static List<T> AddRange<T>(this List<T> list, IEnumerable<T> items)
 		{
-			if (items != null) {
-				foreach (T item in items)
+			if(items != null) {
+				foreach(T item in items)
 					list.Add(item);
 			}
 			return list;
@@ -121,28 +112,28 @@ namespace DotNetXtensionsPrivate
 
 		public static List<T> AddRangeN<T>(this List<T> list, IEnumerable<T> range)
 		{
-			if (range != null)
+			if(range != null)
 				list.AddRange(range);
 			return list;
 		}
 
 		public static List<T> AddMany<T>(this List<T> list, params T[] items)
 		{
-			if (items.NotNulle())
+			if(items.NotNulle())
 				list.AddRange(items);
 			return list;
 		}
 
 		public static List<T> AddRangeIf<T>(this List<T> list, bool add, IEnumerable<T> range)
 		{
-			if (add)
+			if(add)
 				list.AddRange(range);
 			return list;
 		}
 
 		public static List<T> AddWhereIf<T>(this List<T> list, bool add, IEnumerable<T> range, Func<T, bool> pred)
 		{
-			if (add)
+			if(add)
 				return AddWhere(list, range, pred);
 			return list;
 		}
@@ -150,9 +141,9 @@ namespace DotNetXtensionsPrivate
 
 		public static List<T> AddWhere<T>(this List<T> list, IEnumerable<T> range, Func<T, bool> pred)
 		{
-			if (list != null && range != null && pred != null)
-				foreach (var item in range)
-					if (pred(item))
+			if(list != null && range != null && pred != null)
+				foreach(var item in range)
+					if(pred(item))
 						list.Add(item);
 			return list;
 		}
@@ -163,9 +154,9 @@ namespace DotNetXtensionsPrivate
 		/// </summary>
 		public static List<T> InsertN<T>(this List<T> list, int index, T item)
 		{
-			if (list != null) {
-				if (index < 0) index = 0;
-				if (index > list.Count)
+			if(list != null) {
+				if(index < 0) index = 0;
+				if(index > list.Count)
 					list.Add(item);
 				else
 					list.Insert(index, item);

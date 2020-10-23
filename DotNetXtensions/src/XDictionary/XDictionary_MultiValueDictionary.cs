@@ -1,17 +1,11 @@
-﻿// XDictionary_MultiValueDictionary
+// XDictionary_MultiValueDictionary
 
 using System;
 using System.Collections.Generic;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDictionary
+	public static partial class XDictionary
 	{
 		/// <summary>
 		/// Creates a new Dictionary whose values are a List of TElement, making it a 'MultiValueDictionary'.

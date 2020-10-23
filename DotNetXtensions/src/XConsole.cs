@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+using System;
 using System.Diagnostics;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XConsole
+	public static class XConsole
 	{
-
 		/// <summary>
 		/// Obtains the next character or function key pressed by the user, but validates that 
 		/// only a single character was entered by returning the errorKey value if more than one 
@@ -39,7 +27,6 @@ namespace DotNetXtensionsPrivate
 			}
 			return key;
 		}
-
 
 	}
 }

@@ -1,16 +1,10 @@
-﻿// XDictionary_AddN
+// XDictionary_AddN
 
 using System.Collections.Generic;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDictionary
+	public static partial class XDictionary
 	{
 		public static Dictionary<TKey, TValue> AddN<TKey, TValue>(this Dictionary<TKey, TValue> d, TKey key, TValue value)
 		{

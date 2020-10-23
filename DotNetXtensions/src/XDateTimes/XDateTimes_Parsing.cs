@@ -1,18 +1,12 @@
-﻿// XDateTimes_Parsing
+// XDateTimes_Parsing
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDateTimes
+	public static partial class XDateTimes
 	{
 		// --- ParseDateTimeWithOffsetInfo / DateTimeStringHasOffset / etc  ---
 

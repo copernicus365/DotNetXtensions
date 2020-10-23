@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
@@ -22,12 +18,7 @@ namespace DotNetXtensions
 	/// http://stackoverflow.com/questions/5095183/how-would-i-run-an-async-taskt-method-synchronously
 	/// orig: http://social.msdn.microsoft.com/Forums/en/async/thread/163ef755-ff7b-4ea5-b226-bbe8ef5f4796
 	/// </remarks>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XTask
+	public static class XTask
 	{
 		public static T RunSync<T>(this Func<Task<T>> func)
 		{
@@ -51,14 +42,14 @@ namespace DotNetXtensionsPrivate
 		/// <param name="function"></param>
 		public static void RunAndForget(Func<Task> function)
 		{
-			if (function != null) {
+			if(function != null) {
 				Task.Run(function).ConfigureAwait(continueOnCapturedContext: false);
 			}
 		}
 
 		public static void RunAndForget<TResult>(Func<Task<TResult>> function)
 		{
-			if (function != null) {
+			if(function != null) {
 				Task.Run(function).ConfigureAwait(continueOnCapturedContext: false);
 			}
 
@@ -82,7 +73,7 @@ namespace DotNetXtensionsPrivate
 			var timeoutCancellationTokenSource = new CancellationTokenSource();
 
 			Task completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
-			if (completedTask == task) {
+			if(completedTask == task) {
 				timeoutCancellationTokenSource.Cancel();
 				return await task;  // Very important in order to propagate exceptions
 			}

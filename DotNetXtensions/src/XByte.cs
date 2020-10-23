@@ -1,44 +1,35 @@
-﻿using System;
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Extension methods for byte arrays.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-
-	static class XByte
+	public static class XByte
 	{
-
 		#region CopyBytes
 
 		public static byte[] CopyBytes(this byte[] bytes)
 		{
-			if (bytes == null) return null;
+			if(bytes == null) return null;
 
 			return CopyBytes(bytes, 0, bytes.Length);
 		}
 
 		public static byte[] CopyBytes(this byte[] bytes, int index)
 		{
-			if (bytes == null) return null;
+			if(bytes == null) return null;
 
 			return CopyBytes(bytes, index, (bytes.Length - index));
 		}
 
 		public static byte[] CopyBytes(this byte[] bytes, int index, int length)
 		{
-			if (bytes == null) return null;
+			if(bytes == null) return null;
 
 			// as elsewhere, with simple indirection calls like this, the bounds checking is left to the called method  
 			byte[] range = new byte[length];
@@ -52,14 +43,14 @@ namespace DotNetXtensionsPrivate
 
 		public static string GetString(this byte[] bytes)
 		{
-			if (bytes == null) return null;
+			if(bytes == null) return null;
 
 			return Encoding.UTF8.GetString(bytes);
 		}
 
 		public static string GetString(this byte[] bytes, int index, int length)
 		{
-			if (bytes == null) return null;
+			if(bytes == null) return null;
 
 			// as elsewhere, with simple indirection calls like this, the bounds checking is left to the called method  
 			return Encoding.UTF8.GetString(bytes, index, length);
@@ -69,8 +60,8 @@ namespace DotNetXtensionsPrivate
 
 		public static void Save(this byte[] bytesToSave, string filePath)
 		{
-			if (bytesToSave == null) throw new ArgumentNullException("bytesToSave");
-			if (filePath == null) throw new ArgumentNullException("filePath");
+			if(bytesToSave == null) throw new ArgumentNullException("bytesToSave");
+			if(filePath == null) throw new ArgumentNullException("filePath");
 
 			File.WriteAllBytes(filePath, bytesToSave);
 		}
@@ -83,9 +74,9 @@ namespace DotNetXtensionsPrivate
 		/// </summary>
 		public static string ToHexString(this byte[] bytes, bool lowerCase = false)
 		{
-			if (bytes == null)
+			if(bytes == null)
 				return null;
-			else if (bytes.Length == 0)
+			else if(bytes.Length == 0)
 				return "";
 
 			char[] c = new char[bytes.Length * 2];
@@ -94,7 +85,7 @@ namespace DotNetXtensionsPrivate
 			int xAddToAlpha = lowerCase ? 87 : 55;
 			int xAddToDigit = lowerCase ? -39 : -7;
 
-			for (int i = 0; i < bytes.Length; i++) {
+			for(int i = 0; i < bytes.Length; i++) {
 
 				b = bytes[i] >> 4;
 				c[i * 2] = (char)(xAddToAlpha + b + (((b - 10) >> 31) & xAddToDigit));
@@ -131,7 +122,7 @@ Some further considerations:
 
 		public static string ToHexString(this IEnumerable<byte> bytes, bool lowerCase = false)
 		{
-			if (bytes == null)
+			if(bytes == null)
 				return null;
 			byte[] arr = bytes.ToArray();
 			return arr.ToHexString(lowerCase);

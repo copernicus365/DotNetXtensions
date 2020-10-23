@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,18 +6,12 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Extension methods for Type.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XType
+	public static class XType
 	{
 		/// <summary>
 		/// If the input type is a Nullable T, gets the underlying type T.

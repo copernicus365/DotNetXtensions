@@ -1,10 +1,7 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
@@ -12,12 +9,7 @@ namespace DotNetXtensions
 	/// to use a lambda expression for methods that take an IComparer or IComparer T.
 	/// Source: http://www.velir.com/blog/index.php/2011/02/17/ilistt-sorting-a-better-way/
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-		class ComparisonComparer<T> : IComparer<T>, IComparer
+	public class ComparisonComparer<T> : IComparer<T>, IComparer
 	{
 		private readonly Comparison<T> _comparison;
 

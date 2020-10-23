@@ -1,17 +1,11 @@
-﻿// XDictionary_ValueGetters
+// XDictionary_ValueGetters
 
 using System.Collections.Generic;
 using System.Diagnostics;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDictionary
+	public static partial class XDictionary
 	{
 		/// <summary>
 		/// Allows lookup from a Dictionary of the specified value while returning the defaultValue 

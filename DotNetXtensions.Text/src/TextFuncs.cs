@@ -1,37 +1,29 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class TextFuncs
+	public static class TextFuncs
 	{
 		public static bool IsWebLink(string s, bool checkForWww = true)
 		{
-			if (s != null && s.Length > 9) { //http://bit.ly/ = 14 chars, www.msn.ly
-				if (checkForWww &&
+			if(s != null && s.Length > 9) { //http://bit.ly/ = 14 chars, www.msn.ly
+				if(checkForWww &&
 					s[0] == 'w' &&
 					s[1] == 'w' &&
 					s[2] == 'w' &&
 					s[3] == '.') {
 					return true;
 				}
-				else if (
+				else if(
 					s[0] == 'h' &&
 					s[1] == 't' &&
 					s[2] == 't' &&
 					s[3] == 'p') {
 
-					if (
+					if(
 						(s[4] == ':' && s[5] == '/' && s[6] == '/') ||
 						(s[4] == 's' && s[5] == ':' && s[6] == '/' && s[7] == '/')) {
 						return true;
@@ -50,10 +42,10 @@ namespace DotNetXtensionsPrivate
 		/// </summary>
 		public static string RemoveBrackets(string value)
 		{
-			if (value.CountN() > 2) {
-				if (value[0] == '(' && value[value.Length - 1] == ')') {
+			if(value.CountN() > 2) {
+				if(value[0] == '(' && value[value.Length - 1] == ')') {
 				}
-				else if (value[0] == '[' && value[value.Length - 1] == ']') {
+				else if(value[0] == '[' && value[value.Length - 1] == ']') {
 				}
 				else
 					return value;
@@ -67,28 +59,28 @@ namespace DotNetXtensionsPrivate
 
 		public static KeyValuePair<string, string>[] ParseQueryString(string query)
 		{
-			if (query.NotNulle()) {
+			if(query.NotNulle()) {
 
 				var queries = new List<KeyValuePair<string, string>>();
 
 				int lastStartIndex = query[0] == '?' ? 1 : 0;
 
-				for (int i = lastStartIndex; i < query.Length; i++) {
-					if (query[i] == '&') {
-						if (!query.FollowsWith("amp;", i + 1)) {
+				for(int i = lastStartIndex; i < query.Length; i++) {
+					if(query[i] == '&') {
+						if(!query.FollowsWith("amp;", i + 1)) {
 							int len = i - lastStartIndex;
-							if (len > 0) {
+							if(len > 0) {
 
 								string q = query.Substring(lastStartIndex, len);
 
 								// --- NOW get KV pair split on equals ---
 								int eqIndex = q.IndexOf('=');
 
-								if (eqIndex < 1) {
+								if(eqIndex < 1) {
 									// either of these means badly formed...
-									if (eqIndex < 0) // NO equals, just set whole as key
+									if(eqIndex < 0) // NO equals, just set whole as key
 										queries.Add(new KeyValuePair<string, string>(q, ""));
-									else if (q.Length > 1) // no key (begins with equals); this check also just skips if q == "="
+									else if(q.Length > 1) // no key (begins with equals); this check also just skips if q == "="
 										queries.Add(new KeyValuePair<string, string>("", q.Substring(1)));
 								}
 								else {
@@ -109,10 +101,10 @@ namespace DotNetXtensionsPrivate
 
 		public static KeyValuePair<string, string>[] GetQueryStrings(this Uri uri)
 		{
-			if (uri == null)
+			if(uri == null)
 				return null;
 			string query = uri.Query;
-			if (query.IsNulle())
+			if(query.IsNulle())
 				return null;
 
 			return ParseQueryString(query);
@@ -125,13 +117,13 @@ namespace DotNetXtensionsPrivate
 		/// <param name="toLower">True to lowercase the final result, false to uppercase, null to return as is.</param>
 		public static string PascalToUnderscoreString(string val, bool? toLower = true)
 		{
-			if (val.IsNulle())
+			if(val.IsNulle())
 				return val;
 
-			if (val.Length < 2) {
-				if (toLower == true)
+			if(val.Length < 2) {
+				if(toLower == true)
 					return val.ToLower();
-				if (toLower == false)
+				if(toLower == false)
 					return val.ToUpper();
 				return val;
 			}
@@ -141,20 +133,20 @@ namespace DotNetXtensionsPrivate
 			sb.Append(val[0]);
 
 			char prevC = 'a';
-			for (int i = 1; i < val.Length; i++) {
+			for(int i = 1; i < val.Length; i++) {
 				char c = val[i];
-				if (c.IsUpper()) {
+				if(c.IsUpper()) {
 					prevC = val[i - 1];
-					if (char.IsLower(prevC) || !char.IsLetter(prevC))
+					if(char.IsLower(prevC) || !char.IsLetter(prevC))
 						sb.Append('_');
 				}
 				sb.Append(c);
 			}
 			string v = sb.ToString();
 
-			if (toLower == true)
+			if(toLower == true)
 				return v.ToLower();
-			if (toLower == false)
+			if(toLower == false)
 				return v.ToUpper();
 			return v;
 		}
@@ -168,31 +160,31 @@ namespace DotNetXtensionsPrivate
 		/// <param name="val"></param>
 		public static string ConvertNCarriageReturnsToRN(string val)
 		{
-			if (val == null || val.Length == 0)
+			if(val == null || val.Length == 0)
 				return val;
 
 			List<int> hits = null; // *NOT* allocated until first hit (!)
 
 			void addHit(int idx)
 			{
-				if (hits == null)
+				if(hits == null)
 					hits = new List<int>();
 				hits.Add(idx);
 			}
 
-			if (val[0] == '\n') // by checking this first, the loop is free to do 1 char lookbacks without bounds check :0)
+			if(val[0] == '\n') // by checking this first, the loop is free to do 1 char lookbacks without bounds check :0)
 				addHit(0);
 
 			int len = val.Length;
-			for (int i = 1; i < len; i++) {
-				if (val[i] == '\n' && val[i - 1] != '\r')
+			for(int i = 1; i < len; i++) {
+				if(val[i] == '\n' && val[i - 1] != '\r')
 					addHit(i);
 			}
 
 			// If hits is null, it means there were NO allocations or ANYTHING 
 			// other than the single for loop, which itself checked only 1 char 
 			// (and one char lookback on finding '\n's)
-			if (hits == null)
+			if(hits == null)
 				return val;
 
 			// *** Nothing below is hit if there were no loner \n's ***
@@ -202,11 +194,11 @@ namespace DotNetXtensionsPrivate
 
 			int lastHitIdx = 0;
 
-			for (int i = 0; i < hits.Count; i++) {
+			for(int i = 0; i < hits.Count; i++) {
 				int nIdx = hits[i];
 				int count = nIdx - lastHitIdx; // -1 because not including the last char '\n'
 
-				if (count > 0)
+				if(count > 0)
 					sb.Append(val, lastHitIdx, count);
 
 				sb.Append('\r').Append('\n'); // I'm guessing appending 2 chars is faster than 1 "\r\n" string
@@ -214,7 +206,7 @@ namespace DotNetXtensionsPrivate
 				lastHitIdx = nIdx + 1;
 			}
 
-			if (lastHitIdx < val.Length)
+			if(lastHitIdx < val.Length)
 				sb.Append(val, lastHitIdx, val.Length - lastHitIdx); // append the remaining, if any
 
 			val = sb.ToString();
@@ -229,7 +221,7 @@ namespace DotNetXtensionsPrivate
 
 		public static bool ValidateEmail(string email, int maxLength = 254)
 		{
-			if (email == null || email.Length < 7 || email.Length > maxLength)
+			if(email == null || email.Length < 7 || email.Length > maxLength)
 				return false;
 			return _rxEmail.IsMatch(email);
 		}

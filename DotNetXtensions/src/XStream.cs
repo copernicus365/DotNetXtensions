@@ -1,33 +1,24 @@
 using System;
 using System.IO;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Extension methods for Streams.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-
-	static class XStream
+	public static class XStream
 	{
 		#region Buffer Size
 
 		public static int m_DefaultBufferSize = 8192; // 8kb
 
-		public static int DefaultBufferSize
-		{
+		public static int DefaultBufferSize {
 			get { return m_DefaultBufferSize; }
-			set
-			{
-				if (value < 0) throw new ArgumentOutOfRangeException();
-				if (value < 256)
+			set {
+				if(value < 0) throw new ArgumentOutOfRangeException();
+				if(value < 256)
 					m_DefaultBufferSize = 256;
-				else if (value > 1048576)
+				else if(value > 1048576)
 					m_DefaultBufferSize = 1048576;
 				else
 					m_DefaultBufferSize = value;
@@ -42,19 +33,18 @@ namespace DotNetXtensionsPrivate
 			int bufferSize;
 
 			// for this first batch, bufferSize sets are NOT completed, will be altered if too big or small next
-			if (readLength != null)
+			if(readLength != null)
 				bufferSize = (int)readLength;
-			else if (readStream.CanSeek)
+			else if(readStream.CanSeek)
 				bufferSize = checked((int)readStream.Length) - checked((int)readStream.Position);
 			else
 				return m_DefaultBufferSize;
 
-			if (bufferSize > m_DefaultBufferSize)
+			if(bufferSize > m_DefaultBufferSize)
 				return m_DefaultBufferSize;
 
-			if (bufferSize < 256)
-			{
-				if (bufferSize < 0)
+			if(bufferSize < 256) {
+				if(bufferSize < 0)
 					throw new ArgumentOutOfRangeException();
 				else
 					return 256;
@@ -68,24 +58,23 @@ namespace DotNetXtensionsPrivate
 
 		public static int CopyTo(this Stream stream, byte[] destination)
 		{
-			if (stream == null) throw new ArgumentNullException("stream");
-			if (destination == null) throw new ArgumentNullException("destination");
+			if(stream == null) throw new ArgumentNullException("stream");
+			if(destination == null) throw new ArgumentNullException("destination");
 			//if (!stream.CanRead) throw new ArgumentException("Stream must be readable.");
 
 			int destLen = destination.Length;
 
 			int numRead = stream.Read(destination, 0, destLen);
 
-			if (numRead == destLen)
+			if(numRead == destLen)
 				return destLen;
 
-			else if (numRead < 1)
+			else if(numRead < 1)
 				return 0;
 
-			else
-			{
+			else {
 				int totalRead = numRead;
-				while ((numRead = stream.Read(destination, totalRead, destLen - totalRead)) > 0)
+				while((numRead = stream.Read(destination, totalRead, destLen - totalRead)) > 0)
 					totalRead += numRead;
 
 				return totalRead;
@@ -128,28 +117,27 @@ namespace DotNetXtensionsPrivate
 		{
 			#region Validate Args
 
-			if (stream == null) throw new ArgumentNullException("stream");
-			if (count != null && (int)count < 0) throw new ArgumentOutOfRangeException("maxCount");
+			if(stream == null) throw new ArgumentNullException("stream");
+			if(count != null && (int)count < 0) throw new ArgumentOutOfRangeException("maxCount");
 			//if (!stream.CanRead) throw new ArgumentException("Stream must be readable.");
 
 			#endregion
 
 			#region IF CANSEEK || COUNT != NULL
 
-			if (stream.CanSeek || count != null)
-			{
+			if(stream.CanSeek || count != null) {
 				int len = count != null
 					? (int)count
 					: checked((int)stream.Length) - checked((int)stream.Position);
 
-				if (len < 1)
+				if(len < 1)
 					return new byte[0];
 
 				byte[] _data = new byte[len];
 
 				int numRd = stream.CopyTo(_data);
 
-				if (numRd == len)
+				if(numRd == len)
 					return _data;
 				else
 					return _data.Copy(0, numRd);
@@ -159,14 +147,13 @@ namespace DotNetXtensionsPrivate
 
 			#region ELSE
 
-			else
-			{
+			else {
 				int numRead = 0;
 				int buffLen = m_DefaultBufferSize;
 				byte[] buff = new byte[buffLen];
 				MemoryStream ms = new MemoryStream(buffLen);
 
-				while ((numRead = stream.Read(buff, 0, buffLen)) > 0)
+				while((numRead = stream.Read(buff, 0, buffLen)) > 0)
 					ms.Write(buff, 0, numRead);
 
 				return ms.ToArray();
@@ -191,10 +178,10 @@ namespace DotNetXtensionsPrivate
 		private static void __WRITE_STREAM_TO_STREAM(this Stream writeStream, Stream readStream, int? length)
 		{
 			#region Param checks
-			if (readStream == null) throw new ArgumentNullException("readStream");
-			if (writeStream == null) throw new ArgumentNullException("writeStream");
-			if (!readStream.CanRead) throw new IOException("readStream could not be read from (CanRead = false).");
-			if (!writeStream.CanWrite) throw new IOException("writeStream could not be written to (CanWrite = false).");
+			if(readStream == null) throw new ArgumentNullException("readStream");
+			if(writeStream == null) throw new ArgumentNullException("writeStream");
+			if(!readStream.CanRead) throw new IOException("readStream could not be read from (CanRead = false).");
+			if(!writeStream.CanWrite) throw new IOException("writeStream could not be written to (CanWrite = false).");
 			#endregion
 
 			// === Establish Buffer + buffer size ===
@@ -206,15 +193,15 @@ namespace DotNetXtensionsPrivate
 			// === Handle length != null === (meaning length is max read from stream, else read to end)
 			// Critically important, when it is not null, to never read further than length... of course
 
-			if (length == null) // means read to readStream end
+			if(length == null) // means read to readStream end
 			{
-				while ((numRead = readStream.Read(buff, 0, buffLen)) > 0)
+				while((numRead = readStream.Read(buff, 0, buffLen)) > 0)
 					writeStream.Write(buff, 0, numRead);
 			}
 			else // means stop reading *exactly* at length, or under if stream ended
 			{
 				int lenLeft = (int)length;
-				while ((numRead = readStream.Read(buff, 0, ((lenLeft -= numRead) < buffLen ? lenLeft : buffLen))) > 0)
+				while((numRead = readStream.Read(buff, 0, ((lenLeft -= numRead) < buffLen ? lenLeft : buffLen))) > 0)
 					writeStream.Write(buff, 0, numRead);
 			}
 			writeStream.Flush();

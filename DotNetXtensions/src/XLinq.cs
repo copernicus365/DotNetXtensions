@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,18 +7,12 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Extra LINQ type extension methods, particularly for collections.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XLinq
+	public static class XLinq
 	{
 
 		#region --- Nulle (etc) ---

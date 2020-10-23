@@ -1,15 +1,9 @@
 // XNumeric_MinMax
 // XNumeric_InRange
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XNumeric
+	public static partial class XNumeric
 	{
 		/// <summary>
 		/// Indicates if the length of this string is in the given range.

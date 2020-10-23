@@ -1,4 +1,4 @@
-﻿#if !DNXPrivate
+
 namespace DotNetXtensions
 {
 	/// <summary>
@@ -11,12 +11,7 @@ namespace DotNetXtensions
 	/// For instance, our "Colour" type (a struct) can implement this interface without necessarily now
 	/// having anything to say or do with Json.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-		interface IStringSerializable
+	public interface IStringSerializable
 	{
 		string Serialize();
 

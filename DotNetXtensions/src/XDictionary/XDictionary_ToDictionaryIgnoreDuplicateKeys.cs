@@ -1,17 +1,11 @@
-﻿// XDictionary_ToDictionaryIgnoreDuplicateKeys
+// XDictionary_ToDictionaryIgnoreDuplicateKeys
 
 using System;
 using System.Collections.Generic;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDictionary
+	public static partial class XDictionary
 	{
 		/// <summary>
 		/// Converts source into a Dictionary, but in the process IGNORES any duplicate key items
@@ -55,8 +49,8 @@ namespace DotNetXtensionsPrivate
 			Func<TSource, TKey> keySelector,
 			Func<TSource, TElement> elementSelector,
 			IEqualityComparer<TKey> comparer = null,
-			Func<TKey, TElement, TElement, TElement> handleDuplicate = null) 
-			//Func<Tuple<TKey, TElement, TElement>, TElement> handleDuplicate = null
+			Func<TKey, TElement, TElement, TElement> handleDuplicate = null)
+		//Func<Tuple<TKey, TElement, TElement>, TElement> handleDuplicate = null
 		{
 			if(keySelector == null) throw new ArgumentNullException(nameof(keySelector));
 			if(elementSelector == null) throw new ArgumentNullException(nameof(elementSelector));

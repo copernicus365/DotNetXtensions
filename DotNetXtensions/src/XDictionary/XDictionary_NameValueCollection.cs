@@ -1,19 +1,13 @@
-﻿// XDictionary_NameValueCollection
+// XDictionary_NameValueCollection
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDictionary
+	public static partial class XDictionary
 	{
 		/// <summary>
 		/// Converts the <see cref="NameValueCollection"/> into a `Dictionary(string, string)`.

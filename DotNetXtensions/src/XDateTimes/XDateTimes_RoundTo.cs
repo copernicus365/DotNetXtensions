@@ -1,4 +1,4 @@
-﻿// XDateTimes_RoundTo
+// XDateTimes_RoundTo
 
 // Ideas herein inspired by Jon Skeet / SO's answer to this related question here:
 // https://stackoverflow.com/questions/6346119/datetime-get-next-tuesday
@@ -11,15 +11,9 @@
 
 using System;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDateTimes
+	public static partial class XDateTimes
 	{
 		/// <summary>
 		/// Rounds this DateTime to the day, so resultant TimeOfDay will equal Zero. 

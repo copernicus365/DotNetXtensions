@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XStopwatch
+	public static class XStopwatch
 	{
 		public static TimeSpan ElapsedAndRestart(this Stopwatch sw)
 		{

@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XPrint
+	public static class XPrint
 	{
-
 		#region Print
 
 		/// <summary>
@@ -46,7 +35,7 @@ namespace DotNetXtensionsPrivate
 		static void println(string item)
 		{
 			Console.WriteLine(item);
-			if (Setting_WriteLine_AddExtraLineBreak)
+			if(Setting_WriteLine_AddExtraLineBreak)
 				Console.Write("\r\n");
 		}
 
@@ -66,7 +55,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static T Print<T>(this T item, bool writeLn)
 		{
-			if (writeLn)
+			if(writeLn)
 				println(item);
 			else
 				print(item);
@@ -83,7 +72,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static string Print(this string s, bool writeLn)
 		{
-			if (writeLn)
+			if(writeLn)
 				println(s);
 			else
 				print(s);
@@ -93,7 +82,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static void Print(this string format, params object[] args)
 		{
-			println(format == null ? null : format.FormatX(args));
+			println(format == null ? null : string.Format(format, args));
 		}
 
 		#endregion Print

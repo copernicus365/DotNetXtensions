@@ -1,20 +1,14 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Extension methods for StringBuilder.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XStringBuilder
+	public static class XStringBuilder
 	{
 
 		#region --- IsNulle / NotNulle ---
@@ -39,7 +33,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder Append(this StringBuilder sb, StringBuilder sb2)
 		{
-			if (sb != null && sb2.NotNulle())
+			if(sb != null && sb2.NotNulle())
 				sb.Append(sb2.ToString());
 			return sb;
 		}
@@ -47,7 +41,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder Append(this StringBuilder sb, bool addCondition, string item)
 		{
-			if (addCondition && sb != null && !item.IsNullOrEmpty())
+			if(addCondition && sb != null && !item.IsNullOrEmpty())
 				sb.Append(item);
 			return sb;
 		}
@@ -67,7 +61,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendLine(this StringBuilder sb, StringBuilder sb2)
 		{
-			if (sb != null && sb2.NotNulle())
+			if(sb != null && sb2.NotNulle())
 				sb.AppendLine(sb2.ToString());
 			return sb;
 		}
@@ -76,7 +70,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendLine(this StringBuilder sb, bool addCondition, string item)
 		{
-			if (addCondition && sb != null && !item.IsNullOrEmpty())
+			if(addCondition && sb != null && !item.IsNullOrEmpty())
 				sb.AppendLine(item);
 			return sb;
 		}
@@ -114,7 +108,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendLineN(this StringBuilder sb)
 		{
-			if (sb != null)
+			if(sb != null)
 				sb.AppendLine();
 			return sb;
 		}
@@ -125,7 +119,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendMany(this StringBuilder sb, bool appendIF, params string[] items)
 		{
-			if (appendIF)
+			if(appendIF)
 				return AppendMany(sb, items);
 			return sb;
 		}
@@ -133,10 +127,10 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendMany(this StringBuilder sb, params string[] items)
 		{
-			if (sb == null || items == null || items.Length == 0)
+			if(sb == null || items == null || items.Length == 0)
 				return sb;
 
-			for (int i = 0; i < items.Length; i++)
+			for(int i = 0; i < items.Length; i++)
 				sb.Append(items[i]);
 
 			return sb;
@@ -145,9 +139,9 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendMany<T>(this StringBuilder sb, IEnumerable<T> items)
 		{
-			if (sb != null && items != null) {
-				foreach (var item in items)
-					if (item != null)
+			if(sb != null && items != null) {
+				foreach(var item in items)
+					if(item != null)
 						sb.Append(item.ToString());
 			}
 			return sb;
@@ -156,9 +150,9 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendMany(this StringBuilder sb, params object[] items)
 		{
-			if (sb != null && items != null) {
-				foreach (var item in items)
-					if (item != null)
+			if(sb != null && items != null) {
+				foreach(var item in items)
+					if(item != null)
 						sb.Append(item.ToString());
 			}
 			return sb;
@@ -171,25 +165,25 @@ namespace DotNetXtensionsPrivate
 		// AppendMany with separator
 		public static StringBuilder AppendAllSeparated(this StringBuilder sb, string separator, params object[] items)
 		{
-			if (!items.IsNulle())
+			if(!items.IsNulle())
 				AppendAllSeparated(sb, separator, items.Select(i => i == null ? null : i.ToString()).ToArray());
 			return sb;
 		}
 
 		public static StringBuilder AppendAllSeparated<T>(this StringBuilder sb, string separator, IEnumerable<T> items)
 		{
-			if (items != null)
+			if(items != null)
 				AppendAllSeparated(sb, separator, items.Select(i => i == null ? null : i.ToString()).ToArray());
 			return sb;
 		}
 
 		public static StringBuilder AppendAllSeparated(this StringBuilder sb, string separator, params string[] items)
 		{
-			if (separator.IsNullOrEmpty())
+			if(separator.IsNullOrEmpty())
 				return AppendMany(sb, items);
-			else if (sb != null && items.NotNulle()) {
+			else if(sb != null && items.NotNulle()) {
 				int len = items.Length - 1;
-				for (int i = 0; i < len; i++) {
+				for(int i = 0; i < len; i++) {
 					sb.Append(items[i]);
 					sb.Append(separator);
 				}
@@ -203,9 +197,9 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendLineMany<T>(this StringBuilder sb, IEnumerable<T> items)
 		{
-			if (sb != null && items != null) {
-				foreach (var item in items)
-					if (item != null)
+			if(sb != null && items != null) {
+				foreach(var item in items)
+					if(item != null)
 						sb.AppendLine(item.ToString());
 			}
 			return sb;
@@ -214,9 +208,9 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendLineMany(this StringBuilder sb, params object[] items)
 		{
-			if (sb != null && items != null) {
-				for (int i = 0; i < items.Length; i++)
-					if (items[i] != null)
+			if(sb != null && items != null) {
+				for(int i = 0; i < items.Length; i++)
+					if(items[i] != null)
 						sb.AppendLine(items[i].ToString());
 			}
 			return sb;
@@ -225,7 +219,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendIfNotEmpty(this StringBuilder sb, string item)
 		{
-			if (sb != null && item != null && item.Length > 0)
+			if(sb != null && item != null && item.Length > 0)
 				sb.Append(item);
 			return sb;
 		}
@@ -233,7 +227,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendLineIfNotEmpty(this StringBuilder sb, string item)
 		{
-			if (sb != null && item != null && item.Length > 0)
+			if(sb != null && item != null && item.Length > 0)
 				sb.AppendLine(item);
 			return sb;
 		}
@@ -241,7 +235,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendIf(this StringBuilder sb, bool append, object item)
 		{
-			if (append && sb != null && item != null)
+			if(append && sb != null && item != null)
 				sb.Append(item);
 			return sb;
 		}
@@ -249,7 +243,7 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendIf(this StringBuilder sb, bool append, string item)
 		{
-			if (append && sb != null && item != null && item.Length > 0)
+			if(append && sb != null && item != null && item.Length > 0)
 				sb.Append(item);
 			return sb;
 		}
@@ -257,8 +251,8 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendIf(this StringBuilder sb, bool append, params object[] items)
 		{
-			if (append && sb != null && items.NotNulle()) {
-				for (int i = 0; i < items.Length; i++)
+			if(append && sb != null && items.NotNulle()) {
+				for(int i = 0; i < items.Length; i++)
 					sb.Append(items[i]); // StringBuilder ignores null (or empty) fine
 			}
 			return sb;
@@ -267,8 +261,8 @@ namespace DotNetXtensionsPrivate
 		[DebuggerStepThrough]
 		public static StringBuilder AppendIf(this StringBuilder sb, bool append, params string[] items)
 		{
-			if (append && sb != null && items.NotNulle()) {
-				for (int i = 0; i < items.Length; i++)
+			if(append && sb != null && items.NotNulle()) {
+				for(int i = 0; i < items.Length; i++)
 					sb.Append(items[i]); // StringBuilder ignores null (or empty) fine
 			}
 			return sb;
@@ -283,7 +277,7 @@ namespace DotNetXtensionsPrivate
 
 		public static bool IsTrimmable(this StringBuilder s)
 		{
-			if (s != null && s.Length > 0 && (char.IsWhiteSpace(s[0]) || s.Length > 1 && char.IsWhiteSpace(s[s.Length - 1])))
+			if(s != null && s.Length > 0 && (char.IsWhiteSpace(s[0]) || s.Length > 1 && char.IsWhiteSpace(s[s.Length - 1])))
 				return true;
 			return false;
 		}
@@ -298,14 +292,14 @@ namespace DotNetXtensionsPrivate
 		/// </summary>
 		public static StringBuilder TrimEnd(this StringBuilder sb)
 		{
-			if (sb == null || sb.Length == 0) return sb;
+			if(sb == null || sb.Length == 0) return sb;
 
 			int i = sb.Length - 1;
-			for (; i >= 0; i--)
-				if (!char.IsWhiteSpace(sb[i]))
+			for(; i >= 0; i--)
+				if(!char.IsWhiteSpace(sb[i]))
 					break;
 
-			if (i < sb.Length - 1)
+			if(i < sb.Length - 1)
 				sb.Length = i + 1;
 
 			return sb;
@@ -313,13 +307,13 @@ namespace DotNetXtensionsPrivate
 
 		public static string TrimToString(this StringBuilder sb)
 		{
-			if (sb == null) return null;
+			if(sb == null) return null;
 
 			sb.TrimEnd(); // handles nulle and is very inexpensive, unlike trimstart
 
-			if (sb.Length > 0 && char.IsWhiteSpace(sb[0])) {
-				for (int i = 0; i < sb.Length; i++)
-					if (!char.IsWhiteSpace(sb[i]))
+			if(sb.Length > 0 && char.IsWhiteSpace(sb[0])) {
+				for(int i = 0; i < sb.Length; i++)
+					if(!char.IsWhiteSpace(sb[i]))
 						return sb.ToString(i);
 				return ""; // shouldn't reach here, bec TrimEnd should have caught full whitespace strings, but ...
 			}
@@ -329,14 +323,14 @@ namespace DotNetXtensionsPrivate
 
 		public static string ToString(this StringBuilder sb, int startIndex)
 		{
-			if (sb == null)
+			if(sb == null)
 				return null;
 
 			int len = sb.Length - startIndex;
 
-			if (len > 0)
+			if(len > 0)
 				return sb.ToString(startIndex, sb.Length - startIndex);
-			else if (len == 0)
+			else if(len == 0)
 				return "";
 			else
 				return null;
@@ -345,5 +339,4 @@ namespace DotNetXtensionsPrivate
 		#endregion
 
 	}
-
 }

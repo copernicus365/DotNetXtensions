@@ -1,22 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
 	/// <summary>
 	/// Includes LINQ to Xml extension methods.
 	/// </summary>
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static class XMLLinq
+	public static class XMLLinq
 	{
 		#region At
 

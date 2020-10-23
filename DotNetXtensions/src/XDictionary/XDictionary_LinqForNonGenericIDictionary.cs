@@ -1,18 +1,12 @@
-﻿// XDictionary_LinqForNonGenericIDictionary
+// XDictionary_LinqForNonGenericIDictionary
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-#if !DNXPrivate
 namespace DotNetXtensions
 {
-	public
-#else
-namespace DotNetXtensionsPrivate
-{
-#endif
-	static partial class XDictionary
+	public static partial class XDictionary
 	{
 		public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(
 			this IDictionary dict,

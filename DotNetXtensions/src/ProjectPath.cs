@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.IO;
 
 namespace DotNetXtensions
 {
-	/// <summary>*</summary>
 	public static class ProjectPath
 	{
 		public static string BaseDirectory { get; set; }
@@ -42,10 +41,10 @@ namespace DotNetXtensions
 
 		static string _combinePath(string root, string end)
 		{
-			if (end.IsNulle())
+			if(end.IsNulle())
 				return root;
 
-			if (root.IsNulle())
+			if(root.IsNulle())
 				return end;
 
 			return root + end;
@@ -61,16 +60,16 @@ namespace DotNetXtensions
 			string dir1 = GetExeBaseDirectory(getFromAppDomain)
 				.Replace('\\', '/');
 
-			if (dir1.LastN() != '/')
+			if(dir1.LastN() != '/')
 				dir1 += '/';
 
 			baseDirectory = dir1;
 			rootProjDirectory = null;
 			binDirectory = null;
 
-			if (dir1.NotNulle()) {
+			if(dir1.NotNulle()) {
 				int binIdx = dir1.LastIndexOf(@"/bin/");
-				if (binIdx > 0) {
+				if(binIdx > 0) {
 					binDirectory = dir1.Substring(0, binIdx + 5);
 					rootProjDirectory = dir1.Substring(0, binIdx + 1);
 				}
@@ -80,7 +79,7 @@ namespace DotNetXtensions
 		public static string GetExeBaseDirectory(bool getFromAppDomain = true)
 		{
 			string val;
-			if (getFromAppDomain)
+			if(getFromAppDomain)
 				val = AppDomain.CurrentDomain.BaseDirectory;
 			else {
 				var assm = System.Reflection.Assembly.GetExecutingAssembly();

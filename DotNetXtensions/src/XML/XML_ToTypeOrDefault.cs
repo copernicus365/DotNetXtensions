@@ -136,8 +136,8 @@ namespace DotNetXtensions
 
 		// -------------- ToDateTime
 
-		private static readonly DateTime _dtDefault = default(DateTime);
-		private static readonly DateTimeOffset _dtoffDefault = default(DateTimeOffset);
+		private static readonly DateTime _dtDefault = default;
+		private static readonly DateTimeOffset _dtoffDefault = default;
 
 		[DebuggerStepThrough]
 		public static DateTime ToDateTime(this XElement e)

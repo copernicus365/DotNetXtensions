@@ -5,7 +5,54 @@ using System.Xml.Linq;
 
 namespace DotNetXtensions
 {
-	//#region Classes XmlTextWriterIgnoreInvalidChars and RootNamespaceIgnorantXmlTextReader
+	//#region --- XmlTextWriterIgnoreInvalidChars and RootNamespaceIgnorantXmlTextReader
+
+	public static partial class XML
+	{
+		// --- WAS in class XML, moving tho caused conflicts, I'm not sure what happened...
+
+		#region GetNamespaceIgnorantXElement
+
+		public static XElement GetNamespaceIgnorantXElement(string xmlString, LoadOptions loadOptions = LoadOptions.None)
+			=> RootNamespaceIgnorantXmlTextReader.GetNamespaceIgnorantXElement(xmlString, loadOptions);
+
+		public static XElement GetNamespaceIgnorantXElement(byte[] xml, LoadOptions loadOptions = LoadOptions.None)
+			=> RootNamespaceIgnorantXmlTextReader.GetNamespaceIgnorantXElement(xml, loadOptions);
+
+		#endregion
+
+		/// <summary>
+		/// Writes this XML to string while allowing invalid XML chars to either be
+		/// simply removed during the write process, or else encoded into entities, 
+		/// instead of having an exception occur, as the standard XmlWriter.Create 
+		/// XmlWriter does (which is the default writer used by XElement).
+		/// </summary>
+		/// <param name="xml">XElement.</param>
+		/// <param name="deleteInvalidChars">True to have any invalid chars deleted, else they will be entity encoded.</param>
+		/// <param name="indent">Indent setting.</param>
+		/// <param name="indentChar">Indent char (leave null to use default)</param>
+		public static string ToStringIgnoreInvalidChars(this XElement xml, bool deleteInvalidChars = true, bool indent = true, char? indentChar = null)
+		{
+			if(xml == null) return null;
+
+			StringWriter swriter = new StringWriter();
+			using(XmlTextWriterIgnoreInvalidChars writer = new XmlTextWriterIgnoreInvalidChars(swriter, deleteInvalidChars)) {
+
+				// -- settings --
+				// unfortunately writer.Settings cannot be set, is null, so we can't specify: bool newLineOnAttributes, bool omitXmlDeclaration
+				writer.Formatting = indent ? Formatting.Indented : Formatting.None;
+
+				if(indentChar != null)
+					writer.IndentChar = (char)indentChar;
+
+				// -- write --
+				xml.WriteTo(writer);
+			}
+
+			return swriter.ToString();
+		}
+
+	}
 
 	/// <summary>
 	/// An XmlTextReader that treats all element namespaces that match the
@@ -124,11 +171,34 @@ namespace DotNetXtensions
 
 		#region GetNamespaceIgnorantXElement
 
+
+		//public static XElement GetNamespaceIgnorantXElement(string xmlString, LoadOptions loadOptions = LoadOptions.None)
+		//{
+		//	return RootNamespaceIgnorantXmlTextReader.GetNamespaceIgnorantXElement(xmlString);
+		//}
+
+		/// <summary>
+		/// Allows one to serialize an XElement from a XML document that has a
+		/// root xmlns namespace set, but where that root namespace gets highly
+		/// performantly set to empty, which allows one to work with that XElement
+		/// in the simpler, namespace ignorant manner when performant LINQ to XML queries.
+		/// This is done via RootNamespaceIgnorantXmlTextReader, so it is very performant,
+		/// whereas ClearDefaultNamespace must only after serialization traverse every
+		/// element in the document and (when needed) change that elements XName.
+		/// See RootNamespaceIgnorantXmlTextReader documentation for more details.
+		/// </summary>
+		/// <param name="xmlString">String of XML.</param>
+		/// <param name="loadOptions"></param>
 		public static XElement GetNamespaceIgnorantXElement(string xmlString, LoadOptions loadOptions = DefLoadOptions)
 		{
 			return GetNamespaceIgnorantXElement(new RootNamespaceIgnorantXmlTextReader(xmlString).Init(), loadOptions);
 		}
 
+		/// <summary>
+		/// See overload's documentation.
+		/// </summary>
+		/// <param name="xml">XML data.</param>
+		/// <param name="loadOptions"></param>
 		public static XElement GetNamespaceIgnorantXElement(byte[] xml, LoadOptions loadOptions = DefLoadOptions)
 		{
 			return GetNamespaceIgnorantXElement(new RootNamespaceIgnorantXmlTextReader(xml).Init(), loadOptions);

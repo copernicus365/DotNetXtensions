@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>3.9.0</VersionPrefix>
+    <VersionPrefix>4.0.0</VersionPrefix>
 		<Authors>Nicholas Petersen</Authors>
 		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions</PackageProjectUrl>

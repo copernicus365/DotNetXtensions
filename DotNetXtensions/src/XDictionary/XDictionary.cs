@@ -30,7 +30,7 @@ namespace DotNetXtensions
 			if(dict == null)
 				return null;
 
-			Dictionary<TKey, TKey> ignoreD = ignore != null ? ignore.ToDictionary(k => k) : null;
+			Dictionary<TKey, TKey> ignoreD = ignore?.ToDictionary(k => k);
 			if(ignoreD.IsNulle())
 				ignoreD = null;
 

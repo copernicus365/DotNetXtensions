@@ -23,7 +23,7 @@ namespace DotNetXtensions
 		/// Indirection to V (left as this is a more semantic description still).
 		/// </summary>
 		[DebuggerStepThrough]
-		public static TValue ValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default(TValue))
+		public static TValue ValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue = default)
 			=> V(dictionary, key, defaultValue);
 
 		/// <summary>

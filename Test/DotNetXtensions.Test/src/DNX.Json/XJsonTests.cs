@@ -1,7 +1,6 @@
-using System;
+using Newtonsoft.Json;
+
 using Xunit;
-using DotNetXtensions;
-using DotNetXtensions.Json;
 
 namespace DotNetXtensions.Test
 {
@@ -11,6 +10,14 @@ namespace DotNetXtensions.Test
 		{
 			public string Name { get; set; }
 			public int Age { get; set; }
+
+			public Foo() { }
+
+			public Foo(string name, int age)
+			{
+				Name = name;
+				Age = age;
+			}
 		}
 
 		[Fact]
@@ -43,6 +50,22 @@ namespace DotNetXtensions.Test
 			=> jsonSingleQuote_Indent_Tests(true, false);
 
 
+		[Fact]
+		public void Test_NullAndDefValueHandling()
+		{
+			string json = "{'name':'Joey','age':13}".Replace('\'', '"');
+
+			var foo1 = new Foo("Joey", 13);
+
+			string jsonBk1 = foo1.ToJson(
+				indent: false,
+				camelCase: true,
+				defValueHandling: DefaultValueHandling.Populate,
+				nullValueHandling: NullValueHandling.Include);
+
+			True(json == jsonBk1);
+		}
+
 		void jsonSingleQuote_Indent_Tests(bool indent, bool singlQ)
 		{
 			var foo = new Foo() { Name = "Skip", Age = 5 };
@@ -60,6 +83,44 @@ namespace DotNetXtensions.Test
 				exp = exp.Replace('\'', '"');
 
 			True(result == exp);
+		}
+
+		[Fact]
+		public void Test_NullAndDefValueHandling_AllSet()
+		{
+			string json = "{'name':'Joey','age':13}".Replace('\'', '"');
+
+			var foo1 = new Foo("Joey", 13);
+
+			string jsonBk1 = foo1.ToJson(
+				indent: false,
+				camelCase: true,
+				defValueHandling: DefaultValueHandling.Populate,
+				nullValueHandling: NullValueHandling.Include);
+
+			True(json == jsonBk1);
+		}
+
+		[Fact]
+		public void Test_NullValueHandling_includeDefaults_Include()
+		{
+			var obj = new Foo(null, 0);
+
+			string json = obj.ToJson(indent: false, camelCase: true, includeDefaults: true);
+
+			string jsonExpected = "{'name':null,'age':0}".Replace('\'', '"');
+			True(jsonExpected == json);
+		}
+
+		[Fact]
+		public void Test_NullValueHandling_includeDefaults_Ignore()
+		{
+			var obj = new Foo(null, 0);
+
+			string json = obj.ToJson(indent: false, camelCase: true, includeDefaults: false);
+
+			string jsonExpected = "{}";
+			True(jsonExpected == json);
 		}
 	}
 }

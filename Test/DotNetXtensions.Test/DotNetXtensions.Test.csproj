@@ -7,10 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="src\resources\Json\foo1.json" />
 	  <None Remove="src\resources\test\doc1.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <EmbeddedResource Include="src\resources\Json\foo1.json" />
 	  <EmbeddedResource Include="src\resources\test\doc1.txt" />
 	</ItemGroup>
 

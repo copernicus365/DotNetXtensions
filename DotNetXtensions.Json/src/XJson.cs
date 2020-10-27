@@ -1,14 +1,13 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using DotNetXtensions;
+using System.Linq;
+
+using DotNetXtensions.Json;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using System.Linq;
 using Newtonsoft.Json.Serialization;
-using DotNetXtensions.Json;
 
 namespace DotNetXtensions
 {
@@ -26,9 +25,36 @@ namespace DotNetXtensions
 
 		public static string ToJson(
 			this object obj,
+			bool includeDefaults,
+			bool indent = false,
+			bool enumsAsString = false,
+			bool camelCase = false,
+			bool? camelCaseEnumText = null)
+		{
+			DefaultValueHandling defValueHandling = includeDefaults
+				? Newtonsoft.Json.DefaultValueHandling.Include
+				: Newtonsoft.Json.DefaultValueHandling.Ignore;
+
+			NullValueHandling nullValueHandling = includeDefaults
+				? Newtonsoft.Json.NullValueHandling.Include
+				: Newtonsoft.Json.NullValueHandling.Ignore;
+
+			return ToJson(
+				obj,
+				indent: indent,
+				enumsAsString: enumsAsString,
+				defValueHandling: defValueHandling,
+				nullValueHandling: nullValueHandling,
+				camelCase: camelCase,
+				camelCaseEnumText: camelCaseEnumText);
+		}
+
+		public static string ToJson(
+			this object obj,
 			bool indent = false,
 			bool enumsAsString = false,
 			DefaultValueHandling? defValueHandling = null,
+			NullValueHandling? nullValueHandling = null,
 			bool treatAsList = false,
 			bool camelCase = false,
 			bool? camelCaseEnumText = null,
@@ -41,9 +67,13 @@ namespace DotNetXtensions
 				.IndentJson(indent)
 				.CamelCase(camelCase)
 				.EnumsAsStrings(enumsAsString, camelCaseEnumText ?? camelCase);
+			//settings.NullValueHandling
 
 			if(defValueHandling != null)
 				settings.DefaultValueHandling(defValueHandling.Value);
+
+			if(nullValueHandling != null)
+				settings.NullValueHandling(nullValueHandling.Value);
 
 			bool useCustomWriter = settings.Formatting != Formatting.None || singleQuotes == true;
 			string jsn = useCustomWriter
@@ -54,9 +84,9 @@ namespace DotNetXtensions
 		}
 
 		public static string ToJson(
-			this object obj, 
-			JsonSerializerSettings settings, 
-			bool? indent = null, 
+			this object obj,
+			JsonSerializerSettings settings,
+			bool? indent = null,
 			bool? treatAsList = null,
 			bool? singleQuotes = null)
 		{
@@ -137,6 +167,13 @@ namespace DotNetXtensions
 		{
 			if(settings != null)
 				settings.DefaultValueHandling = defValueHandling;
+			return settings;
+		}
+
+		public static JsonSerializerSettings NullValueHandling(this JsonSerializerSettings settings, NullValueHandling nullValueHandling)
+		{
+			if(settings != null)
+				settings.NullValueHandling = nullValueHandling;
 			return settings;
 		}
 

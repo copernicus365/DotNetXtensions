@@ -2,11 +2,7 @@
 
   <PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>2.1.1</VersionPrefix>
-    <!--
-    <AssemblyVersion>2.1.1.0</AssemblyVersion>
-    <FileVersion>2.1.1.0</FileVersion>
-    -->
+    <VersionPrefix>2.2.0</VersionPrefix>
     <Authors>Nicholas Petersen</Authors>
     <RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.XUnit</RepositoryUrl>
     <PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.XUnit</PackageProjectUrl>

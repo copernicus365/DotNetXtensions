@@ -1,11 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>1.2.0</VersionPrefix>
-    <!--
-		<AssemblyVersion>1.2.0.0</AssemblyVersion>
-		<FileVersion>1.2.0.0</FileVersion>
-    -->
+    <VersionPrefix>1.3.0</VersionPrefix>
 		<Authors>Nicholas Petersen</Authors>
 		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Globalization</RepositoryUrl>
 		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.Globalization</PackageProjectUrl>

@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Specialized;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
-using DotNetXtensions;
-using DotNetXtensions.Cryptography;
 
 namespace DotNetXtensions.Test
 {
 	public class ProjectPathTests : DnxTestBase
 	{
-		const string projtype = "netcoreapp2.2";
+		const string projtype = "netcoreapp3.1"; //"netcoreapp2.2";
 		const string projName = "DotNetXtensions.Test";
 		static string buildCnfg =
 #if DEBUG

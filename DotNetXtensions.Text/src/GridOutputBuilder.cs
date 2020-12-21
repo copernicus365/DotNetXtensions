@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -70,7 +70,7 @@ namespace DotNetXtensions
 
 		public GridOutputBuilder(params int[] paddingPerColumn)
 		{
-			if (paddingPerColumn.IsNulle())
+			if(paddingPerColumn.IsNulle())
 				throw new ArgumentNullException();
 			_colPaddings = paddingPerColumn;
 			_colCount = paddingPerColumn.Length;
@@ -80,14 +80,14 @@ namespace DotNetXtensions
 		{
 			string itm = item?.ToString();
 
-			if (_currRow == null)
+			if(_currRow == null)
 				_currRow = new List<string>();
-			else if (_currRow.Count >= _colCount) // should NEVER happen, because see below, we check and call AddRow, and this is the only public add method
+			else if(_currRow.Count >= _colCount) // should NEVER happen, because see below, we check and call AddRow, and this is the only public add method
 				throw new ArgumentOutOfRangeException(); // $"Row is already filled, cannot add another item to it. Make sure to call {nameof(EndRow)} after a row is filled"); //, or to enable {nameof(AutoNewRowsOnAdd)}");
 
 			_currRow.Add(itm);
 
-			if (_currRow.Count == _colCount) {
+			if(_currRow.Count == _colCount) {
 				string[] arr = _currRow.ToArray();
 				_currRow.Clear();
 				_AddRow(arr);
@@ -105,8 +105,8 @@ namespace DotNetXtensions
 		/// </summary>
 		public void EndRow()
 		{
-			if (_currRow.NotNulle()) {
-				if (_colCount < 0)
+			if(_currRow.NotNulle()) {
+				if(_colCount < 0)
 					_colCount = _currRow.Count;
 				AddRow(_currRow);
 				_currRow.Clear();
@@ -118,9 +118,9 @@ namespace DotNetXtensions
 
 		public GridOutputBuilder _AddRow(string[] items)
 		{
-			if (items.IsNulle())
+			if(items.IsNulle())
 				throw new ArgumentNullException();
-			if (_currRow.NotNulle())
+			if(_currRow.NotNulle())
 				throw new Exception("Internal invalid, current row should be empty or null");
 
 			_assertRowLength(items.Length);
@@ -131,17 +131,17 @@ namespace DotNetXtensions
 
 		void _setRowLength(int rowLength)
 		{
-			if (_colCount < 0)
+			if(_colCount < 0)
 				_colCount = rowLength;
-			else if (_colCount != rowLength)
+			else if(_colCount != rowLength)
 				throw new ArgumentOutOfRangeException();
 		}
 
 		void _assertRowLength(int rowLength)
 		{
-			if (_colCount < 0)
+			if(_colCount < 0)
 				_colCount = rowLength;
-			else if (_colCount != rowLength)
+			else if(_colCount != rowLength)
 				throw new ArgumentOutOfRangeException();
 		}
 
@@ -171,78 +171,86 @@ namespace DotNetXtensions
 		/// <param name="lines">A list of string arrays, where each array in the list represents a row in the output grid.</param>
 		/// <param name="padding">Additional padding between each element (default = 1)</param>
 		/// <param name="indentLineBreaks">True to have any line breaks within values to also be indented</param>
-		public static string ToGridOutputAuto(
-			int padding, 
+		public static StringBuilder ToGridOutputAuto(
+			int padding,
 			List<string[]> lines,
-			bool indentLineBreaks)
+			bool indentLineBreaks,
+			StringBuilder sb = null)
 		{
 			int numLines = lines[0].Length;
 			var maxValues = new int[numLines];
 			var lbPads = indentLineBreaks ? new int[numLines] : null;
 
-			for (int i = 0; i < numLines; i++) {
+			for(int i = 0; i < numLines; i++) {
 				maxValues[i] = lines.Max(x =>
-					(x.Length > i + 1 && 
-					 x[i] != null ? x[i].Length : 0)) 
+					(x.Length > i + 1 &&
+					 x[i] != null ? x[i].Length : 0))
 					 + padding;
 			}
 
-			if (indentLineBreaks) {
-				for (int i = 1; i < numLines; i++) {
+			if(indentLineBreaks) {
+				for(int i = 1; i < numLines; i++) {
 					lbPads[i] = maxValues.Take(i + 1).Sum();
 				}
 			}
 
-			var sb = new StringBuilder();
+			if(sb == null)
+				sb = new StringBuilder();
 
-			for (int i = 0; i < lines.Count; i++) {
+			for(int i = 0; i < lines.Count; i++) {
 
 				string[] arr = lines[i];
 
-				if (i != 0)
+				if(i != 0)
 					sb.AppendLine();
 
-				for (int j = 0; j < arr.Length; j++) {
+				for(int j = 0; j < arr.Length; j++) {
 					string value = arr[j] ?? "";
 					int totalWidth = maxValues[j];
 
 					string paddedVal = value.PadRight(totalWidth);
 
-					if (indentLineBreaks && j > 0 && value.IndexOf('\n') > 0) {
+					if(indentLineBreaks && j > 0 && value.IndexOf('\n') > 0) {
 						paddedVal = paddedVal.Replace("\n", "\n" + new string(' ', lbPads[j]));
 					}
 
 					sb.Append(paddedVal);
 				}
 			}
-			return sb.ToString();
+
+			return sb;
 		}
 
-		public static string ToGridOutputFixed(int[] paddingPerColumn, List<string[]> lines)
+		public static StringBuilder ToGridOutputFixed(
+			int[] paddingPerColumn,
+			List<string[]> lines,
+			StringBuilder sb = null)
 		{
-			if (paddingPerColumn.IsNulle())
+			if(paddingPerColumn.IsNulle())
 				throw new ArgumentOutOfRangeException();
 
 			int columnsLen = paddingPerColumn.Length;
 
-			var sb = new StringBuilder();
+			if(sb == null)
+				sb = new StringBuilder();
 
-			for (int i = 0; i < lines.Count; i++) {
+			for(int i = 0; i < lines.Count; i++) {
 
 				string[] arr = lines[i];
-				if (arr.Length != columnsLen)
+				if(arr.Length != columnsLen)
 					throw new ArgumentOutOfRangeException();
 
-				if (i != 0)
+				if(i != 0)
 					sb.AppendLine();
 
-				for (int j = 0; j < columnsLen; j++) {
+				for(int j = 0; j < columnsLen; j++) {
 					string value = arr[j] ?? "";
 					string paddedVal = value.PadRight(paddingPerColumn[j]);
 					sb.Append(paddedVal);
 				}
 			}
-			return sb.ToString();
+
+			return sb;
 		}
 
 
@@ -252,14 +260,19 @@ namespace DotNetXtensions
 		/// </summary>
 		public override string ToString()
 		{
-			if (_lines.IsNulle())
-				return null;
-
-			if (IsFixedColumnSize)
-				return ToGridOutputFixed(_colPaddings, _lines);
-			else
-				return ToGridOutputAuto(Padding, _lines, IndentLineBreaks);
+			var sb = new StringBuilder(256);
+			string result = Write(sb)?.ToString();
+			return result;
 		}
 
+		public StringBuilder Write(StringBuilder sb)
+		{
+			if(_lines.IsNulle())
+				return sb;
+			if(IsFixedColumnSize)
+				return ToGridOutputFixed(_colPaddings, _lines, sb);
+			else
+				return ToGridOutputAuto(Padding, _lines, IndentLineBreaks, sb);
+		}
 	}
 }

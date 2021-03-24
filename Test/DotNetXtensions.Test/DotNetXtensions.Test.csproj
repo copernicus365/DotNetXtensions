@@ -1,20 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<NoWarn>1701;1702;1705;0159;1591;0168;0169;1998;0414;xUnit1013;</NoWarn>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <None Remove="src\resources\Json\foo1.json" />
-	  <None Remove="src\resources\test\doc1.txt" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Include="src\resources\Json\foo1.json" />
-	  <EmbeddedResource Include="src\resources\test\doc1.txt" />
-	</ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="src\resources\**\*.*" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />

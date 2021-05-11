@@ -1,27 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <NoWarn>1701;1702;1705;0159;1591;0168;0169;1998;0414;xUnit1013;</NoWarn>
   </PropertyGroup>
-
-  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netcoreapp\d'))">
-    <DefineConstants>BLUE,RED</DefineConstants>
-  </PropertyGroup>
-  <!--
-  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^net\d'))">
-    <DefineConstants>NETFRAMEWORK</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netstandard\d'))">
-    <DefineConstants>NETSTANDARD</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '^netcoreapp\d'))">
-    <DefineConstants>NETCORE</DefineConstants>
-  </PropertyGroup>
-  -->
-  <ItemGroup>
-    <Compile Include="..\DotNetXtensions.Test\src\_Init\DnxTestBase.cs" Link="src\_Init\DnxTestBase.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />
@@ -36,10 +18,6 @@
     <ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Globalization\DotNetXtensions.Globalization.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.XUnit\DotNetXtensions.XUnit.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="src\_Init\" />
   </ItemGroup>
 
 </Project>

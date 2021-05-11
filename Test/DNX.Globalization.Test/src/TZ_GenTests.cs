@@ -1,17 +1,22 @@
 using System;
-using System.Text;
-using System.Linq;
-using System.Collections.Generic;
+
 using DotNetXtensions.Globalization;
+using DotNetXtensions.Test;
+
 using Xunit;
 
-namespace DotNetXtensions.Test
+namespace DNX.Test
 {
 	public class TZ_GenTests : DnxTestBase
 	{
 		[Fact]
 		public void TestNewIndianaTZ()
 		{
+
+#if BLUE
+			Console.WriteLine("Hi blue");
+#endif
+
 			string tzId = "America/Indiana/Indianapolis"; // google is returning this in some geo calls under the property: "timeZoneId"
 
 			TimeZoneInfo tzi = TimeZones.GetTimeZoneInfoFromTZId(tzId);

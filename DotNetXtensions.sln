@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Text", "Dot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.XUnit", "DotNetXtensions.XUnit\DotNetXtensions.XUnit.csproj", "{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Globalization.Test", "Test\DNX.Globalization.Test\DNX.Globalization.Test.csproj", "{B94C9C14-67AB-4179-A4EE-2A13C17400D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B94C9C14-67AB-4179-A4EE-2A13C17400D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B94C9C14-67AB-4179-A4EE-2A13C17400D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B94C9C14-67AB-4179-A4EE-2A13C17400D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B94C9C14-67AB-4179-A4EE-2A13C17400D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +90,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{778D807F-8196-421C-BBF9-3633F16ED844} = {FA2C2B52-7D9F-409E-9129-61C0F1120350}
 		{EEF29121-AA67-4D49-90DE-AB5CDAE28AD0} = {FA2C2B52-7D9F-409E-9129-61C0F1120350}
+		{B94C9C14-67AB-4179-A4EE-2A13C17400D2} = {FA2C2B52-7D9F-409E-9129-61C0F1120350}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A00E0ACF-0FF4-4AC1-8492-C1530D109A28}

@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<IsPackable>false</IsPackable>
-		<NoWarn>1701;1702;1705;0159;1591;0168;0169;1998;0414;xUnit1013;</NoWarn>
+    <NoWarn>1701;1702;1705;0159;1591;0168;0169;1998;0414;xUnit1013;</NoWarn>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +22,6 @@
 		<ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Common\DotNetXtensions.Common.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Cryptography\DotNetXtensions.Cryptography.csproj" />
-		<ProjectReference Include="..\..\DotNetXtensions.Globalization\DotNetXtensions.Globalization.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Json\DotNetXtensions.Json.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.MimeTypes\DotNetXtensions.MimeTypes.csproj" />
 		<ProjectReference Include="..\..\DotNetXtensions.Net\DotNetXtensions.Net.csproj" />

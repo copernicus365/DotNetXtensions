@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
 using DotNetXtensions;
 using DotNetXtensions.Globalization;
+using DotNetXtensions.Test;
 
-namespace DotNetXtensions.Test
+using Xunit;
+
+namespace DNX.Test
 {
 	public class GenNamesTests1 : DnxTestBase
 	{

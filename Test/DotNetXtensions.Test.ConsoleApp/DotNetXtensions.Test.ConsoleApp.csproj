@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
-		<NoWarn>1701;1702;1705;0159;1591;</NoWarn>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <NoWarn>1701;1702;1705;0159;1591;</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

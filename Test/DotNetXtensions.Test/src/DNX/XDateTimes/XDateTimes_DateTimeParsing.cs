@@ -179,19 +179,19 @@ HandleObsoleteUSTimeZones:   {handleObsoleteUSTimeZones.ToBitString("TRUE", "FAL
 						treatNoOffsetAsLocalTime = false // !!
 					},
 
-					// TEST WITH TimeZoneInfo
-					new ParseDateTimeWithOffsetInfoArgs($"{rootTime}", hasOffset: false){
-						localTimeZone = TimeZones.GetTimeZoneInfoFromTZId("America/New_York"),
-						expectedDTO = DateTimeOffset.Parse($"{rootTime} -05:00"),
-						handleObsoleteUSTimeZones = false,
-						treatNoOffsetAsLocalTime = true
-					},
-					new ParseDateTimeWithOffsetInfoArgs($"{rootTime}", hasOffset: false){
-						localTimeZone = TimeZones.GetTimeZoneInfoFromTZId("America/New_York"),
-						expectedDTO = new DateTimeOffset(DateTime.Parse($"{rootTime}").AddHours(-5), TimeSpan.FromHours(-5)),
-						handleObsoleteUSTimeZones = false,
-						treatNoOffsetAsLocalTime = false // !!
-					},
+					//// TEST WITH TimeZoneInfo
+					//new ParseDateTimeWithOffsetInfoArgs($"{rootTime}", hasOffset: false){
+					//	localTimeZone = TimeZones.GetTimeZoneInfoFromTZId("America/New_York"),
+					//	expectedDTO = DateTimeOffset.Parse($"{rootTime} -05:00"),
+					//	handleObsoleteUSTimeZones = false,
+					//	treatNoOffsetAsLocalTime = true
+					//},
+					//new ParseDateTimeWithOffsetInfoArgs($"{rootTime}", hasOffset: false){
+					//	localTimeZone = TimeZones.GetTimeZoneInfoFromTZId("America/New_York"),
+					//	expectedDTO = new DateTimeOffset(DateTime.Parse($"{rootTime}").AddHours(-5), TimeSpan.FromHours(-5)),
+					//	handleObsoleteUSTimeZones = false,
+					//	treatNoOffsetAsLocalTime = false // !!
+					//},
 
 
 					// TEST where no offset or TZ was passed in, should default to treating input as UTC time (if string had no offset)

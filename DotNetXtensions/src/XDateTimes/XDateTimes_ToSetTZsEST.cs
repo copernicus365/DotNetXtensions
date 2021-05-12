@@ -6,7 +6,25 @@ namespace DotNetXtensions
 {
 	public static partial class XDateTimes
 	{
-		static TimeZoneInfo tzi_EST = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+		static TimeZoneInfo _tzi_EST;
+
+
+		static TimeZoneInfo tzi_EST {
+			get {
+				// Linux OS probs, we could fix like we did w/Dnx.Globalization with multi-target,
+				// but that's a big change to make for this fundamental lib, for this little need,
+				// so for moment following works: allows 1 caught exception if not run on Windows
+				if(_tzi_EST == null) {
+					try {
+						_tzi_EST = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+					}
+					catch {
+						_tzi_EST = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+					}
+				}
+				return _tzi_EST;
+			}
+		}
 
 		/// <summary>
 		/// Converts the DateTimeOffset to Eastern Standard Time.

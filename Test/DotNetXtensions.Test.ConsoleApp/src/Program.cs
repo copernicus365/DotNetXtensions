@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotNetXtensions.Test;
 
 namespace DotNetXtensions.Test.ConsoleApp
@@ -7,6 +7,7 @@ namespace DotNetXtensions.Test.ConsoleApp
 	{
 		static void Main(string[] args)
 		{
+			//XDatesProg.Run(); //
 			//xdictNVCollTests.TestAll();
 		}
 

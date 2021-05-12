@@ -12,6 +12,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions", "DotNetXtensions\DotNetXtensions.csproj", "{CC556FD3-4F29-4E95-A1D6-6636C0A2049B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{FA2C2B52-7D9F-409E-9129-61C0F1120350}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.Test", "Test\DotNetXtensions.Test\DotNetXtensions.Test.csproj", "{778D807F-8196-421C-BBF9-3633F16ED844}"
 EndProject
@@ -28,6 +31,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetXtensions.XUnit", "DotNetXtensions.XUnit\DotNetXtensions.XUnit.csproj", "{8D6F291F-AF08-40EE-8D20-BE4312B0FBE4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNX.Globalization.Test", "Test\DNX.Globalization.Test\DNX.Globalization.Test.csproj", "{B94C9C14-67AB-4179-A4EE-2A13C17400D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "All", "All", "{428E99A7-2FAF-4E06-94CA-3AEC1937D0C0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

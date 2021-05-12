@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace DotNetXtensions.Globalization
@@ -12,20 +12,16 @@ namespace DotNetXtensions.Globalization
 		private static Dictionary<string, string> __TZDictionary;
 		private static Dictionary<string, TZKeyValues> __WinDictionary;
 
-		public static Dictionary<string, string> TZDictionary
-		{
-			get
-			{
-				if (__TZDictionary == null)
+		public static Dictionary<string, string> TZDictionary {
+			get {
+				if(__TZDictionary == null)
 					Init();
 				return __TZDictionary;
 			}
 		}
-		public static Dictionary<string, TZKeyValues> WinDictionary
-		{
-			get
-			{
-				if (__WinDictionary == null)
+		public static Dictionary<string, TZKeyValues> WinDictionary {
+			get {
+				if(__WinDictionary == null)
 					Init();
 				return __WinDictionary;
 			}
@@ -49,13 +45,26 @@ namespace DotNetXtensions.Globalization
 
 		public static TimeZoneInfo GetTimeZoneInfoFromTZId(string tzId)
 		{
-			if (tzId == null)
+			if(tzId == null)
 				return null;
-			if (TZDictionary == null)
+
+#if NET
+			if(OperatingSystem.IsWindows())
+				return _Windows_GetTimeZoneInfoFromTZId(tzId);
+			else {
+				return TimeZoneInfo.FindSystemTimeZoneById(tzId);
+			}
+#else
+			return _Windows_GetTimeZoneInfoFromTZId(tzId);
+#endif
+		}
+
+		static TimeZoneInfo _Windows_GetTimeZoneInfoFromTZId(string tzId)
+		{
+			if(TZDictionary == null)
 				Init();
 
-			string winZone;
-			if (!TZDictionary.TryGetValue(tzId, out winZone))
+			if(!TZDictionary.TryGetValue(tzId, out string winZone))
 				return null;
 
 			TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(winZone);
@@ -64,13 +73,13 @@ namespace DotNetXtensions.Globalization
 
 		public static TZKeyValues GetTZValuesFromWindowsTimeZoneId(string winTZId)
 		{
-			if (winTZId == null)
+			if(winTZId == null)
 				return null;
-			if (WinDictionary == null)
+			if(WinDictionary == null)
 				Init();
 
 			TZKeyValues winZone;
-			if (!WinDictionary.TryGetValue(winTZId, out winZone))
+			if(!WinDictionary.TryGetValue(winTZId, out winZone))
 				return null;
 
 			return winZone;
@@ -93,7 +102,7 @@ namespace DotNetXtensions.Globalization
 		/// <param name="tzi">TimeZoneInfo</param>
 		public static string TZId(this TimeZoneInfo tzi)
 		{
-			if (tzi == null)
+			if(tzi == null)
 				return null;
 			return TimeZones.GetTZValueFromWindowsTimeZoneId(tzi.Id);
 		}
@@ -105,7 +114,7 @@ namespace DotNetXtensions.Globalization
 		/// <param name="tzi">TimeZoneInfo</param>
 		public static TZKeyValues TZIdValues(this TimeZoneInfo tzi)
 		{
-			if (tzi == null)
+			if(tzi == null)
 				return null;
 			return TimeZones.GetTZValuesFromWindowsTimeZoneId(tzi.Id);
 		}

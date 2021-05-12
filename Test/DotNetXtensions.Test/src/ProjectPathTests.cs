@@ -4,7 +4,7 @@ namespace DotNetXtensions.Test
 {
 	public class ProjectPathTests : DnxTestBase
 	{
-		const string projtype = "netcoreapp3.1"; //"netcoreapp2.2";
+		const string projtype = "net5.0"; // "netcoreapp3.1", "netcoreapp2.2";
 		const string projName = "DotNetXtensions.Test";
 		static string buildCnfg =
 #if DEBUG

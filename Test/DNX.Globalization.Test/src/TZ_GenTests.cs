@@ -1,7 +1,8 @@
 using System;
 
+using DNX.Globalization.Test;
+
 using DotNetXtensions.Globalization;
-using DotNetXtensions.Test;
 
 using Xunit;
 
@@ -12,11 +13,6 @@ namespace DNX.Test
 		[Fact]
 		public void TestNewIndianaTZ()
 		{
-
-#if BLUE
-			Console.WriteLine("Hi blue");
-#endif
-
 			string tzId = "America/Indiana/Indianapolis"; // google is returning this in some geo calls under the property: "timeZoneId"
 
 			TimeZoneInfo tzi = TimeZones.GetTimeZoneInfoFromTZId(tzId);

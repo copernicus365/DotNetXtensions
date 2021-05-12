@@ -1,6 +1,7 @@
+using DNX.Globalization.Test;
+
 using DotNetXtensions;
 using DotNetXtensions.Globalization;
-using DotNetXtensions.Test;
 
 using Xunit;
 

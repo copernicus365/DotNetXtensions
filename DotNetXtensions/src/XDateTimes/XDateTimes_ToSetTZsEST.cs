@@ -11,19 +11,31 @@ namespace DotNetXtensions
 
 		static TimeZoneInfo tzi_EST {
 			get {
-				// Linux OS probs, we could fix like we did w/Dnx.Globalization with multi-target,
-				// but that's a big change to make for this fundamental lib, for this little need,
-				// so for moment following works: allows 1 caught exception if not run on Windows
-				if(_tzi_EST == null) {
-					try {
-						_tzi_EST = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-					}
-					catch {
-						_tzi_EST = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
-					}
-				}
+				if(_tzi_EST == null)
+					_tzi_EST = GetCurrentESTTimeZone();
 				return _tzi_EST;
 			}
+		}
+
+		/// <summary>
+		/// To handle current OS-bound .NET limitations in getting time-zones.
+		/// Could be handled like we did w/Dnx.Globalization using project multi-target,
+		/// but that's a huge change for this puny function in this major library.
+		/// Till we have bigger reasons for needing that, or at least the time,
+		/// the following works: allows a single one time caught exception if not
+		/// run on Windows.
+		/// </summary>
+		public static TimeZoneInfo GetCurrentESTTimeZone()
+		{
+			TimeZoneInfo tzi;
+			try {
+				tzi = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+				//if(tzi.IsDaylightSavingTime(now)) ...
+			}
+			catch {
+				tzi = TimeZoneInfo.FindSystemTimeZoneById("America/New_York");
+			}
+			return tzi;
 		}
 
 		/// <summary>

@@ -153,6 +153,25 @@ namespace DotNetXtensions
 			return settings;
 		}
 
+
+		public static JsonSerializerSettings SnakeCase(this JsonSerializerSettings settings,
+			SnakeCaseNamingStrategy namingStrategy = null,
+			bool? processDictionaryKeys = null)
+		{
+			if(settings == null) return null;
+
+			var snakeCaseResolver = new DefaultContractResolver {
+				NamingStrategy = namingStrategy ?? new SnakeCaseNamingStrategy(
+					processDictionaryKeys: processDictionaryKeys ?? false,
+					processExtensionDataNames: false,
+					overrideSpecifiedNames: false) {
+				}
+			};
+			settings.ContractResolver = snakeCaseResolver;
+
+			return settings;
+		}
+
 		public static JsonSerializerSettings IndentJson(this JsonSerializerSettings settings, bool indent = true)
 		{
 			if(settings != null) {

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <VersionPrefix>1.0.0</VersionPrefix>
+		<Authors>Nicholas Petersen</Authors>
+		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.DCache</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.DCache</PackageProjectUrl>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageTags>cache distributed-cache in-memory cache IDistributedCache</PackageTags>
+		<NoWarn>1573;1701;1702;1705;0159;1591;NU5105;</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+		<DocumentationFile>\bin\Debug\netstandard2.0\DotNetXtensions.DCache.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+		<DocumentationFile>\bin\Release\netstandard2.0\DotNetXtensions.DCache.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\DotNetXtensions\DotNetXtensions.csproj" />
+		<ProjectReference Include="..\DotNetXtensions.Common\DotNetXtensions.Common.csproj" />
+	</ItemGroup>
+</Project>

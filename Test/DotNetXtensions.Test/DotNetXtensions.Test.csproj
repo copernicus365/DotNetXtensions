@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <NoWarn>1701;1702;1705;0159;1591;0168;0169;1998;0414;xUnit1013;</NoWarn>
   </PropertyGroup>

@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>2.2.0</VersionPrefix>
+    <TargetFramework>net6.0</TargetFramework>
+    <VersionPrefix>3.0.0</VersionPrefix>
     <Authors>Nicholas Petersen</Authors>
     <RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.XUnit</RepositoryUrl>
     <PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.XUnit</PackageProjectUrl>
@@ -10,18 +10,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>xunit helper-library</PackageTags>
     <PackageReleaseNotes />
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Description>Provides minor set of xunit helpers</Description>
     <NoWarn>1591;</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-    <DocumentationFile>\bin\Debug\netstandard2.0\DotNetXtensions.XUnit.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-    <DocumentationFile>\bin\Release\netstandard2.0\DotNetXtensions.XUnit.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

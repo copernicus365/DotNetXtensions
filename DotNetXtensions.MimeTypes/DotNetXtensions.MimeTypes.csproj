@@ -1,46 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-    <VersionPrefix>4.1.0</VersionPrefix>
-		<Authors>Nicholas Petersen</Authors>
-		<RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.MimeTypes</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.MimeTypes</PackageProjectUrl>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageTags>mime-type dotnet helper-functions</PackageTags>
-		<PackageReleaseNotes />		
-		<Description>
-			MIME type helper for getting some common ("basic") MIME types, and the ability to know their associated file extensions, or to find a MIME type(s) from an extension, and so forth. This is NOT intended to be exhaustive
-			(as having an exhaustive enum for mimetypes would not be encouraged), but to represent most of the commonly encountered file / MIME types one encounters on the web.
-		</Description>
-		<NoWarn>1701;1702;1705;0159;1591;NU5105;</NoWarn>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <VersionPrefix>4.2.0</VersionPrefix>
+    <Authors>Nicholas Petersen</Authors>
+    <RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.MimeTypes</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.MimeTypes</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>mime-type dotnet helper-functions</PackageTags>
+    <PackageReleaseNotes />
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Description>
+      MIME type helper for getting some common ("basic") MIME types, and the ability to know their associated file extensions, or to find a MIME type(s) from an extension, and so forth. This is NOT intended to be exhaustive
+      (as having an exhaustive enum for mimetypes would not be encouraged), but to represent most of the commonly encountered file / MIME types one encounters on the web.
+    </Description>
+    <NoWarn>1701;1702;1705;0159;1591;NU5105;</NoWarn>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-		<DocumentationFile>\bin\Debug\netstandard2.0\DotNetXtensions.MimeTypes.xml</DocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DefineConstants>TRACE;RELEASE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
-		<DocumentationFile>\bin\Release\netstandard2.0\DotNetXtensions.MimeTypes.xml</DocumentationFile>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\DotNetXtensions\DotNetXtensions.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetXtensions\DotNetXtensions.csproj" />
+  </ItemGroup>
 </Project>
-
-<!--
-		<VersionSuffix>beta.2</VersionSuffix>
-		<Version>4.0.0-beta.1</Version>
-		<AssemblyVersion>4.0.0-beta.1</AssemblyVersion>
-		<FileVersion>4.0.0-beta.1</FileVersion>
-		have to set `GenerateAssemblyInfo`: false to fix error in
-		assInfo not allowing prerelease versioning
-		(https://semver.org/spec/v2.0.0.html,
-		https://stackoverflow.com/a/55573656/264031)
-    
-		<Deterministic>False</Deterministic>
-		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
--->

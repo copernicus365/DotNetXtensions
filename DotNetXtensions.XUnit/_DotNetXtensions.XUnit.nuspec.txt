@@ -23,8 +23,8 @@
     -->
 
     <dependencies>
-      <dependency id="DotNetXtensions" version="3.5.0" />
-      <dependency id="DotNetXtensions.Common" version="3.2.1" />
+      <dependency id="DotNetXtensions" version="4.2.0" />
+      <dependency id="DotNetXtensions.Common" version="3.6.0" />
     </dependencies>
   </metadata>
 </package>

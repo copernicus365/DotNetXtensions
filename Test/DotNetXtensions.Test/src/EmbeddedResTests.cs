@@ -9,7 +9,7 @@ public class EmbeddedResTests // do NOT inherit! need this to be clean for testi
 	{
 		var er = new EmbeddedResources(typeof(EmbeddedResTests), null);
 
-		string val = er.ResourceString("src.resources.test.doc1.txt");
+		string val = er.ResourceString("data.embedded.doc1.txt");
 
 		Assert.True(val.NotNulle() && val.StartsWith(Txt1StartsWith));
 	}
@@ -17,9 +17,9 @@ public class EmbeddedResTests // do NOT inherit! need this to be clean for testi
 	[Fact]
 	public void Test_WithBasePathSet_Pass()
 	{
-		var er = new EmbeddedResources(typeof(EmbeddedResTests), "src.resources");
+		var er = new EmbeddedResources(typeof(EmbeddedResTests), "data.embedded");
 
-		string val = er.ResourceString("test.doc1.txt");
+		string val = er.ResourceString("doc1.txt");
 
 		Assert.True(val.NotNulle() && val.StartsWith(Txt1StartsWith));
 	}
@@ -33,13 +33,13 @@ public class EmbeddedResTests // do NOT inherit! need this to be clean for testi
 		}
 
 		var er1_None = getER(null);
-		var er2_NoBaseProj = getER("src.resources");
-		var er3_WFullBaseProj = getER("DotNetXtensions.Test.src.resources");
+		var er2_NoBaseProj = getER("data.embedded");
+		var er3_WFullBaseProj = getER("DotNetXtensions.Test.data.embedded");
 
-		string path = "test.doc1.txt";
+		string path = "doc1.txt";
 
-		string val1 = er1_None.ResourceString("DotNetXtensions.Test.src.resources." + path);
-		string val1_2 = er1_None.ResourceString("src.resources." + path);
+		string val1 = er1_None.ResourceString("DotNetXtensions.Test.data.embedded." + path);
+		string val1_2 = er1_None.ResourceString("data.embedded." + path);
 		string val2 = er2_NoBaseProj.ResourceString(path);
 		string val3 = er3_WFullBaseProj.ResourceString(path);
 
@@ -61,7 +61,7 @@ public class EmbeddedResTests // do NOT inherit! need this to be clean for testi
 		string val = null;
 
 		try {
-			val = er.ResourceString("test.doc1.txt");
+			val = er.ResourceString("doc1.txt");
 		}
 		catch {
 			Assert.True(false, "A non-find should NOT throw exception but return null");
@@ -82,9 +82,9 @@ public class EmbeddedResTests // do NOT inherit! need this to be clean for testi
 		catch {
 		}
 
-		er.InitEmbeddedResources(typeof(EmbeddedResTests), "src.resources");
+		er.InitEmbeddedResources(typeof(EmbeddedResTests), "data.embedded");
 
-		string val = er.ResourceString("test.doc1.txt");
+		string val = er.ResourceString("doc1.txt");
 
 		Assert.True(val.NotNulle() && val.StartsWith(Txt1StartsWith));
 	}

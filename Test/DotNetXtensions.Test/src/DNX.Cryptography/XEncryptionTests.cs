@@ -31,6 +31,4 @@ public class XEncryptionTests : DnxTestBase
 		string valBack2 = encVal.DecryptUrlSafeBase64(pass1Bytes).GetString();
 		True(valBack == text1);
 	}
-
-
 }

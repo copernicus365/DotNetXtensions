@@ -4,6 +4,8 @@ namespace DotNetXtensions.Test;
 
 public class XJsonTests : DnxTestBase
 {
+	public XJsonTests() : base("data/json") { }
+
 	public class Foo
 	{
 		public string Name { get; set; }
@@ -51,7 +53,7 @@ public class XJsonTests : DnxTestBase
 	[Fact]
 	public void Test_NullAndDefValueHandling()
 	{
-		string json = "{'name':'Joey','age':13}".Replace('\'', '"');
+		string json = DataString("foo1.json").TrimIfNeeded();
 
 		var foo1 = new Foo("Joey", 13);
 

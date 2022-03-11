@@ -58,7 +58,7 @@ public abstract class XUnitTestBase : EmbeddedResources
 		private set {
 			_baseDataPath = value.IsNulle()
 				? null
-				: value.Replace('.', '/');
+				: value; //.ReplaceIfNeeded(".", Environment.NewLine).ReplaceIfNeeded('/', '\\');
 		}
 	}
 	string _baseDataPath = "data";

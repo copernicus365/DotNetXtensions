@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <VersionPrefix>3.0.0</VersionPrefix>
+    <VersionPrefix>3.2.0</VersionPrefix>
     <Authors>Nicholas Petersen</Authors>
     <RepositoryUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.XUnit</RepositoryUrl>
     <PackageProjectUrl>https://github.com/copernicus365/DotNetXtensions/tree/master/DotNetXtensions.XUnit</PackageProjectUrl>
@@ -13,10 +13,11 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Description>Provides minor set of xunit helpers</Description>
     <NoWarn>1591;</NoWarn>
+    
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.assert" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>

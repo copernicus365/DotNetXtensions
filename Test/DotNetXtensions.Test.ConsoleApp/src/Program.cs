@@ -1,12 +1,12 @@
-using System;
-using DotNetXtensions.Test;
-
 namespace DotNetXtensions.Test.ConsoleApp
 {
 	class Program
 	{
 		static void Main(string[] args)
 		{
+			var t = new TZ_GenTests();
+
+			t.TZI_GetTZId_1();
 			//XDatesProg.Run(); //
 			//xdictNVCollTests.TestAll();
 		}

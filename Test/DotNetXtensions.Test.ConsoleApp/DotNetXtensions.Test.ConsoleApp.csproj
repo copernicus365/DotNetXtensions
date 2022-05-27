@@ -7,10 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Linq" />
+    <Using Include="System.Linq.Expressions" />
+    <Using Include="System.Text" />
+    <Using Include="System.Threading.Tasks" />
+    <Using Include="DotNetXtensions" />
+    <Using Include="DotNetXtensions.Test" />
+    <Using Include="Xunit" />
+    <Using Include="DNX.Test" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Cryptography\DotNetXtensions.Cryptography.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Json\DotNetXtensions.Json.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Net\DotNetXtensions.Net.csproj" />
+    <ProjectReference Include="..\DNX.Globalization.Test\DNX.Globalization.Test.csproj" />
     <ProjectReference Include="..\DotNetXtensions.Test\DotNetXtensions.Test.csproj" />
   </ItemGroup>
 

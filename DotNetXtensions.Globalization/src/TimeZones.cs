@@ -78,17 +78,16 @@ namespace DotNetXtensions.Globalization
 			if(WinDictionary == null)
 				Init();
 
-			TZKeyValues winZone;
-			if(!WinDictionary.TryGetValue(winTZId, out winZone))
-				return null;
+			if(WinDictionary.TryGetValue(winTZId, out TZKeyValues winZone))
+				return winZone;
 
-			return winZone;
+			return null;
 		}
 
 		public static string GetTZValueFromWindowsTimeZoneId(string winTZId)
 		{
 			var kv = GetTZValuesFromWindowsTimeZoneId(winTZId);
-			return kv == null ? null : kv.Value;
+			return kv?.Value;
 		}
 
 	}
@@ -104,7 +103,9 @@ namespace DotNetXtensions.Globalization
 		{
 			if(tzi == null)
 				return null;
-			return TimeZones.GetTZValueFromWindowsTimeZoneId(tzi.Id);
+
+			string tz = TimeZones.GetTZValueFromWindowsTimeZoneId(tzi.Id);
+			return tz;
 		}
 
 		/// <summary>

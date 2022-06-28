@@ -7,9 +7,10 @@ public class XDictionaryEqualTests : DnxTestBase
 	{
 		var d1 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
 		var d2 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
+		var arr2 = d2.Select(kv => (kv.Key, kv.Value)).ToArray();
 
-		bool equal = d1.DictionariesAreEqual(d2);
-		True(equal);
+		True(d1.DictionariesAreEqual(d2));
+		True(d1.DictionaryIsEqual(arr2));
 	}
 
 	[Fact]
@@ -17,9 +18,10 @@ public class XDictionaryEqualTests : DnxTestBase
 	{
 		var d1 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
 		var d2 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
+		var arr2 = d2.Select(kv => (kv.Key, kv.Value)).ToArray();
 
-		bool equal = d1.DictionariesAreEqual(d2, (v1, v2) => v1 == v2);
-		True(equal);
+		True(d1.DictionariesAreEqual(d2, (v1, v2) => v1 == v2));
+		True(d1.DictionaryIsEqual((v1, v2) => v1 == v2, arr2));
 	}
 
 	[Fact]
@@ -28,11 +30,8 @@ public class XDictionaryEqualTests : DnxTestBase
 		var d1 = MockVals1.ToDictionary(kv => kv.Key, kv => new int[] { kv.Value, kv.Value + 1, kv.Value + 2 });
 		var d2 = MockVals1.ToDictionary(kv => kv.Key, kv => new int[] { kv.Value, kv.Value + 1, kv.Value + 2 });
 
-		bool equal = d1.DictionariesAreEqual(d2);
-		True(equal);
-
-		bool equal2 = d1.DictionariesAreEqual(d2, (a, b) => a.SequenceIsEqual(b));
-		True(equal2);
+		True(d1.DictionariesAreEqual(d2));
+		True(d1.DictionariesAreEqual(d2, (a, b) => a.SequenceIsEqual(b)));
 	}
 
 	[Fact]
@@ -41,11 +40,8 @@ public class XDictionaryEqualTests : DnxTestBase
 		Dictionary<string, List<int>> d1 = MockVals1.ToDictionary(kv => kv.Key, kv => new List<int>() { kv.Value, kv.Value + 1, kv.Value + 2 });
 		Dictionary<string, List<int>> d2 = MockVals1.ToDictionary(kv => kv.Key, kv => new List<int>() { kv.Value, kv.Value + 1, kv.Value + 2 });
 
-		bool equal = d1.DictionariesAreEqual(d2);
-		True(equal);
-
-		bool equal2 = d1.DictionariesAreEqual(d2, (a, b) => a.SequenceEqual(b));
-		True(equal2);
+		True(d1.DictionariesAreEqual(d2));
+		True(d1.DictionariesAreEqual(d2, (a, b) => a.SequenceEqual(b)));
 
 		// TEST FAIL
 		// ALTER first dict (alter first item's value's first List value) so they should NOT be equal
@@ -63,11 +59,8 @@ public class XDictionaryEqualTests : DnxTestBase
 
 		d2["Pears"][1] = 88;
 
-		bool equal = d1.DictionariesAreEqual(d2);
-		False(equal);
-
-		bool equal2 = d1.DictionariesAreEqual(d2, (a, b) => a.SequenceIsEqual(b));
-		False(equal);
+		False(d1.DictionariesAreEqual(d2));
+		False(d1.DictionariesAreEqual(d2, (a, b) => a.SequenceIsEqual(b)));
 	}
 
 	[Fact]
@@ -76,9 +69,10 @@ public class XDictionaryEqualTests : DnxTestBase
 		var d1 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
 		var d2 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
 		d2["Pears"] = 7;
+		var arr2 = d2.Select(kv => (kv.Key, kv.Value)).ToArray();
 
-		bool equal = d1.DictionariesAreEqual(d2);
-		False(equal);
+		False(d1.DictionariesAreEqual(d2));
+		False(d1.DictionaryIsEqual(arr2));
 	}
 
 	[Fact]
@@ -87,9 +81,10 @@ public class XDictionaryEqualTests : DnxTestBase
 		var d1 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
 		var d2 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
 		d2["Pears"] = 7;
+		var arr2 = d2.Select(kv => (kv.Key, kv.Value)).ToArray();
 
-		bool equal = d1.DictionariesAreEqual(d2, (v1, v2) => v1 == v2);
-		False(equal);
+		False(d1.DictionariesAreEqual(d2, (v1, v2) => v1 == v2));
+		False(d1.DictionaryIsEqual((v1, v2) => v1 == v2, arr2));
 	}
 
 	[Fact]
@@ -98,18 +93,20 @@ public class XDictionaryEqualTests : DnxTestBase
 		var d1 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
 		var d2 = MockVals1.ToDictionary(kv => kv.Key, kv => kv.Value);
 		d2.Remove("Pears");
+		var arr2 = d2.Select(kv => (kv.Key, kv.Value)).ToArray();
 
 		True(d2.Count == d1.Count - 1);
-		bool equal = d1.DictionariesAreEqual(d2);
-		False(equal);
+		True(arr2.Length == d1.Count - 1);
+		False(d1.DictionariesAreEqual(d2));
+		False(d1.DictionaryIsEqual(arr2));
 	}
 
 	static Dictionary<string, int> MockVals1 = new Dictionary<string, int>() {
-			{ "Apples", 1 },
-			{ "Oranges", 1 },
-			{ "Peaches", 3 },
-			{ "Pears", 3 },
-			{ "Pineapples", 5 },
-		};
+		{ "Apples", 1 },
+		{ "Oranges", 1 },
+		{ "Peaches", 3 },
+		{ "Pears", 3 },
+		{ "Pineapples", 5 },
+	};
 
 }

@@ -57,6 +57,48 @@ namespace DotNetXtensions
 			return true;
 		}
 
+		// purpose of this is to make up for current C# shortcoming
+		// which doesn't allow easy simple creation of a dictionary
+		// using params and tuples we can get super easy calls to make up for this
+		// e.g. `dict.DictionaryIsEqual(("a", 1), ("b", 2));` This need is felt
+		// mostly in tests 
+		public static bool DictionaryIsEqual<TKey, TValue>(
+			this IDictionary<TKey, TValue> dict,
+			Func<TValue, TValue, bool> comparer,
+			params (TKey key, TValue val)[] arr)
+		{
+			if(dict == null || arr == null)
+				return dict == null && arr == null;
+
+			if(dict.Count != arr.Length)
+				return false;
+
+			bool hasEqCmpr = comparer != null;
+
+			foreach(var kv in arr) {
+				TKey key = kv.key;
+				TValue val = kv.val;
+
+				if(!dict.TryGetValue(key, out TValue dval))
+					return false;
+
+				if(hasEqCmpr) {
+					if(!comparer(val, dval)) // equalityComparer.Equals(val2))
+						return false;
+				}
+				else {
+					if(!val.Equals(dval))
+						return false;
+				}
+			}
+			return true;
+		}
+
+		public static bool DictionaryIsEqual<TKey, TValue>(
+			this IDictionary<TKey, TValue> dict,
+			params (TKey key, TValue val)[] arr)
+		=> DictionaryIsEqual(dict, null, arr);
+
 		public static bool DictionariesAreEqual<TKey, TValue>(
 			this IDictionary<TKey, TValue> dict1,
 			IDictionary<TKey, TValue> dict2,

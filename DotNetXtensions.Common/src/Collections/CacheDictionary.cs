@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -81,7 +81,22 @@ namespace DotNetXtensions.Collections
 			=> GetDateTimeNow == null ? DateTime.UtcNow : GetDateTimeNow();
 
 
-
+		/// <summary>
+		/// A critical performance value to set according to on one's needs.
+		/// By default set to 1min. Most GET values depend internally on
+		/// <see cref="GetItems"/>, which calls an internal `_PurgeIfNextPurgeTimeHit`.
+		/// If only 30 seconds ago a purge had been hit, a simple date-time comparison
+		/// op will determine no purge is needed, and so very performant. But once hit,
+		/// a run through of all items will be conducted to REMOVE all items from the internal
+		/// dictionary that have expired. Depending on one's needs, much benefit could be gained
+		/// from setting this to a much higher or a much lower number, because there is also
+		/// a potentially heavy cost of keeping on expired items within the internal dictionary.
+		/// Every iteration of <see cref="GetItems"/> means expired items had to be iterated over
+		/// while if they had been cleared, that iteration time would have been reduced.
+		/// On the other hand, setting this value to too low many mean a purge is conducted
+		/// more often than otherwise, with it's own performance implications. Especially true
+		/// when the internal dictionary has a high count, lets say thousands.
+		/// </summary>
 		public TimeSpan RunPurgeTS {
 			get => _RunPurgeTS;
 			// Don't let ts value be < zero. That should just mean a purge is always called

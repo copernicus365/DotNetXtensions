@@ -25,7 +25,6 @@
     <ProjectReference Include="..\..\DotNetXtensions.Json\DotNetXtensions.Json.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Net\DotNetXtensions.Net.csproj" />
     <ProjectReference Include="..\DNX.Globalization.Test\DNX.Globalization.Test.csproj" />
-    <ProjectReference Include="..\DotNetXtensions.Test\DotNetXtensions.Test.csproj" />
   </ItemGroup>
 
 </Project>

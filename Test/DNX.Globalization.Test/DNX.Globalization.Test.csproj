@@ -14,7 +14,6 @@
     <Using Include="System.Threading.Tasks" />
     <Using Include="DotNetXtensions" />
     <Using Include="DotNetXtensions.Globalization" />
-    <Using Include="DotNetXtensions.Test" />
     <Using Include="Xunit" />
     <Using Include="DNX.Test" />
   </ItemGroup>
@@ -22,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DotNetXtensions\DotNetXtensions.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Globalization\DotNetXtensions.Globalization.csproj" />
-    <ProjectReference Include="..\..\DotNetXtensions.XUnit\DotNetXtensions.XUnit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

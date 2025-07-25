@@ -26,7 +26,6 @@
     <ProjectReference Include="..\..\DotNetXtensions.MimeTypes\DotNetXtensions.MimeTypes.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Net\DotNetXtensions.Net.csproj" />
     <ProjectReference Include="..\..\DotNetXtensions.Text\DotNetXtensions.Text.csproj" />
-    <ProjectReference Include="..\..\DotNetXtensions.XUnit\DotNetXtensions.XUnit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

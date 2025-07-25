@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace DotNetXtensions.Test;
 
-public class DnxTestBase : XUnitTestBase
+public class DnxTestBase : ProjectPaths
 {
 	public DnxTestBase() : this("data") { }
 

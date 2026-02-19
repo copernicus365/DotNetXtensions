@@ -9,8 +9,6 @@
     <Project Path="Test/DotNetXtensions.Test/DotNetXtensions.Test.csproj" />
   </Folder>
   <Project Path="DotNetXtensions/DotNetXtensions.csproj" />
-  <Project Path="DNX.CacheDictionary/DNX.CacheDictionary.csproj" />
-  <Project Path="DNX.DCache/DNX.DCache.csproj" />
   <Project Path="DotNetXtensions.Common/DotNetXtensions.Common.csproj" />
   <Project Path="DotNetXtensions.Cryptography/DotNetXtensions.Cryptography.csproj" />
   <Project Path="DotNetXtensions.Globalization/DotNetXtensions.Globalization.csproj" />

@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/All/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/Test/">
+    <File Path=".editorconfig" />
+    <Project Path="Test/DNX.Globalization.Test/DNX.Globalization.Test.csproj" />
+    <Project Path="Test/DotNetXtensions.Test.ConsoleApp/DotNetXtensions.Test.ConsoleApp.csproj" />
+    <Project Path="Test/DotNetXtensions.Test/DotNetXtensions.Test.csproj" />
+  </Folder>
+  <Project Path="DotNetXtensions/DotNetXtensions.csproj" />
+  <Project Path="DNX.CacheDictionary/DNX.CacheDictionary.csproj" />
+  <Project Path="DNX.DCache/DNX.DCache.csproj" />
+  <Project Path="DotNetXtensions.Common/DotNetXtensions.Common.csproj" />
+  <Project Path="DotNetXtensions.Cryptography/DotNetXtensions.Cryptography.csproj" />
+  <Project Path="DotNetXtensions.Globalization/DotNetXtensions.Globalization.csproj" />
+  <Project Path="DotNetXtensions.Json/DotNetXtensions.Json.csproj" />
+  <Project Path="DotNetXtensions.MimeTypes/DotNetXtensions.MimeTypes.csproj" />
+  <Project Path="DotNetXtensions.Net/DotNetXtensions.Net.csproj" />
+  <Project Path="DotNetXtensions.Text/DotNetXtensions.Text.csproj" />
+  <Project Path="DotNetXtensions.XUnit/DotNetXtensions.XUnit.csproj" />
+</Solution>

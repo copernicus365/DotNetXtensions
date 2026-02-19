@@ -2,7 +2,7 @@ namespace DotNetXtensions.Test;
 
 public class ProjectPathTests : DnxTestBase
 {
-	const string projtype = "net6.0"; // "netcoreapp3.1", "netcoreapp2.2";
+	const string projtype = "net8.0"; // "netcoreapp3.1", "netcoreapp2.2";
 	const string projName = "DotNetXtensions.Test";
 	static string buildCnfg =
 #if DEBUG
@@ -13,13 +13,13 @@ public class ProjectPathTests : DnxTestBase
 
 	[Fact]
 	public void Test_BinDirectory()
-		=> True(ProjectPath.BinDirectory.EndsWith($"/{projName}/bin/"));
+		=> EndsWith($"/{projName}/bin/", ProjectPath.BinDirectory);
 
 	[Fact]
 	public void Test_BaseDirectory()
-		=> True(ProjectPath.BaseDirectory.EndsWith($"/{projName}/bin/{buildCnfg}/{projtype}/"));
+		=> EndsWith($"/{projName}/bin/{buildCnfg}/{projtype}/", ProjectPath.BaseDirectory);
 
 	[Fact]
 	public void Test_RootProjectDirectory()
-		=> True(ProjectPath.RootProjectDirectory.EndsWith($"/{projName}/"));
+		=> EndsWith($"/{projName}/", ProjectPath.RootProjectDirectory);
 }

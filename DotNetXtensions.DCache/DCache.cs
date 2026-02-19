@@ -80,8 +80,6 @@ public class DCache<T, TId> : IDCache<T, TId>
 
 	public CacheDictionary<string, CacheData> MemCacheDict;
 
-
-
 	public string CacheKeyPrefix { get; private set; }
 
 	public DistributedCacheEntryOptions CacheSetOptions { get; private set; }

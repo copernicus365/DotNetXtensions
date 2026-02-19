@@ -56,6 +56,7 @@ namespace DotNetXtensions.Collections
 	/// </summary>
 	/// <typeparam name="TKey"></typeparam>
 	/// <typeparam name="TValue"></typeparam>
+	[Obsolete("Moved to separate repo: https://github.com/copernicus365/DNX.DCache")]
 	public class CacheDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	{
 		readonly ConcurrentDictionary<TKey, (DateTime expires, TValue value)> D;

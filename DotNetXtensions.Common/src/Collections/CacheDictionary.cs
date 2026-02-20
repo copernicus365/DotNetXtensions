@@ -57,7 +57,7 @@ namespace DotNetXtensions.Collections
 	/// <typeparam name="TKey"></typeparam>
 	/// <typeparam name="TValue"></typeparam>
 	[Obsolete("Moved to separate repo: https://github.com/copernicus365/DNX.DCache")]
-	public class CacheDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+	public class CacheDictionaryObsolete<TKey, TValue> : IDictionary<TKey, TValue>
 	{
 		readonly ConcurrentDictionary<TKey, (DateTime expires, TValue value)> D;
 
@@ -124,7 +124,7 @@ namespace DotNetXtensions.Collections
 		/// </summary>
 		/// <param name="expires">Expiration time of items. Minimum value is 1 second.</param>
 		/// <param name="equalityComparer"></param>
-		public CacheDictionary(TimeSpan expires, IEqualityComparer<TKey> equalityComparer = null)
+		public CacheDictionaryObsolete(TimeSpan expires, IEqualityComparer<TKey> equalityComparer = null)
 		{
 			if(expires < TimeSpan.FromSeconds(1))
 				throw new ArgumentOutOfRangeException(nameof(expires));

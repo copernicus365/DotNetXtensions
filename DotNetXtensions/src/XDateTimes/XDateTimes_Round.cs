@@ -15,9 +15,7 @@ namespace DotNetXtensions
 		/// <param name="dt">DateTime to round.</param>
 		/// <param name="roundBy">TimeSpan to round to.</param>
 		public static DateTime Round(this DateTime dt, TimeSpan roundBy)
-		{
-			return new DateTime(_RoundTicks(roundBy, dt.Ticks));
-		}
+			=> new DateTime(_RoundTicks(roundBy, dt.Ticks));
 
 		/// <summary>
 		/// Rounds the DateTimeOffset to the nearest specified interval.
@@ -27,10 +25,18 @@ namespace DotNetXtensions
 		/// <param name="dt">DateTime to round.</param>
 		/// <param name="roundBy">TimeSpan to round to.</param>
 		public static DateTimeOffset Round(this DateTimeOffset dt, TimeSpan roundBy)
-		{
-			return new DateTimeOffset(_RoundTicks(roundBy, dt.Ticks), dt.Offset);
-		}
+			=> new DateTimeOffset(_RoundTicks(roundBy, dt.Ticks), dt.Offset);
 
+		static long _RoundTicks(TimeSpan roundBy, long dtTicks)
+		{
+			long roundTicks = roundBy.Ticks;
+			int f = 0;
+			double m = (double)(dtTicks % roundTicks) / roundTicks;
+			if(m >= 0.5)
+				f = 1;
+			long val = ((dtTicks / roundTicks) + f) * roundTicks;
+			return val;
+		}
 
 
 		// http://stackoverflow.com/questions/7029353/how-can-i-round-up-the-time-to-the-nearest-x-minutes
@@ -75,18 +81,6 @@ namespace DotNetXtensions
 			long delta = dt.Ticks % d.Ticks;
 			bool roundUp = delta > d.Ticks / 2;
 			return roundUp ? dt.RoundUp(d) : dt.RoundDown(d);
-		}
-
-
-		static long _RoundTicks(TimeSpan roundBy, long dtTicks)
-		{
-			long roundTicks = roundBy.Ticks;
-			int f = 0;
-			double m = (double)(dtTicks % roundTicks) / roundTicks;
-			if(m >= 0.5)
-				f = 1;
-			long val = ((dtTicks / roundTicks) + f) * roundTicks;
-			return val;
 		}
 
 	}

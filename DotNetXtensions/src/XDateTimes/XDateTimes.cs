@@ -10,35 +10,19 @@ namespace DotNetXtensions
 		#region --- Nulle ---
 
 		public static bool Nulle(this DateTime? dt)
-		{
-			return dt == null || dt.Value == DateTime.MinValue
-				? true
-				: false;
-		}
+			=> dt == null || dt.Value == DateTime.MinValue;
 
 		public static bool IsNullOrEmpty(this DateTime? dt)
-		{
-			return dt == null || dt.Value == DateTime.MinValue
-				? true
-				: false;
-		}
+			=> dt == null || dt.Value == DateTime.MinValue;
 
 		public static bool IsEmpty(this DateTime dt)
-		{
-			return dt == DateTime.MinValue
-				? true
-				: false;
-		}
+			=> dt == DateTime.MinValue;
 
 		public static bool IsNulle(this DateTimeOffset? dt)
-		{
-			return dt == null || dt.Value == DateTimeOffset.MinValue;
-		}
+			=> dt == null || dt.Value == DateTimeOffset.MinValue;
 
 		public static bool NotNulle(this DateTimeOffset? dt)
-		{
-			return !dt.IsNulle();
-		}
+			=> !dt.IsNulle();
 
 		#endregion
 	}
